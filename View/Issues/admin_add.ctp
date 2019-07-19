@@ -1,0 +1,74 @@
+<div id="IssuesAdminAdd">
+    <?php echo $this->Form->create('Issue', array('type' => 'file')); ?>
+    <div class="Issues form">
+        <h2>新增案例</h2>
+        <?php
+        echo $this->Form->input('Issue.label', array(
+            'label' => '案例名稱',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('Issue.reported', array(
+            'type' => 'text',
+            'label' => '通報日期',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('Issue.name', array(
+            'label' => '姓名',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('Issue.address', array(
+            'label' => '居住地',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('Issue.cunli', array(
+            'label' => '區里',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('Issue.longitude', array(
+            'type' => 'text',
+            'label' => '經度',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('Issue.latitude', array(
+            'type' => 'text',
+            'label' => '緯度',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('Issue.igm', array(
+            'legend' => 'IgM',
+            'type' => 'radio',
+            'options' => $this->Olc->igmOptions,
+            'div' => 'form-group',
+            'class' => 'form-check form-check-inline',
+        ));
+        echo $this->Form->input('Issue.igg', array(
+            'label' => 'IgG',
+            'type' => 'radio',
+            'options' => $this->Olc->iggOptions,
+            'div' => 'form-group',
+            'class' => 'form-check form-check-inline',
+        ));
+        echo $this->Form->input('Issue.confirmed', array(
+            'type' => 'text',
+            'label' => '確診日期',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        ?>
+    </div>
+    <?php
+    echo $this->Form->end('送出');
+    ?>
+</div>
+<script>
+    
+</script>
+<?php
+echo $this->Html->script('c/issues/add.js');
