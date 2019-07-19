@@ -57,9 +57,9 @@ class Issue extends AppModel {
     
     function beforeSave($options = array()) {
         if($this->exists()) {
-            $this->data['Issue']['member_created'] = Configure::read('loginMember.id');
-        } else {
             $this->data['Issue']['member_modified'] = Configure::read('loginMember.id');
+        } else {
+            $this->data['Issue']['member_created'] = Configure::read('loginMember.id');
         }
         parent::beforeSave($options);
     }
