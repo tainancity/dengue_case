@@ -76,7 +76,6 @@
 
 <div id="map" class="sidebar-map"></div>
 <?php echo $this->Html->script('proj4'); ?>
-<?php echo $this->Html->script('jquery.min'); ?>
 <?php echo $this->Html->script('ol'); ?>
 <?php echo $this->Html->script('ol-ext'); ?>
 <?php echo $this->Html->script('FontAwesomeDef'); ?>
