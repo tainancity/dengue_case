@@ -168,7 +168,7 @@ var vectorPoints1 = new ol.layer.Vector({
 
 var vectorCase = new ol.layer.Vector({
   source: new ol.source.Vector({
-    url: cakeRoot + 'json/case.json',
+    url: cakeRoot + 'points/json/cases',
     format: new ol.format.GeoJSON()
   }),
   style: styleCase
