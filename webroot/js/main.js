@@ -205,6 +205,7 @@ var cunli = new ol.layer.Vector({
   }),
   style: getCunliStyle
 });
+cunli.setZIndex(-1);
 
 var map = new ol.Map({
   layers: [baseLayer, vectorPoints1, vectorCase, cunli],
