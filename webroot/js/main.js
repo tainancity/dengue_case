@@ -58,11 +58,11 @@ var baseLayer = new ol.layer.Tile({
 function pointStyleFunction(f, r) {
   var color = '#ffffff';
   var p = f.getProperties();
-  if(p.IgM == '+' && p.IgG == '+') {
+  if(p.igm == '+' && p.igg == '+') {
     color = '#e70187';
-  } else if(p.IgM == '+') {
+  } else if(p.igm == '+') {
     color = '#069948';
-  } else if(p.IgG == '+') {
+  } else if(p.igg == '+') {
     color = '#00a2e2';
   }
   return new ol.style.Style({
@@ -160,15 +160,7 @@ var styleCase = new ol.style.Style({
 
 var vectorPoints1 = new ol.layer.Vector({
   source: new ol.source.Vector({
-    url: 'json/1080713.json',
-    format: new ol.format.GeoJSON()
-  }),
-  style: pointStyleFunction
-});
-
-var vectorPoints2 = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    url: 'json/1080715.json',
+    url: cakeRoot + '/points/json/issues',
     format: new ol.format.GeoJSON()
   }),
   style: pointStyleFunction
@@ -176,7 +168,7 @@ var vectorPoints2 = new ol.layer.Vector({
 
 var vectorCase = new ol.layer.Vector({
   source: new ol.source.Vector({
-    url: 'json/case.json',
+    url: cakeRoot + 'json/case.json',
     format: new ol.format.GeoJSON()
   }),
   style: styleCase
@@ -215,7 +207,7 @@ var cunli = new ol.layer.Vector({
 });
 
 var map = new ol.Map({
-  layers: [baseLayer, vectorPoints1, vectorPoints2, vectorCase, cunli],
+  layers: [baseLayer, vectorPoints1, vectorCase, cunli],
   target: 'map',
   view: appView
 });

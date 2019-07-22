@@ -7,6 +7,122 @@ class PointsController extends AppController {
     public $name = 'Points';
     public $paginate = array();
     public $helpers = array('Olc');
+    
+    public function beforeFilter() {
+        parent::beforeFilter();
+        if (isset($this->Auth)) {
+            $this->Auth->allow('json');
+        }
+    }
+    
+    /*
+     * $pointType
+     * 
+     */
+    public function json($pointType = null) {
+        $this->layout = 'ajax';
+        $result = array(
+            'type' => 'FeatureCollection',
+            'features' => array(),
+        );
+        switch($pointType) {
+            case 'issues':
+                $issues = $this->Point->Issue->find('all', array(
+                    'conditions' => array(
+                        'Issue.confirmed IS NULL'
+                    ),
+                    'fields' => array('label', 'reported', 'cunli', 'longitude', 'latitude', 'igm', 'igg'),
+                ));
+                foreach($issues AS $issue) {
+                    $result['features'][] = array(
+                        'type' => 'Feature',
+                        'properties' => $issue['Issue'],
+                        'geometry' => array(
+                            'type' => 'Point',
+                            'coordinates' => array(
+                                floatval($issue['Issue']['longitude']),
+                                floatval($issue['Issue']['latitude'])
+                            ),
+                        ),
+                    );
+                }
+                break;
+            case 'cases':
+                $issues = $this->Point->Issue->find('all', array(
+                    'conditions' => array(
+                        'Issue.confirmed IS NOT NULL'
+                    ),
+                    'fields' => array('label', 'reported', 'cunli', 'longitude', 'latitude', 'igm', 'igg'),
+                ));
+                foreach($issues AS $issue) {
+                    $result['features'][] = array(
+                        'type' => 'Feature',
+                        'properties' => $issue['Issue'],
+                        'geometry' => array(
+                            'type' => 'Point',
+                            'coordinates' => array(
+                                floatval($issue['Issue']['longitude']),
+                                floatval($issue['Issue']['latitude'])
+                            ),
+                        ),
+                    );
+                }
+                break;
+            case 'work':
+                $issues = $this->Point->find('all', array(
+                    'conditions' => array(
+                        'Issue.confirmed IS NOT NULL',
+                        'Point.point_type' => 1,
+                    ),
+                    'contain' => array(
+                        'Issue' => array(
+                            'fields' => array('label', 'reported', 'cunli', 'longitude', 'latitude', 'igm', 'igg')
+                        )
+                    ),
+                ));
+                foreach($issues AS $issue) {
+                    $result['features'][] = array(
+                        'type' => 'Feature',
+                        'properties' => $issue['Issue'],
+                        'geometry' => array(
+                            'type' => 'Point',
+                            'coordinates' => array(
+                                floatval($issue['Issue']['longitude']),
+                                floatval($issue['Issue']['latitude'])
+                            ),
+                        ),
+                    );
+                }
+                break;
+            case 'activity':
+                $issues = $this->Point->find('all', array(
+                    'conditions' => array(
+                        'Issue.confirmed IS NOT NULL',
+                        'Point.point_type' => 2,
+                    ),
+                    'contain' => array(
+                        'Issue' => array(
+                            'fields' => array('label', 'reported', 'cunli', 'longitude', 'latitude', 'igm', 'igg')
+                        )
+                    ),
+                ));
+                foreach($issues AS $issue) {
+                    $result['features'][] = array(
+                        'type' => 'Feature',
+                        'properties' => $issue['Issue'],
+                        'geometry' => array(
+                            'type' => 'Point',
+                            'coordinates' => array(
+                                floatval($issue['Issue']['longitude']),
+                                floatval($issue['Issue']['latitude'])
+                            ),
+                        ),
+                    );
+                }
+                break;
+        }
+        $this->set('result', $result);
+    }
 
     function admin_add($issueId = null) {
         $issueId = intval($issueId);
