@@ -177,7 +177,7 @@ var styleWork = new ol.style.Style({
 
 var styleActivity = new ol.style.Style({
     image: new ol.style.FontSymbol({
-        glyph: 'fa-child',
+        glyph: 'fa-group',
         radius: 12,
         fill: new ol.style.Fill({
             color: '#fff402'

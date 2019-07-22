@@ -75,3 +75,5 @@
     echo $this->Form->end(__('Submit', true));
     ?>
 </div>
+<?php
+echo $this->Html->script('c/issues/edit.js');
