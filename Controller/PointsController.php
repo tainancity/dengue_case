@@ -7,25 +7,26 @@ class PointsController extends AppController {
     public $name = 'Points';
     public $paginate = array();
     public $helpers = array('Olc');
-    
+
     public function beforeFilter() {
         parent::beforeFilter();
         if (isset($this->Auth)) {
             $this->Auth->allow('json');
         }
     }
-    
+
     /*
      * $pointType
      * 
      */
+
     public function json($pointType = null) {
         $this->layout = 'ajax';
         $result = array(
             'type' => 'FeatureCollection',
             'features' => array(),
         );
-        switch($pointType) {
+        switch ($pointType) {
             case 'issues':
                 $issues = $this->Point->Issue->find('all', array(
                     'conditions' => array(
@@ -33,7 +34,7 @@ class PointsController extends AppController {
                     ),
                     'fields' => array('label', 'reported', 'cunli', 'longitude', 'latitude', 'igm', 'igg'),
                 ));
-                foreach($issues AS $issue) {
+                foreach ($issues AS $issue) {
                     $result['features'][] = array(
                         'type' => 'Feature',
                         'properties' => $issue['Issue'],
@@ -54,7 +55,7 @@ class PointsController extends AppController {
                     ),
                     'fields' => array('label', 'reported', 'cunli', 'longitude', 'latitude', 'igm', 'igg'),
                 ));
-                foreach($issues AS $issue) {
+                foreach ($issues AS $issue) {
                     $result['features'][] = array(
                         'type' => 'Feature',
                         'properties' => $issue['Issue'],
@@ -70,25 +71,29 @@ class PointsController extends AppController {
                 break;
             case 'work':
                 $issues = $this->Point->find('all', array(
+                    'fields' => array(
+                        'longitude', 'latitude', 'point_type',
+                    ),
                     'conditions' => array(
                         'Issue.confirmed IS NOT NULL',
                         'Point.point_type' => 1,
                     ),
                     'contain' => array(
                         'Issue' => array(
-                            'fields' => array('label', 'reported', 'cunli', 'longitude', 'latitude', 'igm', 'igg')
+                            'fields' => array('label', 'reported', 'cunli', 'igm', 'igg')
                         )
                     ),
                 ));
-                foreach($issues AS $issue) {
+                foreach ($issues AS $issue) {
+                    $issue['Issue']['point_type'] = '工作';
                     $result['features'][] = array(
                         'type' => 'Feature',
                         'properties' => $issue['Issue'],
                         'geometry' => array(
                             'type' => 'Point',
                             'coordinates' => array(
-                                floatval($issue['Issue']['longitude']),
-                                floatval($issue['Issue']['latitude'])
+                                floatval($issue['Point']['longitude']),
+                                floatval($issue['Point']['latitude'])
                             ),
                         ),
                     );
@@ -96,25 +101,29 @@ class PointsController extends AppController {
                 break;
             case 'activity':
                 $issues = $this->Point->find('all', array(
+                    'fields' => array(
+                        'longitude', 'latitude', 'point_type',
+                    ),
                     'conditions' => array(
                         'Issue.confirmed IS NOT NULL',
                         'Point.point_type' => 2,
                     ),
                     'contain' => array(
                         'Issue' => array(
-                            'fields' => array('label', 'reported', 'cunli', 'longitude', 'latitude', 'igm', 'igg')
+                            'fields' => array('label', 'reported', 'cunli', 'igm', 'igg')
                         )
                     ),
                 ));
-                foreach($issues AS $issue) {
+                foreach ($issues AS $issue) {
+                    $issue['Issue']['point_type'] = '活動';
                     $result['features'][] = array(
                         'type' => 'Feature',
                         'properties' => $issue['Issue'],
                         'geometry' => array(
                             'type' => 'Point',
                             'coordinates' => array(
-                                floatval($issue['Issue']['longitude']),
-                                floatval($issue['Issue']['latitude'])
+                                floatval($issue['Point']['longitude']),
+                                floatval($issue['Point']['latitude'])
                             ),
                         ),
                     );
