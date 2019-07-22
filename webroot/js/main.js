@@ -158,7 +158,7 @@ var styleCase = new ol.style.Style({
   })
 });
 
-var vectorPoints1 = new ol.layer.Vector({
+var vectorPoints = new ol.layer.Vector({
   source: new ol.source.Vector({
     url: cakeRoot + '/points/json/issues',
     format: new ol.format.GeoJSON()
@@ -208,7 +208,7 @@ var cunli = new ol.layer.Vector({
 cunli.setZIndex(-1);
 
 var map = new ol.Map({
-  layers: [baseLayer, vectorPoints1, vectorCase, cunli],
+  layers: [baseLayer, vectorPoints, vectorCase, cunli],
   target: 'map',
   view: appView
 });
