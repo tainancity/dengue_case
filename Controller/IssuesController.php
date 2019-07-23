@@ -72,6 +72,66 @@ class IssuesController extends AppController {
         $this->redirect(array('action' => 'index'));
     }
 
+    function admin_export() {
+        $issues = $this->Issue->find('all', array(
+            'contain' => array('Point')
+        ));
+        $fh = fopen('php://memory', 'w');
+        $line = array('個案序', '顯示名稱', '通報日', '姓名', '地點類型', '區里', '完整地址', '座標', '定位用', '備註');
+        foreach ($line AS $k => $v) {
+            $line[$k] = mb_convert_encoding($v, 'big5', 'utf-8');
+        }
+        fputcsv($fh, $line);
+        foreach ($issues AS $issue) {
+            $line = array(
+                $issue['Issue']['code'],
+                $issue['Issue']['label'],
+                $issue['Issue']['reported'],
+                $issue['Issue']['name'],
+                '居住地',
+                '居住地',
+                $issue['Issue']['cunli'],
+                $issue['Issue']['address'],
+                "{$issue['Issue']['latitude']}, {$issue['Issue']['longitude']}",
+                $issue['Issue']['address'],
+                '',
+            );
+            foreach ($line AS $k => $v) {
+                $line[$k] = mb_convert_encoding($v, 'big5', 'utf-8');
+            }
+            fputcsv($fh, $line);
+            foreach ($issue['Point'] AS $point) {
+                if ($point['point_type'] == 1) {
+                    $pointType = '工作地';
+                } else {
+                    $pointType = '活動地';
+                }
+                $line = array(
+                    $issue['Issue']['code'],
+                    $issue['Issue']['label'],
+                    $issue['Issue']['reported'],
+                    $issue['Issue']['name'],
+                    $pointType,
+                    $point['label'],
+                    $point['cunli'],
+                    $point['address'],
+                    "{$point['latitude']}, {$point['longitude']}",
+                    $point['address'],
+                    '',
+                );
+                foreach ($line AS $k => $v) {
+                    $line[$k] = mb_convert_encoding($v, 'big5', 'utf-8');
+                }
+                fputcsv($fh, $line);
+            }
+        }
+        fseek($fh, 0);
+        header('Content-Type: application/csv');
+        header('Content-Disposition: attachment; filename="data.csv";');
+        fpassthru($fh);
+        exit();
+    }
+
     function admin_import() {
         /*
          * Array

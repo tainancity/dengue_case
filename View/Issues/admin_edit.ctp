@@ -59,7 +59,7 @@
             'class' => 'form-control',
         ));
         echo $this->Form->input('Issue.igm', array(
-            'label' => 'IgM',
+            'legend' => 'IgM',
             'type' => 'radio',
             'options' => array(
                 '+' => '陽性',
@@ -70,7 +70,7 @@
             'class' => 'form-check form-check-inline',
         ));
         echo $this->Form->input('Issue.igg', array(
-            'label' => 'IgG',
+            'legend' => 'IgG',
             'type' => 'radio',
             'options' => array(
                 '+' => '陽性',

@@ -66,13 +66,12 @@
             'class' => 'form-check form-check-inline',
         ));
         echo $this->Form->input('Issue.igg', array(
-            'label' => 'IgG',
+            'legend' => 'IgG',
             'type' => 'radio',
             'options' => $this->Olc->iggOptions,
             'div' => 'form-group',
             'class' => 'form-check form-check-inline',
         ));
-        
         ?>
     </div>
     <?php
