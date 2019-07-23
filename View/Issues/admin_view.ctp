@@ -3,12 +3,24 @@
     <table class="table">
         <tbody>
             <tr>
+                <th scope="row">通報編號</th>
+                <td><?php echo $this->data['Issue']['code']; ?></td>
+            </tr>
+            <tr>
                 <th scope="row">案例名稱</th>
                 <td><?php echo $this->data['Issue']['label']; ?></td>
             </tr>
             <tr>
                 <th scope="row">通報日期</th>
                 <td><?php echo $this->data['Issue']['reported']; ?></td>
+            </tr>
+            <tr>
+                <th scope="row">確診日期</th>
+                <td><?php echo $this->data['Issue']['confirmed']; ?></td>
+            </tr>
+            <tr>
+                <th scope="row">發病日期</th>
+                <td><?php echo $this->data['Issue']['date_onset']; ?></td>
             </tr>
             <tr>
                 <th scope="row">姓名</th>
@@ -37,10 +49,6 @@
             <tr>
                 <th scope="row">IgG</th>
                 <td><?php echo $this->data['Issue']['igg']; ?></td>
-            </tr>
-            <tr>
-                <th scope="row">確診日期</th>
-                <td><?php echo $this->data['Issue']['confirmed']; ?></td>
             </tr>
             <tr>
                 <th scope="row">建立者</th>
