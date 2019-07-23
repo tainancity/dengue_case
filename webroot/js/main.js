@@ -56,7 +56,7 @@ var baseLayer = new ol.layer.Tile({
 });
 
 function pointStyleFunction(f, r) {
-    var color = '#ffffff';
+    var color = '#ff0000';
     var p = f.getProperties();
     if (p.igm == '+' && p.igg == '+') {
         color = '#e70187';

@@ -131,16 +131,19 @@ class IssuesController extends AppController {
                 } else if (false !== strpos($line[4], '工作')) {
                     $pointType = 1;
                 }
-                if ($this->Issue->save(array('Issue' => array(
-                                'code' => $line[0],
-                                'label' => $line[1],
-                                'reported' => $dateReported,
-                                'name' => $line[3],
-                                'address' => ($pointType == 0) ? $line[7] : '',
-                                'cunli' => ($pointType == 0) ? $line[6] : '',
-                                'longitude' => ($pointType == 0) ? $longitude : '',
-                                'latitude' => ($pointType == 0) ? $latitude : '',
-                    )))) {
+                $issueToSave = array('Issue' => array(
+                        'code' => $line[0],
+                        'name' => $line[3],
+                ));
+                if ($pointType == 0) {
+                    $issueToSave['Issue']['label'] = $line[1];
+                    $issueToSave['Issue']['reported'] = $dateReported;
+                    $issueToSave['Issue']['address'] = $line[7];
+                    $issueToSave['Issue']['cunli'] = $line[6];
+                    $issueToSave['Issue']['longitude'] = $longitude;
+                    $issueToSave['Issue']['latitude'] = $latitude;
+                }
+                if ($this->Issue->save($issueToSave)) {
                     ++$count;
                     if (empty($dbIssue)) {
                         $dbIssue = array('Issue' => array(
