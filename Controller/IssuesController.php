@@ -72,4 +72,108 @@ class IssuesController extends AppController {
         $this->redirect(array('action' => 'index'));
     }
 
+    function admin_import() {
+        /*
+         * Array
+          (
+          [0] => 個案序
+          [1] => 顯示名稱
+          [2] => 通報日
+          [3] => 姓名
+          [4] => 地點類型
+          [5] => 地點名稱
+          [6] => 區里
+          [7] => 完整地址
+          [8] => 座標
+          [9] => 定位用
+          [10] => 備註
+          )
+         */
+        if (!empty($this->data['Issue']['file']['tmp_name'])) {
+            $count = 0;
+            $fh = fopen($this->data['Issue']['file']['tmp_name'], 'r');
+            while ($line = fgetcsv($fh, 2048)) {
+                foreach ($line AS $k => $v) {
+                    $line[$k] = trim(mb_convert_encoding($v, 'utf-8', 'big5'));
+                }
+                if ($line[0] === '個案序') {
+                    continue;
+                }
+                $dbIssue = $this->Issue->find('first', array(
+                    'fields' => array('id'),
+                    'conditions' => array(
+                        'Issue.code' => $line[0],
+                    ),
+                ));
+                $dateReported = preg_split('/(年|月|日|\\-)/i', $line[2]);
+                if (count($dateReported) === 3 && empty($dateReported[2])) {
+                    $dateReported = date('Y-m-d', mktime(0, 0, 0, $dateReported[0], $dateReported[1], date('Y')));
+                } else {
+                    $dateReported = implode('-', $dateReported);
+                }
+                $longitude = $latitude = null;
+                if (!empty($line[8])) {
+                    $parts = explode(',', $line[8]);
+                    foreach ($parts AS $k => $v) {
+                        $parts[$k] = floatval(trim($v));
+                    }
+                    $longitude = $parts[1];
+                    $latitude = $parts[0];
+                }
+                if (!empty($dbIssue)) {
+                    $this->Issue->id = $dbIssue['Issue']['id'];
+                } else {
+                    $this->Issue->create();
+                }
+                $pointType = 0;
+                if (false !== strpos($line[4], '活動')) {
+                    $pointType = 2;
+                } else if (false !== strpos($line[4], '工作')) {
+                    $pointType = 1;
+                }
+                if ($this->Issue->save(array('Issue' => array(
+                                'code' => $line[0],
+                                'label' => $line[1],
+                                'reported' => $dateReported,
+                                'name' => $line[3],
+                                'address' => ($pointType == 0) ? $line[7] : '',
+                                'cunli' => ($pointType == 0) ? $line[6] : '',
+                                'longitude' => ($pointType == 0) ? $longitude : '',
+                                'latitude' => ($pointType == 0) ? $latitude : '',
+                    )))) {
+                    ++$count;
+                    if (empty($dbIssue)) {
+                        $dbIssue = array('Issue' => array(
+                                'id' => $this->Issue->getInsertID(),
+                        ));
+                    }
+                    if ($pointType !== 0) {
+                        $dbPoint = $this->Issue->Point->find('first', array(
+                            'fields' => array('id'),
+                            'conditions' => array(
+                                'Point.Issue_id' => $dbIssue['Issue']['id'],
+                                'Point.point_type' => $pointType,
+                            ),
+                        ));
+                        if (empty($dbPoint['Point']['id'])) {
+                            $this->Issue->Point->create();
+                        } else {
+                            $this->Issue->Point->id = $dbPoint['Point']['id'];
+                        }
+                        $this->Issue->Point->save(array('Point' => array(
+                                'Issue_id' => $dbIssue['Issue']['id'],
+                                'point_type' => $pointType,
+                                'label' => $line[5],
+                                'address' => $line[7],
+                                'cunli' => $line[6],
+                                'longitude' => $longitude,
+                                'latitude' => $latitude,
+                        )));
+                    }
+                }
+            }
+            $this->Session->setFlash("匯入了 {$count} 筆資料");
+        }
+    }
+
 }
