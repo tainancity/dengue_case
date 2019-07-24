@@ -10,6 +10,11 @@
                 <th scope="row">案例名稱</th>
                 <td><?php echo $this->data['Issue']['label']; ?></td>
             </tr>
+            
+            <tr>
+                <th scope="row">通報日期</th>
+                <td><?php echo isset($this->Olc->reportTypes[$this->data['Issue']['report_type']]) ? $this->Olc->reportTypes[$this->data['Issue']['report_type']] : ''; ?></td>
+            </tr>
             <tr>
                 <th scope="row">通報日期</th>
                 <td><?php echo $this->data['Issue']['reported']; ?></td>
@@ -44,11 +49,15 @@
             </tr>
             <tr>
                 <th scope="row">IgM</th>
-                <td><?php echo $this->data['Issue']['igm']; ?></td>
+                <td><?php echo isset($this->Olc->igmOptions[$this->data['Issue']['igm']]) ? $this->Olc->igmOptions[$this->data['Issue']['igm']] : ''; ?></td>
             </tr>
             <tr>
                 <th scope="row">IgG</th>
-                <td><?php echo $this->data['Issue']['igg']; ?></td>
+                <td><?php echo isset($this->Olc->iggOptions[$this->data['Issue']['igg']]) ? $this->Olc->iggOptions[$this->data['Issue']['igg']] : ''; ?></td>
+            </tr>
+            <tr>
+                <th scope="row">備註</th>
+                <td><?php echo $this->data['Issue']['note']; ?></td>
             </tr>
             <tr>
                 <th scope="row">建立者</th>

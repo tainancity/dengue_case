@@ -87,6 +87,12 @@
             'div' => 'form-group',
             'class' => 'form-check form-check-inline',
         ));
+        echo $this->Form->input('Issue.note', array(
+            'type' => 'text',
+            'label' => '備註',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
         ?>
     </div>
     <?php

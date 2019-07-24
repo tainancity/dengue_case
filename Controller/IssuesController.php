@@ -97,7 +97,7 @@ class IssuesController extends AppController {
                 $issue['Issue']['address'],
                 "{$issue['Issue']['latitude']}, {$issue['Issue']['longitude']}",
                 $issue['Issue']['address'],
-                '',
+                $issue['Issue']['note'],
             );
             foreach ($line AS $k => $v) {
                 $line[$k] = mb_convert_encoding($v, 'big5', 'utf-8');
@@ -120,7 +120,7 @@ class IssuesController extends AppController {
                     $point['address'],
                     "{$point['latitude']}, {$point['longitude']}",
                     $point['address'],
-                    '',
+                    $issue['Issue']['note'],
                 );
                 foreach ($line AS $k => $v) {
                     $line[$k] = mb_convert_encoding($v, 'big5', 'utf-8');
@@ -206,6 +206,7 @@ class IssuesController extends AppController {
                     $issueToSave['Issue']['cunli'] = $line[6];
                     $issueToSave['Issue']['longitude'] = $longitude;
                     $issueToSave['Issue']['latitude'] = $latitude;
+                    $issueToSave['Issue']['note'] = $line[10];
                 }
                 if ($this->Issue->save($issueToSave)) {
                     ++$count;
@@ -308,6 +309,7 @@ class IssuesController extends AppController {
                         'igg' => $line[6],
                         'longitude' => $longitude,
                         'latitude' => $latitude,
+                        'note' => $line[12],
                 ));
                 if ($this->Issue->save($issueToSave)) {
                     ++$count;
@@ -351,7 +353,7 @@ class IssuesController extends AppController {
                 $issue['Issue']['address'],
                 "{$issue['Issue']['latitude']}, {$issue['Issue']['longitude']}",
                 $issue['Issue']['address'],
-                '',
+                $issue['Issue']['note'],
             );
             foreach ($line AS $k => $v) {
                 $line[$k] = mb_convert_encoding($v, 'big5', 'utf-8');
