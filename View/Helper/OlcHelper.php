@@ -16,5 +16,10 @@ class OlcHelper extends AppHelper {
         '1' => '工作地',
         '2' => '活動點',
     );
+    public $reportTypes = array(
+        '1' => '確診案例',
+        '2' => '通報追蹤',
+        '3' => '擴大疫採',
+    );
 
 }

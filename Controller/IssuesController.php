@@ -74,6 +74,9 @@ class IssuesController extends AppController {
 
     function admin_export() {
         $issues = $this->Issue->find('all', array(
+            'conditions' => array(
+                'Issue.report_type' => '1',
+            ),
             'contain' => array('Point')
         ));
         $fh = fopen('php://memory', 'w');
@@ -194,6 +197,7 @@ class IssuesController extends AppController {
                 $issueToSave = array('Issue' => array(
                         'code' => $line[0],
                         'name' => $line[3],
+                        'report_type' => '1',
                 ));
                 if ($pointType == 0) {
                     $issueToSave['Issue']['label'] = $line[1];

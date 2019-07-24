@@ -13,6 +13,13 @@
             'div' => 'form-group',
             'class' => 'form-control',
         ));
+        echo $this->Form->input('Issue.report_type', array(
+            'legend' => '通報類型',
+            'type' => 'radio',
+            'options' => $this->Olc->reportTypes,
+            'div' => 'form-group',
+            'class' => 'form-check form-check-inline',
+        ));
         echo $this->Form->input('Issue.reported', array(
             'type' => 'text',
             'label' => '通報日期',
