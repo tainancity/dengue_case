@@ -47,12 +47,20 @@
                 <td><?php echo $this->data['Issue']['latitude']; ?></td>
             </tr>
             <tr>
+                <th scope="row">NS1</th>
+                <td><?php echo isset($this->Olc->ns1Options[$this->data['Issue']['ns1']]) ? $this->Olc->ns1Options[$this->data['Issue']['ns1']] : ''; ?></td>
+            </tr>
+            <tr>
                 <th scope="row">IgM</th>
                 <td><?php echo isset($this->Olc->igmOptions[$this->data['Issue']['igm']]) ? $this->Olc->igmOptions[$this->data['Issue']['igm']] : ''; ?></td>
             </tr>
             <tr>
                 <th scope="row">IgG</th>
                 <td><?php echo isset($this->Olc->iggOptions[$this->data['Issue']['igg']]) ? $this->Olc->iggOptions[$this->data['Issue']['igg']] : ''; ?></td>
+            </tr>
+            <tr>
+                <th scope="row">PCR</th>
+                <td><?php echo isset($this->Olc->pcrOptions[$this->data['Issue']['pcr']]) ? $this->Olc->pcrOptions[$this->data['Issue']['pcr']] : ''; ?></td>
             </tr>
             <tr>
                 <th scope="row">備註</th>

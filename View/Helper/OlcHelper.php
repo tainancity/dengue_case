@@ -12,6 +12,16 @@ class OlcHelper extends AppHelper {
         '-' => '陰性',
         'x' => '其他',
     );
+    public $ns1Options = array(
+        '+' => '陽性',
+        '-' => '陰性',
+        'x' => '其他',
+    );
+    public $pcrOptions = array(
+        '+' => '陽性',
+        '-' => '陰性',
+        'x' => '其他',
+    );
     public $pointTypeOptions = array(
         '1' => '工作地',
         '2' => '活動點',

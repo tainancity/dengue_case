@@ -31,7 +31,7 @@ CREATE TABLE `acos` (
   `lft` int(11) DEFAULT NULL,
   `rght` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,13 +126,16 @@ CREATE TABLE `issues` (
   `latitude` decimal(8,6) DEFAULT NULL,
   `igm` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `igg` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ns1` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `pcr` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `confirmed` date DEFAULT NULL,
+  `note` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `member_created` int(11) DEFAULT NULL,
   `member_modified` int(11) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -183,4 +186,4 @@ CREATE TABLE `points` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-24 13:56:45
+-- Dump completed on 2019-07-24 17:12:04

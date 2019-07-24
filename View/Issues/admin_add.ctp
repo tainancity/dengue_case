@@ -65,6 +65,13 @@
             'div' => 'form-group',
             'class' => 'form-control',
         ));
+        echo $this->Form->input('Issue.ns1', array(
+            'legend' => 'NS1',
+            'type' => 'radio',
+            'options' => $this->Olc->ns1Options,
+            'div' => 'form-group',
+            'class' => 'form-check form-check-inline',
+        ));
         echo $this->Form->input('Issue.igm', array(
             'legend' => 'IgM',
             'type' => 'radio',
@@ -76,6 +83,13 @@
             'legend' => 'IgG',
             'type' => 'radio',
             'options' => $this->Olc->iggOptions,
+            'div' => 'form-group',
+            'class' => 'form-check form-check-inline',
+        ));
+        echo $this->Form->input('Issue.pcr', array(
+            'legend' => 'PCR',
+            'type' => 'radio',
+            'options' => $this->Olc->pcrOptions,
             'div' => 'form-group',
             'class' => 'form-check form-check-inline',
         ));
