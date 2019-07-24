@@ -243,4 +243,126 @@ class IssuesController extends AppController {
         }
     }
 
+    function admin_import_report() {
+        /*
+         * Array
+          (
+          [0] => 序號
+          [1] => 通報編號或Bar-Code
+          [2] => 姓名
+          [3] => 顯示名稱
+          [4] => 類型
+          [5] => IgM
+          [6] => IgG
+          [7] => 區里
+          [8] => 地址
+          [9] => 完整地址
+          [10] => 座標
+          [11] => 定位用
+          [12] => 備註
+          )
+         */
+        if (!empty($this->data['Issue']['file']['tmp_name'])) {
+            $count = 0;
+            $fh = fopen($this->data['Issue']['file']['tmp_name'], 'r');
+            while ($line = fgetcsv($fh, 2048)) {
+                foreach ($line AS $k => $v) {
+                    $line[$k] = trim(mb_convert_encoding($v, 'utf-8', 'big5'));
+                }
+                if ($line[0] === '序號') {
+                    continue;
+                }
+                $dbIssue = $this->Issue->find('first', array(
+                    'fields' => array('id'),
+                    'conditions' => array(
+                        'Issue.code' => $line[1],
+                    ),
+                ));
+                $longitude = $latitude = null;
+                if (!empty($line[10])) {
+                    $parts = explode(',', $line[10]);
+                    foreach ($parts AS $k => $v) {
+                        $parts[$k] = floatval(trim($v));
+                    }
+                    $longitude = $parts[1];
+                    $latitude = $parts[0];
+                }
+                if (!empty($dbIssue)) {
+                    $this->Issue->id = $dbIssue['Issue']['id'];
+                } else {
+                    $this->Issue->create();
+                }
+                if (false !== strpos($line[4], '通報')) {
+                    $reportType = '2';
+                } else {
+                    $reportType = '3';
+                }
+                $issueToSave = array('Issue' => array(
+                        'code' => $line[1],
+                        'name' => $line[2],
+                        'report_type' => $reportType,
+                        'label' => $line[3],
+                        'address' => $line[9],
+                        'cunli' => $line[7],
+                        'igm' => $line[5],
+                        'igg' => $line[6],
+                        'longitude' => $longitude,
+                        'latitude' => $latitude,
+                ));
+                if ($this->Issue->save($issueToSave)) {
+                    ++$count;
+                }
+            }
+            $this->Session->setFlash("匯入了 {$count} 筆資料");
+        }
+        $this->redirect(array('action' => 'import'));
+    }
+
+    function admin_export_report() {
+        $issues = $this->Issue->find('all', array(
+            'conditions' => array(
+                'OR' => array(
+                    'Issue.report_type' => '2',
+                    'Issue.report_type' => '3',
+                ),
+            ),
+        ));
+        $fh = fopen('php://memory', 'w');
+        $line = array('序號', '通報編號或Bar-Code', '姓名', '顯示名稱', '類型', 'IgM', 'IgG', '區里', '地址', '完整地址', '座標', '定位用', '備註');
+        foreach ($line AS $k => $v) {
+            $line[$k] = mb_convert_encoding($v, 'big5', 'utf-8');
+        }
+        fputcsv($fh, $line);
+        foreach ($issues AS $issue) {
+            $reportType = '擴大疫採';
+            if ($issue['Issue']['report_type'] == '2') {
+                $reportType = '通報追蹤';
+            }
+            $line = array(
+                $issue['Issue']['code'],
+                $issue['Issue']['code'],
+                $issue['Issue']['name'],
+                $issue['Issue']['label'],
+                $reportType,
+                $issue['Issue']['igm'],
+                $issue['Issue']['igg'],
+                $issue['Issue']['cunli'],
+                $issue['Issue']['address'],
+                $issue['Issue']['address'],
+                "{$issue['Issue']['latitude']}, {$issue['Issue']['longitude']}",
+                $issue['Issue']['address'],
+                '',
+            );
+            foreach ($line AS $k => $v) {
+                $line[$k] = mb_convert_encoding($v, 'big5', 'utf-8');
+            }
+            fputcsv($fh, $line);
+        }
+        fseek($fh, 0);
+        header('Content-Type: application/csv');
+        header('Content-Disposition: attachment; filename="data.csv";');
+        fpassthru($fh);
+        exit();
+    }
+
 }
