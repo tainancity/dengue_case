@@ -6,7 +6,7 @@ class IssuesController extends AppController {
 
     public $name = 'Issues';
     public $paginate = array();
-    public $helpers = array();
+    public $helpers = array('Olc');
 
     function admin_index() {
         $this->paginate['Issue'] = array(

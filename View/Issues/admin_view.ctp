@@ -10,9 +10,8 @@
                 <th scope="row">案例名稱</th>
                 <td><?php echo $this->data['Issue']['label']; ?></td>
             </tr>
-            
             <tr>
-                <th scope="row">通報日期</th>
+                <th scope="row">通報類型</th>
                 <td><?php echo isset($this->Olc->reportTypes[$this->data['Issue']['report_type']]) ? $this->Olc->reportTypes[$this->data['Issue']['report_type']] : ''; ?></td>
             </tr>
             <tr>
