@@ -75,6 +75,7 @@
 </div>
 
 <div id="map" class="sidebar-map"></div>
+<?php echo $this->Html->link('全畫面地圖', '/points/map', array('target' => '_blank')); ?>
 <?php echo $this->Html->script('proj4'); ?>
 <?php echo $this->Html->script('ol'); ?>
 <?php echo $this->Html->script('ol-ext'); ?>

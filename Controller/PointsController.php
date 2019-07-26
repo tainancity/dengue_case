@@ -11,8 +11,12 @@ class PointsController extends AppController {
     public function beforeFilter() {
         parent::beforeFilter();
         if (isset($this->Auth)) {
-            $this->Auth->allow('json');
+            $this->Auth->allow(array('json', 'map'));
         }
+    }
+    
+    public function map() {
+        $this->layout = 'ajax';
     }
 
     /*
