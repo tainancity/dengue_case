@@ -35,6 +35,33 @@ CREATE TABLE `acos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `area_sources`
+--
+
+DROP TABLE IF EXISTS `area_sources`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `area_sources` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `the_date` date NOT NULL,
+  `area_id` int(11) unsigned NOT NULL,
+  `investigate` int(11) unsigned NOT NULL,
+  `i_water` int(11) unsigned NOT NULL,
+  `i_positive` int(11) unsigned NOT NULL,
+  `o_water` int(11) unsigned NOT NULL,
+  `o_positive` int(11) unsigned NOT NULL,
+  `positive_done` int(11) unsigned NOT NULL,
+  `people` int(11) unsigned NOT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` int(11) unsigned NOT NULL,
+  `modified_by` int(11) unsigned NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `areas`
 --
 
@@ -88,6 +115,202 @@ CREATE TABLE `aros_acos` (
   `_delete` int(2) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `bureau_sources`
+--
+
+DROP TABLE IF EXISTS `bureau_sources`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bureau_sources` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `the_date` date NOT NULL,
+  `investigate` int(11) unsigned NOT NULL,
+  `i_water` int(11) unsigned NOT NULL,
+  `i_positive` int(11) unsigned NOT NULL,
+  `o_water` int(11) unsigned NOT NULL,
+  `o_positive` int(11) unsigned NOT NULL,
+  `positive_done` int(11) unsigned NOT NULL,
+  `education` int(11) unsigned NOT NULL,
+  `people` int(11) unsigned NOT NULL,
+  `location` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` int(11) unsigned NOT NULL,
+  `modified_by` int(11) unsigned NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `center_sources`
+--
+
+DROP TABLE IF EXISTS `center_sources`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `center_sources` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `the_date` date NOT NULL,
+  `area_id` int(11) unsigned NOT NULL,
+  `investigate` int(11) unsigned NOT NULL,
+  `i_water` int(11) unsigned NOT NULL,
+  `i_positive` int(11) unsigned NOT NULL,
+  `o_water` int(11) unsigned NOT NULL,
+  `o_positive` int(11) unsigned NOT NULL,
+  `positive_done` int(11) unsigned NOT NULL,
+  `fine` int(11) unsigned NOT NULL,
+  `people` int(11) unsigned NOT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` int(11) unsigned NOT NULL,
+  `modified_by` int(11) unsigned NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `chemicals`
+--
+
+DROP TABLE IF EXISTS `chemicals`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `chemicals` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `the_date` date NOT NULL,
+  `area_id` int(11) unsigned NOT NULL,
+  `trips` int(11) unsigned NOT NULL,
+  `door_count` int(11) unsigned NOT NULL,
+  `door_done` int(11) unsigned NOT NULL,
+  `fine` int(11) unsigned NOT NULL,
+  `people` int(11) unsigned NOT NULL,
+  `i_water` int(11) unsigned NOT NULL,
+  `i_positive` int(11) unsigned NOT NULL,
+  `o_water` int(11) unsigned NOT NULL,
+  `o_positive` int(11) unsigned NOT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` int(11) unsigned NOT NULL,
+  `modified_by` int(11) unsigned NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `clinic_reports`
+--
+
+DROP TABLE IF EXISTS `clinic_reports`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `clinic_reports` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `the_date` date NOT NULL,
+  `type` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `count_report` int(11) unsigned NOT NULL,
+  `count_positive` int(11) unsigned NOT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` int(11) unsigned NOT NULL,
+  `modified_by` int(11) unsigned NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `educations`
+--
+
+DROP TABLE IF EXISTS `educations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `educations` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `the_date` date NOT NULL,
+  `unit` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `education` int(11) unsigned NOT NULL,
+  `created_by` int(11) unsigned NOT NULL,
+  `modified_by` int(11) unsigned NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `expands`
+--
+
+DROP TABLE IF EXISTS `expands`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `expands` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `the_date` date NOT NULL,
+  `area_id` int(11) unsigned NOT NULL,
+  `count_p` int(11) unsigned NOT NULL,
+  `count_n` int(11) unsigned NOT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` int(11) unsigned NOT NULL,
+  `modified_by` int(11) unsigned NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `fever_monitors`
+--
+
+DROP TABLE IF EXISTS `fever_monitors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `fever_monitors` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `the_date` date NOT NULL,
+  `area_id` int(11) unsigned NOT NULL,
+  `people_count` int(11) unsigned NOT NULL,
+  `people_track` int(11) unsigned NOT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` int(11) unsigned NOT NULL,
+  `modified_by` int(11) unsigned NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `fevers`
+--
+
+DROP TABLE IF EXISTS `fevers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `fevers` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `the_date` date NOT NULL,
+  `area_id` int(11) unsigned NOT NULL,
+  `count_people` int(11) unsigned NOT NULL,
+  `count_fever` int(11) unsigned NOT NULL,
+  `count_draw` int(11) unsigned NOT NULL,
+  `count_p` int(11) unsigned NOT NULL,
+  `count_n` int(11) unsigned NOT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` int(11) unsigned NOT NULL,
+  `modified_by` int(11) unsigned NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -164,7 +387,7 @@ DROP TABLE IF EXISTS `members`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `members` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `group_id` int(11) DEFAULT NULL,
   `username` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `password` varchar(48) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -194,6 +417,57 @@ CREATE TABLE `points` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tracks`
+--
+
+DROP TABLE IF EXISTS `tracks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tracks` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `the_date` date NOT NULL,
+  `area_id` int(11) unsigned NOT NULL,
+  `track_count` int(11) unsigned NOT NULL,
+  `track_done` int(11) unsigned NOT NULL,
+  `fever_count` int(11) unsigned NOT NULL,
+  `fever_draw` int(11) unsigned NOT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` int(11) unsigned NOT NULL,
+  `modified_by` int(11) unsigned NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `volunteer_sources`
+--
+
+DROP TABLE IF EXISTS `volunteer_sources`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `volunteer_sources` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `the_date` date NOT NULL,
+  `area_id` int(11) unsigned NOT NULL,
+  `investigate` int(11) unsigned NOT NULL,
+  `i_water` int(11) unsigned NOT NULL,
+  `i_positive` int(11) unsigned NOT NULL,
+  `o_water` int(11) unsigned NOT NULL,
+  `o_positive` int(11) unsigned NOT NULL,
+  `positive_done` int(11) unsigned NOT NULL,
+  `people` int(11) unsigned NOT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` int(11) unsigned NOT NULL,
+  `modified_by` int(11) unsigned NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -204,4 +478,4 @@ CREATE TABLE `points` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-30 16:53:34
+-- Dump completed on 2019-07-30 20:03:57
