@@ -26,6 +26,7 @@
                 <div class="btn-group">
                     <?php if ($this->Session->read('Auth.User.id')): ?>
                         <?php echo $this->Html->link('案例', '/admin/issues', array('class' => 'btn btn-default')); ?>
+                        <?php echo $this->Html->link('衛生所疫情監測', '/areas/health_bureau', array('class' => 'btn btn-default')); ?>
                         <?php echo $this->Html->link('帳號', '/admin/members', array('class' => 'btn btn-default')); ?>
                         <?php echo $this->Html->link('群組', '/admin/groups', array('class' => 'btn btn-default')); ?>
                         <?php echo $this->Html->link('登出', '/members/logout', array('class' => 'btn btn-default')); ?>
