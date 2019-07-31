@@ -35,6 +35,7 @@
                         <?php echo $this->Html->link('防疫志工隊孳生源清除', '/areas/volunteer_sources_list', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('衛教宣導', '/areas/educations_list', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('各局處轄管防疫動員', '/areas/bureau_sources_list', array('class' => 'btn btn-info')); ?>
+                        <?php echo $this->Html->link('化學防治', '/areas/chemicals_list', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('帳號', '/admin/members', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('群組', '/admin/groups', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('登出', '/members/logout', array('class' => 'btn btn-info')); ?>

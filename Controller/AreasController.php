@@ -14,6 +14,89 @@ class AreasController extends AppController {
         }
     }
     
+    function chemicals_delete($id = null) {
+        if (!$id) {
+            $this->Session->setFlash('請依照網頁指示操作');
+        } else if ($this->Area->Chemical->delete($id)) {
+            $this->Session->setFlash('資料已經刪除');
+        }
+        $this->redirect(array('action' => 'chemicals_list'));
+    }
+
+    function chemicals_list() {
+        $this->paginate['Chemical'] = array(
+            'limit' => 20,
+            'contain' => array(
+                'MemberModified' => array('fields' => 'username'),
+            ),
+            'order' => array(
+                'modified' => 'DESC'
+            ),
+        );
+        $items = $this->paginate($this->Area->Chemical);
+        foreach ($items AS $k => $v) {
+            $items[$k]['Area'] = array(
+                'name' => implode('', Set::extract('{n}.Area.name', $this->Area->getPath($v['Chemical']['area_id'], array('name')))),
+            );
+        }
+        $this->set('items', $items);
+    }
+
+    public function chemicals() {
+        if (empty($this->data)) {
+            $this->data = array(
+                'Chemical' => array(
+                    'the_date' => date('Y-m-d')
+                ),
+            );
+        } else {
+            $savingCount = 0;
+            foreach ($this->data['Chemical']['area_id'] AS $k => $v) {
+                $dataToSave = array(
+                    'Chemical' => array(
+                        'the_date' => $this->data['Chemical']['the_date'],
+                        'area_id' => $v,
+                        'trips' => $this->data['Chemical']['trips'][$k],
+                        'door_count' => $this->data['Chemical']['door_count'][$k],
+                        'door_done' => $this->data['Chemical']['door_done'][$k],
+                        'fine' => $this->data['Chemical']['fine'][$k],
+                        'people' => $this->data['Chemical']['people'][$k],
+                        'i_water' => $this->data['Chemical']['i_water'][$k],
+                        'i_positive' => $this->data['Chemical']['i_positive'][$k],
+                        'o_water' => $this->data['Chemical']['o_water'][$k],
+                        'o_positive' => $this->data['Chemical']['o_positive'][$k],
+                        'note' => $this->data['Chemical']['note'][$k],
+                    ),
+                );
+                $theId = $this->Area->Chemical->field('id', array(
+                    'the_date' => $dataToSave['Chemical']['the_date'],
+                    'area_id' => $dataToSave['Chemical']['area_id'],
+                ));
+                if (empty($theId)) {
+                    $this->Area->Chemical->create();
+                    $dataToSave['Chemical']['created_by'] = $dataToSave['Chemical']['modified_by'] = Configure::read('loginMember.id');
+                } else {
+                    $this->Area->Chemical->id = $theId;
+                    $dataToSave['Chemical']['modified_by'] = Configure::read('loginMember.id');
+                }
+                if ($this->Area->Chemical->save($dataToSave)) {
+                    ++$savingCount;
+                }
+            }
+            $this->Session->setFlash("已經儲存了 {$savingCount} 筆資料");
+            $this->redirect(array('action' => 'chemicals_list'));
+        }
+        $this->set('areas', $this->Area->find('list', array(
+                    'conditions' => array(
+                        'Area.parent_id IS NULL'
+                    ),
+                    'fields' => array('id', 'name'),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
+    }
+
     public function bureau_sources_list() {
         $this->loadModel('BureauSource');
         $this->paginate['BureauSource'] = array(
