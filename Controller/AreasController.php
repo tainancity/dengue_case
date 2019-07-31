@@ -14,6 +14,60 @@ class AreasController extends AppController {
         }
     }
     
+    public function clinic_reports_list() {
+        $this->loadModel('ClinicReport');
+        $this->paginate['ClinicReport'] = array(
+            'limit' => 20,
+            'contain' => array(
+                'MemberModified' => array('fields' => array('username')),
+            ),
+            'order' => array(
+                'modified' => 'DESC'
+            ),
+        );
+        $items = $this->paginate($this->ClinicReport);
+        $this->set('items', $items);
+    }
+    
+    public function clinic_reports_delete($id = null) {
+        $this->loadModel('ClinicReport');
+        if (!$id) {
+            $this->Session->setFlash('請依照網頁指示操作');
+        } else if ($this->ClinicReport->delete($id)) {
+            $this->Session->setFlash('資料已經刪除');
+        }
+        $this->redirect(array('action' => 'clinic_reports_list'));
+    }
+    
+    public function clinic_reports() {
+        $this->loadModel('ClinicReport');
+        if (empty($this->data)) {
+            $this->data = array(
+                'ClinicReport' => array(
+                    'the_date' => date('Y-m-d'),
+                    'count_report' => 0,
+                    'count_positive' => 0,
+                ),
+            );
+        } else {
+            $dataToSave = $this->data;
+            $educationId = $this->ClinicReport->field('id', array(
+                'the_date' => $dataToSave['ClinicReport']['the_date'],
+                'type' => $dataToSave['ClinicReport']['type'],
+            ));
+            if (empty($educationId)) {
+                $this->ClinicReport->create();
+                $dataToSave['ClinicReport']['created_by'] = $dataToSave['ClinicReport']['modified_by'] = Configure::read('loginMember.id');
+            } else {
+                $this->ClinicReport->id = $educationId;
+                $dataToSave['ClinicReport']['modified_by'] = Configure::read('loginMember.id');
+            }
+            $this->ClinicReport->save($dataToSave);
+            $this->Session->setFlash('資料已經儲存');
+            $this->redirect(array('action' => 'clinic_reports_list'));
+        }
+    }
+    
     function fever_monitors_delete($id = null) {
         if (!$id) {
             $this->Session->setFlash('請依照網頁指示操作');

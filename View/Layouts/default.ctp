@@ -36,7 +36,8 @@
                         <?php echo $this->Html->link('衛教宣導', '/areas/educations_list', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('各局處轄管防疫動員', '/areas/bureau_sources_list', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('化學防治', '/areas/chemicals_list', array('class' => 'btn btn-info')); ?>
-                        <?php echo $this->Html->link('就醫健康監視人數', '/areas/fever_monitors', array('class' => 'btn btn-info')); ?>
+                        <?php echo $this->Html->link('就醫健康監視人數', '/areas/fever_monitors_list', array('class' => 'btn btn-info')); ?>
+                        <?php echo $this->Html->link('醫療院所通報數', '/areas/clinic_reports_list', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('帳號', '/admin/members', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('群組', '/admin/groups', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('登出', '/members/logout', array('class' => 'btn btn-info')); ?>
