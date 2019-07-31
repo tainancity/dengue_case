@@ -30,8 +30,8 @@
                     <?php if ($this->Session->read('Auth.User.id')): ?>
                         <?php echo $this->Html->link('案例', '/admin/issues', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('衛生所疫情監測', '/areas/health_bureau', array('class' => 'btn btn-info')); ?>
-                        <?php echo $this->Html->link('衛生所中心監測孳生源清除', '/areas/center_sources', array('class' => 'btn btn-info')); ?>
-                        <?php echo $this->Html->link('區公所社區監測組孳生源清除', '/areas/area_sources', array('class' => 'btn btn-info')); ?>
+                        <?php echo $this->Html->link('衛生所中心監測孳生源清除', '/areas/center_sources_list', array('class' => 'btn btn-info')); ?>
+                        <?php echo $this->Html->link('區公所社區監測組孳生源清除', '/areas/area_sources_list', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('防疫志工隊孳生源清除', '/areas/volunteer_sources_list', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('帳號', '/admin/members', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('群組', '/admin/groups', array('class' => 'btn btn-info')); ?>

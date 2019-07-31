@@ -95,6 +95,34 @@ class AreasController extends AppController {
         )));
     }
 
+    function area_sources_delete($id = null) {
+        if (!$id) {
+            $this->Session->setFlash('請依照網頁指示操作');
+        } else if ($this->Area->AreaSource->delete($id)) {
+            $this->Session->setFlash('資料已經刪除');
+        }
+        $this->redirect(array('action' => 'area_sources_list'));
+    }
+
+    function area_sources_list() {
+        $this->paginate['AreaSource'] = array(
+            'limit' => 20,
+            'contain' => array(
+                'MemberModified' => array('fields' => 'username'),
+            ),
+            'order' => array(
+                'modified' => 'DESC'
+            ),
+        );
+        $items = $this->paginate($this->Area->AreaSource);
+        foreach ($items AS $k => $v) {
+            $items[$k]['Area'] = array(
+                'name' => implode('', Set::extract('{n}.Area.name', $this->Area->getPath($v['AreaSource']['area_id'], array('name')))),
+            );
+        }
+        $this->set('items', $items);
+    }
+
     public function area_sources() {
         if (empty($this->data)) {
             $this->data = array(
@@ -135,6 +163,7 @@ class AreasController extends AppController {
                 }
             }
             $this->Session->setFlash("已經儲存了 {$savingCount} 筆資料");
+            $this->redirect(array('action' => 'area_sources_list'));
         }
         $this->set('areas', $this->Area->find('list', array(
                     'conditions' => array(
@@ -145,6 +174,34 @@ class AreasController extends AppController {
                         'Area.code' => 'DESC'
                     ),
         )));
+    }
+
+    function center_sources_delete($id = null) {
+        if (!$id) {
+            $this->Session->setFlash('請依照網頁指示操作');
+        } else if ($this->Area->CenterSource->delete($id)) {
+            $this->Session->setFlash('資料已經刪除');
+        }
+        $this->redirect(array('action' => 'center_sources_list'));
+    }
+
+    function center_sources_list() {
+        $this->paginate['CenterSource'] = array(
+            'limit' => 20,
+            'contain' => array(
+                'MemberModified' => array('fields' => 'username'),
+            ),
+            'order' => array(
+                'modified' => 'DESC'
+            ),
+        );
+        $items = $this->paginate($this->Area->CenterSource);
+        foreach ($items AS $k => $v) {
+            $items[$k]['Area'] = array(
+                'name' => implode('', Set::extract('{n}.Area.name', $this->Area->getPath($v['CenterSource']['area_id'], array('name')))),
+            );
+        }
+        $this->set('items', $items);
     }
 
     public function center_sources() {
@@ -188,6 +245,7 @@ class AreasController extends AppController {
                 }
             }
             $this->Session->setFlash("已經儲存了 {$savingCount} 筆資料");
+            $this->redirect(array('action' => 'center_sources_list'));
         }
         $this->set('areas', $this->Area->find('list', array(
                     'conditions' => array(
