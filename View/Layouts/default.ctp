@@ -16,6 +16,9 @@
         echo $this->Html->script('olc');
         echo $scripts_for_layout;
         ?>
+        <script>
+            var baseUrl = '<?php echo $this->Html->url('/'); ?>';
+        </script>
     </head>
     <body>
         <div class="container">

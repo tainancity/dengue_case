@@ -6,6 +6,84 @@ class AreasController extends AppController {
 
     public $name = 'Areas';
 
+    public function beforeFilter() {
+        parent::beforeFilter();
+        if (isset($this->Auth)) {
+            $this->Auth->allow(array('cunli'));
+        }
+    }
+
+    public function center_sources() {
+        if (empty($this->data)) {
+            $this->data = array(
+                'CenterSource' => array(
+                    'the_date' => date('Y-m-d')
+                ),
+            );
+        } else {
+            $savingCount = 0;
+            foreach ($this->data['CenterSource']['area_id'] AS $k => $v) {
+                $dataToSave = array(
+                    'CenterSource' => array(
+                        'the_date' => $this->data['CenterSource']['the_date'],
+                        'area_id' => $v,
+                        'investigate' => $this->data['CenterSource']['investigate'][$k],
+                        'i_water' => $this->data['CenterSource']['i_water'][$k],
+                        'i_positive' => $this->data['CenterSource']['i_positive'][$k],
+                        'o_water' => $this->data['CenterSource']['o_water'][$k],
+                        'o_positive' => $this->data['CenterSource']['o_positive'][$k],
+                        'positive_done' => $this->data['CenterSource']['positive_done'][$k],
+                        'fine' => $this->data['CenterSource']['fine'][$k],
+                        'people' => $this->data['CenterSource']['people'][$k],
+                        'note' => $this->data['CenterSource']['note'][$k],
+                    ),
+                );
+                $theId = $this->Area->CenterSource->field('id', array(
+                    'the_date' => $dataToSave['CenterSource']['the_date'],
+                    'area_id' => $dataToSave['CenterSource']['area_id'],
+                ));
+                if (empty($theId)) {
+                    $this->Area->CenterSource->create();
+                    $dataToSave['CenterSource']['created_by'] = $dataToSave['CenterSource']['modified_by'] = Configure::read('loginMember.id');
+                } else {
+                    $this->Area->CenterSource->id = $theId;
+                    $dataToSave['CenterSource']['modified_by'] = Configure::read('loginMember.id');
+                }
+                if ($this->Area->CenterSource->save($dataToSave)) {
+                    ++$savingCount;
+                }
+            }
+            $this->Session->setFlash("已經儲存了 {$savingCount} 筆資料");
+        }
+        $this->set('areas', $this->Area->find('list', array(
+                    'conditions' => array(
+                        'Area.parent_id IS NULL'
+                    ),
+                    'fields' => array('id', 'name'),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
+    }
+
+    public function cunli($areaId = 0) {
+        $this->layout = 'ajax';
+        $areaId = intval($areaId);
+        $result = array();
+        if ($areaId > 0) {
+            $result = $this->Area->find('list', array(
+                'fields' => array('id', 'name'),
+                'conditions' => array(
+                    'Area.parent_id' => $areaId,
+                ),
+                'order' => array(
+                    'Area.code' => 'DESC'
+                ),
+            ));
+        }
+        $this->set('result', $result);
+    }
+
     public function health_bureau() {
         $this->set('areas', $this->Area->find('list', array(
                     'conditions' => array(
