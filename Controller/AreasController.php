@@ -14,6 +14,67 @@ class AreasController extends AppController {
         }
     }
     
+    function fever_monitors_delete($id = null) {
+        if (!$id) {
+            $this->Session->setFlash('請依照網頁指示操作');
+        } else if ($this->Area->FeverMonitor->delete($id)) {
+            $this->Session->setFlash('資料已經刪除');
+        }
+        $this->redirect(array('action' => 'fever_monitors_list'));
+    }
+
+    function fever_monitors_list() {
+        $this->paginate['FeverMonitor'] = array(
+            'limit' => 20,
+            'contain' => array(
+                'MemberModified' => array('fields' => array('username')),
+                'Area' => array('fields' => array('name')),
+            ),
+            'order' => array(
+                'modified' => 'DESC'
+            ),
+        );
+        $items = $this->paginate($this->Area->FeverMonitor);
+        $this->set('items', $items);
+    }
+
+    public function fever_monitors() {
+        $this->set('areas', $this->Area->find('list', array(
+                    'conditions' => array(
+                        'Area.parent_id IS NULL'
+                    ),
+                    'fields' => array('id', 'name'),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
+        if (empty($this->data)) {
+            $this->data = array(
+                'FeverMonitor' => array(
+                    'the_date' => date('Y-m-d'),
+                    'people_count' => 0,
+                    'people_track' => 0,
+                ),
+            );
+        } else {
+            $dataToSave = $this->data;
+            $theId = $this->Area->FeverMonitor->field('id', array(
+                'the_date' => $dataToSave['FeverMonitor']['the_date'],
+                'area_id' => $dataToSave['FeverMonitor']['area_id'],
+            ));
+            if (empty($theId)) {
+                $this->Area->FeverMonitor->create();
+                $dataToSave['FeverMonitor']['created_by'] = $dataToSave['FeverMonitor']['modified_by'] = Configure::read('loginMember.id');
+            } else {
+                $this->Area->FeverMonitor->id = $theId;
+                $dataToSave['FeverMonitor']['modified_by'] = Configure::read('loginMember.id');
+            }
+            $this->Area->FeverMonitor->save($dataToSave);
+            $this->Session->setFlash('資料已經儲存');
+            $this->redirect(array('action' => 'fever_monitors_list'));
+        }
+    }
+    
     function chemicals_delete($id = null) {
         if (!$id) {
             $this->Session->setFlash('請依照網頁指示操作');
