@@ -5,7 +5,7 @@ if (!isset($url)) {
 }
 ?>
 <div id="VolunteerSourcesAdminIndex">
-    <h2>防疫志工隊孳生源清除</h2>
+    <h1>防疫志工隊孳生源清除</h1>
     <div class="btn-group">
         <?php echo $this->Html->link('新增', array('action' => 'volunteer_sources'), array('class' => 'btn btn-secondary')); ?>
     </div>

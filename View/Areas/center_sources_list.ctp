@@ -5,7 +5,7 @@ if (!isset($url)) {
 }
 ?>
 <div id="CenterSourcesAdminIndex">
-    <h2>衛生所中心監測孳生源清除</h2>
+    <h1>衛生所中心監測孳生源清除</h1>
     <div class="btn-group">
         <?php echo $this->Html->link('新增', array('action' => 'center_sources'), array('class' => 'btn btn-secondary')); ?>
     </div>
