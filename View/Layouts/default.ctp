@@ -28,13 +28,14 @@
             <div id="content">
                 <div class="btn-group">
                     <?php if ($this->Session->read('Auth.User.id')): ?>
-                        <?php echo $this->Html->link('案例', '/admin/issues', array('class' => 'btn btn-default')); ?>
-                        <?php echo $this->Html->link('衛生所疫情監測', '/areas/health_bureau', array('class' => 'btn btn-default')); ?>
-                        <?php echo $this->Html->link('帳號', '/admin/members', array('class' => 'btn btn-default')); ?>
-                        <?php echo $this->Html->link('群組', '/admin/groups', array('class' => 'btn btn-default')); ?>
-                        <?php echo $this->Html->link('登出', '/members/logout', array('class' => 'btn btn-default')); ?>
+                        <?php echo $this->Html->link('案例', '/admin/issues', array('class' => 'btn btn-info')); ?>
+                        <?php echo $this->Html->link('衛生所疫情監測', '/areas/health_bureau', array('class' => 'btn btn-info')); ?>
+                        <?php echo $this->Html->link('衛生所中心監測孳生源清除', '/areas/center_sources', array('class' => 'btn btn-info')); ?>
+                        <?php echo $this->Html->link('帳號', '/admin/members', array('class' => 'btn btn-info')); ?>
+                        <?php echo $this->Html->link('群組', '/admin/groups', array('class' => 'btn btn-info')); ?>
+                        <?php echo $this->Html->link('登出', '/members/logout', array('class' => 'btn btn-info')); ?>
                     <?php else: ?>
-                        <?php echo $this->Html->link('登入', '/members/login', array('class' => 'btn btn-default')); ?>
+                        <?php echo $this->Html->link('登入', '/members/login', array('class' => 'btn btn-info')); ?>
                     <?php endif; ?>
                     <?php
                     if (!empty($actions_for_layout)) {
