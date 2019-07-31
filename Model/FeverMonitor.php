@@ -10,11 +10,11 @@ class FeverMonitor extends AppModel {
             'foreignKey' => 'area_id',
             'className' => 'Area',
         ),
-        'Created' => array(
+        'MemberCreated' => array(
             'foreignKey' => 'created_by',
             'className' => 'Member',
         ),
-        'Modified' => array(
+        'MemberModified' => array(
             'foreignKey' => 'modified_by',
             'className' => 'Member',
         ),

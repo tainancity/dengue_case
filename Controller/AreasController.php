@@ -5,6 +5,7 @@ App::uses('AppController', 'Controller');
 class AreasController extends AppController {
 
     public $name = 'Areas';
+    public $paginate = array();
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -12,7 +13,35 @@ class AreasController extends AppController {
             $this->Auth->allow(array('cunli'));
         }
     }
-    
+
+    function volunteer_sources_delete($id = null) {
+        if (!$id) {
+            $this->Session->setFlash('請依照網頁指示操作');
+        } else if ($this->Area->VolunteerSource->delete($id)) {
+            $this->Session->setFlash('資料已經刪除');
+        }
+        $this->redirect(array('action' => 'volunteer_sources_list'));
+    }
+
+    function volunteer_sources_list() {
+        $this->paginate['VolunteerSource'] = array(
+            'limit' => 20,
+            'contain' => array(
+                'MemberModified' => array('fields' => 'username'),
+            ),
+            'order' => array(
+                'modified' => 'DESC'
+            ),
+        );
+        $items = $this->paginate($this->Area->VolunteerSource);
+        foreach ($items AS $k => $v) {
+            $items[$k]['Area'] = array(
+                'name' => implode('', Set::extract('{n}.Area.name', $this->Area->getPath($v['VolunteerSource']['area_id'], array('name')))),
+            );
+        }
+        $this->set('items', $items);
+    }
+
     public function volunteer_sources() {
         if (empty($this->data)) {
             $this->data = array(
@@ -53,6 +82,7 @@ class AreasController extends AppController {
                 }
             }
             $this->Session->setFlash("已經儲存了 {$savingCount} 筆資料");
+            $this->redirect(array('action' => 'volunteer_sources_list'));
         }
         $this->set('areas', $this->Area->find('list', array(
                     'conditions' => array(
