@@ -12,6 +12,58 @@ class AreasController extends AppController {
             $this->Auth->allow(array('cunli'));
         }
     }
+    
+    public function volunteer_sources() {
+        if (empty($this->data)) {
+            $this->data = array(
+                'VolunteerSource' => array(
+                    'the_date' => date('Y-m-d')
+                ),
+            );
+        } else {
+            $savingCount = 0;
+            foreach ($this->data['VolunteerSource']['area_id'] AS $k => $v) {
+                $dataToSave = array(
+                    'VolunteerSource' => array(
+                        'the_date' => $this->data['VolunteerSource']['the_date'],
+                        'area_id' => $v,
+                        'investigate' => $this->data['VolunteerSource']['investigate'][$k],
+                        'i_water' => $this->data['VolunteerSource']['i_water'][$k],
+                        'i_positive' => $this->data['VolunteerSource']['i_positive'][$k],
+                        'o_water' => $this->data['VolunteerSource']['o_water'][$k],
+                        'o_positive' => $this->data['VolunteerSource']['o_positive'][$k],
+                        'positive_done' => $this->data['VolunteerSource']['positive_done'][$k],
+                        'people' => $this->data['VolunteerSource']['people'][$k],
+                        'note' => $this->data['VolunteerSource']['note'][$k],
+                    ),
+                );
+                $theId = $this->Area->VolunteerSource->field('id', array(
+                    'the_date' => $dataToSave['VolunteerSource']['the_date'],
+                    'area_id' => $dataToSave['VolunteerSource']['area_id'],
+                ));
+                if (empty($theId)) {
+                    $this->Area->VolunteerSource->create();
+                    $dataToSave['VolunteerSource']['created_by'] = $dataToSave['VolunteerSource']['modified_by'] = Configure::read('loginMember.id');
+                } else {
+                    $this->Area->VolunteerSource->id = $theId;
+                    $dataToSave['VolunteerSource']['modified_by'] = Configure::read('loginMember.id');
+                }
+                if ($this->Area->VolunteerSource->save($dataToSave)) {
+                    ++$savingCount;
+                }
+            }
+            $this->Session->setFlash("已經儲存了 {$savingCount} 筆資料");
+        }
+        $this->set('areas', $this->Area->find('list', array(
+                    'conditions' => array(
+                        'Area.parent_id IS NULL'
+                    ),
+                    'fields' => array('id', 'name'),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
+    }
 
     public function area_sources() {
         if (empty($this->data)) {

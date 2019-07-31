@@ -7,7 +7,7 @@ $(function () {
         return false;
     });
     $('.select-area', $('.cunli-block')).change(cunliSelectArea).trigger('change');
-    $('#AreaSourceTheDate').datepicker({
+    $('#VolunteerSourceTheDate').datepicker({
         dateFormat: 'yy-mm-dd'
     });
 });
