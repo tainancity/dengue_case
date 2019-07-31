@@ -13,6 +13,58 @@ class AreasController extends AppController {
         }
     }
 
+    public function area_sources() {
+        if (empty($this->data)) {
+            $this->data = array(
+                'AreaSource' => array(
+                    'the_date' => date('Y-m-d')
+                ),
+            );
+        } else {
+            $savingCount = 0;
+            foreach ($this->data['AreaSource']['area_id'] AS $k => $v) {
+                $dataToSave = array(
+                    'AreaSource' => array(
+                        'the_date' => $this->data['AreaSource']['the_date'],
+                        'area_id' => $v,
+                        'investigate' => $this->data['AreaSource']['investigate'][$k],
+                        'i_water' => $this->data['AreaSource']['i_water'][$k],
+                        'i_positive' => $this->data['AreaSource']['i_positive'][$k],
+                        'o_water' => $this->data['AreaSource']['o_water'][$k],
+                        'o_positive' => $this->data['AreaSource']['o_positive'][$k],
+                        'positive_done' => $this->data['AreaSource']['positive_done'][$k],
+                        'people' => $this->data['AreaSource']['people'][$k],
+                        'note' => $this->data['AreaSource']['note'][$k],
+                    ),
+                );
+                $theId = $this->Area->AreaSource->field('id', array(
+                    'the_date' => $dataToSave['AreaSource']['the_date'],
+                    'area_id' => $dataToSave['AreaSource']['area_id'],
+                ));
+                if (empty($theId)) {
+                    $this->Area->AreaSource->create();
+                    $dataToSave['AreaSource']['created_by'] = $dataToSave['AreaSource']['modified_by'] = Configure::read('loginMember.id');
+                } else {
+                    $this->Area->AreaSource->id = $theId;
+                    $dataToSave['AreaSource']['modified_by'] = Configure::read('loginMember.id');
+                }
+                if ($this->Area->AreaSource->save($dataToSave)) {
+                    ++$savingCount;
+                }
+            }
+            $this->Session->setFlash("已經儲存了 {$savingCount} 筆資料");
+        }
+        $this->set('areas', $this->Area->find('list', array(
+                    'conditions' => array(
+                        'Area.parent_id IS NULL'
+                    ),
+                    'fields' => array('id', 'name'),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
+    }
+
     public function center_sources() {
         if (empty($this->data)) {
             $this->data = array(
