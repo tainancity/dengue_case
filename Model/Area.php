@@ -36,6 +36,11 @@ class Area extends AppModel {
             'dependent' => false,
             'className' => 'VolunteerSource',
         ),
+        'Education' => array(
+            'foreignKey' => 'area_id',
+            'dependent' => false,
+            'className' => 'Education',
+        ),
         'Chemical' => array(
             'foreignKey' => 'area_id',
             'dependent' => false,

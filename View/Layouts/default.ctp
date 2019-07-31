@@ -33,6 +33,7 @@
                         <?php echo $this->Html->link('衛生所中心監測孳生源清除', '/areas/center_sources_list', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('區公所社區監測組孳生源清除', '/areas/area_sources_list', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('防疫志工隊孳生源清除', '/areas/volunteer_sources_list', array('class' => 'btn btn-info')); ?>
+                        <?php echo $this->Html->link('衛教宣導', '/areas/educations_list', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('帳號', '/admin/members', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('群組', '/admin/groups', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('登出', '/members/logout', array('class' => 'btn btn-info')); ?>
