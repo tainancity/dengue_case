@@ -14,6 +14,66 @@ class AreasController extends AppController {
         }
     }
     
+    public function bureau_sources_list() {
+        $this->loadModel('BureauSource');
+        $this->paginate['BureauSource'] = array(
+            'limit' => 20,
+            'contain' => array(
+                'MemberModified' => array('fields' => array('username')),
+            ),
+            'order' => array(
+                'modified' => 'DESC'
+            ),
+        );
+        $items = $this->paginate($this->BureauSource);
+        $this->set('items', $items);
+    }
+    
+    public function bureau_sources_delete($id = null) {
+        $this->loadModel('BureauSource');
+        if (!$id) {
+            $this->Session->setFlash('請依照網頁指示操作');
+        } else if ($this->BureauSource->delete($id)) {
+            $this->Session->setFlash('資料已經刪除');
+        }
+        $this->redirect(array('action' => 'bureau_sources_list'));
+    }
+    
+    public function bureau_sources() {
+        $this->loadModel('BureauSource');
+        if (empty($this->data)) {
+            $this->data = array(
+                'BureauSource' => array(
+                    'the_date' => date('Y-m-d'),
+                    'investigate' => 0,
+                    'i_water' => 0,
+                    'i_positive' => 0,
+                    'o_water' => 0,
+                    'o_positive' => 0,
+                    'positive_done' => 0,
+                    'education' => 0,
+                    'people' => 0,
+                ),
+            );
+        } else {
+            $dataToSave = $this->data;
+            $educationId = $this->BureauSource->field('id', array(
+                'the_date' => $dataToSave['BureauSource']['the_date'],
+                'unit' => $dataToSave['BureauSource']['unit'],
+            ));
+            if (empty($educationId)) {
+                $this->BureauSource->create();
+                $dataToSave['BureauSource']['created_by'] = $dataToSave['BureauSource']['modified_by'] = Configure::read('loginMember.id');
+            } else {
+                $this->BureauSource->id = $educationId;
+                $dataToSave['BureauSource']['modified_by'] = Configure::read('loginMember.id');
+            }
+            $this->BureauSource->save($dataToSave);
+            $this->Session->setFlash('資料已經儲存');
+            $this->redirect(array('action' => 'bureau_sources_list'));
+        }
+    }
+    
     function educations_delete($id = null) {
         if (!$id) {
             $this->Session->setFlash('請依照網頁指示操作');
