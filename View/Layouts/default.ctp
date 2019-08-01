@@ -3,7 +3,7 @@
     <head>
         <?php echo $this->Html->charset(); ?>
         <title>
-            登革熱::
+            登革熱防疫工作系統::
             <?php echo $title_for_layout; ?>
         </title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
@@ -23,7 +23,7 @@
     <body>
         <div class="container">
             <div id="header">
-                <h1><?php echo $this->Html->link('登革熱', '/'); ?></h1>
+                <h1><?php echo $this->Html->link('登革熱防疫工作系統', '/'); ?></h1>
             </div>
             <div id="content">
                 <div class="btn-group">
