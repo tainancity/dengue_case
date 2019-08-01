@@ -762,5 +762,101 @@ foreach($chemicals AS $chemical) {
 </tbody>
 </table>
 
+<p>八、診所發燒病人就醫健康監視人數（疫情組）</p>
+<?php
+$keys = array('people_count', 'people_track');
+$sum = array();
+foreach($keys AS $key) {
+    $sum[$key] = 0;
+}
+$areaSum = array();
+foreach($feverMonitors AS $feverMonitor) {
+    foreach($keys AS $key) {
+        $sum[$key] += $feverMonitor['FeverMonitor'][$key];
+    }
+}
+?>
+<table class="table table-bordered table-striped">
+    <thead>
+    <th>區別</th>
+    <th>應追蹤人數</th>
+    <th>已追蹤人數</th>
+    <th>未追蹤人數</th>
+    <th>追蹤率</th>
+    <th>備註</th>
+</thead>
+<tbody>
+    <tr>
+        <td>累計</td>
+        <td><?php echo $sum['people_count']; ?></td>
+        <td><?php echo $sum['people_track']; ?></td>
+        <td><?php echo ($sum['people_count'] - $sum['people_track']); ?></td>
+        <td><?php
+        if($sum['people_count'] > 0) {
+            echo round($sum['people_track'] / $sum['people_count'], 2);
+        }
+        ?></td>
+        <td></td>
+    </tr>
+    <?php foreach($feverMonitors AS $feverMonitor) {
+        ?>
+    <tr>
+        <td><?php echo $feverMonitor['Area']['name']; ?></td>
+        <td><?php echo $feverMonitor['FeverMonitor']['people_count']; ?></td>
+        <td><?php echo $feverMonitor['FeverMonitor']['people_track']; ?></td>
+        <td><?php echo ($feverMonitor['FeverMonitor']['people_count'] - $feverMonitor['FeverMonitor']['people_track']); ?></td>
+        <td><?php
+        if($feverMonitor['FeverMonitor']['people_count'] > 0) {
+            echo round($feverMonitor['FeverMonitor']['people_track'] / $feverMonitor['FeverMonitor']['people_count'], 2);
+        }; ?></td>
+        <td><?php echo $feverMonitor['FeverMonitor']['note']; ?></td>
+    </tr>
+    <?php } ?>
+</tbody>
+</table>
+
+<p>九、醫療院所通報數（疫情組）</p>
+<?php
+$keys = array('count_report', 'count_positive');
+$sum = array();
+foreach($keys AS $key) {
+    $sum[$key] = 0;
+}
+$areaSum = array();
+foreach($clinicReports AS $clinicReport) {
+    foreach($keys AS $key) {
+        $sum[$key] += $clinicReport['ClinicReport'][$key];
+    }
+}
+?>
+<table class="table table-bordered table-striped">
+    <thead>
+    <th>類型</th>
+    <th>通報件數</th>
+    <th>NS1 (+)</th>
+    <th>NS1 (-)</th>
+    <th>備註</th>
+</thead>
+<tbody>
+    <tr>
+        <td>累計</td>
+        <td><?php echo $sum['count_report']; ?></td>
+        <td><?php echo $sum['count_positive']; ?></td>
+        <td><?php echo ($sum['count_report'] - $sum['count_positive']); ?></td>
+        <td></td>
+    </tr>
+    <?php foreach($clinicReports AS $clinicReport) {
+        ?>
+    <tr>
+        <td><?php echo $clinicReport['ClinicReport']['type']; ?></td>
+        <td><?php echo $clinicReport['ClinicReport']['count_report']; ?></td>
+        <td><?php echo $clinicReport['ClinicReport']['count_positive']; ?></td>
+        <td><?php echo ($clinicReport['ClinicReport']['count_report'] - $clinicReport['ClinicReport']['count_positive']); ?></td>
+        <td><?php echo $clinicReport['ClinicReport']['note']; ?></td>
+    </tr>
+    <?php } ?>
+</tbody>
+</table>
+
 <?php
 echo $this->Html->script('c/areas/report.js');

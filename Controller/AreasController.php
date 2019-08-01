@@ -18,6 +18,25 @@ class AreasController extends AppController {
         if (empty($theDate)) {
             $theDate = date('Y-m-d');
         }
+        $this->loadModel('ClinicReport');
+        $this->set('clinicReports', $this->ClinicReport->find('all', array(
+                    'conditions' => array(
+                        'ClinicReport.the_date' => $theDate,
+                    ),
+        )));
+        $this->set('feverMonitors', $this->Area->FeverMonitor->find('all', array(
+                    'conditions' => array(
+                        'FeverMonitor.the_date' => $theDate,
+                    ),
+                    'contain' => array(
+                        'Area' => array(
+                            'fields' => array('name'),
+                        )
+                    ),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
         $this->loadModel('BureauSource');
         $this->set('bureauSources', $this->BureauSource->find('all', array(
                     'conditions' => array(
