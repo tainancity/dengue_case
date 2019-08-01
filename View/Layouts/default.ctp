@@ -29,6 +29,7 @@
                 <div class="btn-group">
                     <?php if ($this->Session->read('Auth.User.id')): ?>
                         <?php echo $this->Html->link('案例', '/admin/issues', array('class' => 'btn btn-info')); ?>
+                        <?php echo $this->Html->link('報表', '/areas/report', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('衛生所疫情監測', '/areas/health_bureau_list', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('衛生所中心監測孳生源清除', '/areas/center_sources_list', array('class' => 'btn btn-info')); ?>
                         <?php echo $this->Html->link('區公所社區監測組孳生源清除', '/areas/area_sources_list', array('class' => 'btn btn-info')); ?>

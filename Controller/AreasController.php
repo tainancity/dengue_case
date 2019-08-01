@@ -14,6 +14,135 @@ class AreasController extends AppController {
         }
     }
 
+    public function report($theDate = '') {
+        if (empty($theDate)) {
+            $theDate = date('Y-m-d');
+        }
+        $this->loadModel('BureauSource');
+        $this->set('bureauSources', $this->BureauSource->find('all', array(
+                    'conditions' => array(
+                        'BureauSource.the_date' => $theDate,
+                    ),
+        )));
+        $this->set('educations', $this->Area->Education->find('all', array(
+                    'conditions' => array(
+                        'Education.the_date' => $theDate,
+                    ),
+                    'contain' => array(
+                        'Area' => array(
+                            'fields' => array('name'),
+                        )
+                    ),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
+        $this->set('chemicals', $this->Area->Chemical->find('all', array(
+                    'conditions' => array(
+                        'Chemical.the_date' => $theDate,
+                    ),
+                    'contain' => array(
+                        'Area' => array(
+                            'fields' => array('name'),
+                            'Parent' => array(
+                                'fields' => array('name'),
+                            ),
+                        )
+                    ),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
+        $this->set('volunteerSources', $this->Area->VolunteerSource->find('all', array(
+                    'conditions' => array(
+                        'VolunteerSource.the_date' => $theDate,
+                    ),
+                    'contain' => array(
+                        'Area' => array(
+                            'fields' => array('name'),
+                            'Parent' => array(
+                                'fields' => array('name'),
+                            ),
+                        )
+                    ),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
+        $this->set('areaSources', $this->Area->AreaSource->find('all', array(
+                    'conditions' => array(
+                        'AreaSource.the_date' => $theDate,
+                    ),
+                    'contain' => array(
+                        'Area' => array(
+                            'fields' => array('name'),
+                            'Parent' => array(
+                                'fields' => array('name'),
+                            ),
+                        )
+                    ),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
+        $this->set('centerSources', $this->Area->CenterSource->find('all', array(
+                    'conditions' => array(
+                        'CenterSource.the_date' => $theDate,
+                    ),
+                    'contain' => array(
+                        'Area' => array(
+                            'fields' => array('name'),
+                            'Parent' => array(
+                                'fields' => array('name'),
+                            ),
+                        )
+                    ),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
+        $this->set('expands', $this->Area->Expand->find('all', array(
+                    'conditions' => array(
+                        'Expand.the_date' => $theDate,
+                    ),
+                    'contain' => array(
+                        'Area' => array(
+                            'fields' => array('name'),
+                        )
+                    ),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
+        $this->set('fevers', $this->Area->Fever->find('all', array(
+                    'conditions' => array(
+                        'Fever.the_date' => $theDate,
+                    ),
+                    'contain' => array(
+                        'Area' => array(
+                            'fields' => array('name'),
+                        )
+                    ),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
+        $this->set('tracks', $this->Area->Track->find('all', array(
+                    'conditions' => array(
+                        'Track.the_date' => $theDate,
+                    ),
+                    'contain' => array(
+                        'Area' => array(
+                            'fields' => array('name'),
+                        )
+                    ),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
+        $this->set('theDate', $theDate);
+    }
+
     public function clinic_reports_list() {
         $this->loadModel('ClinicReport');
         $this->paginate['ClinicReport'] = array(
@@ -336,14 +465,14 @@ class AreasController extends AppController {
     function volunteer_sources_delete($id = null) {
         if (!$id) {
             $this->Session->setFlash('請依照網頁指示操作');
-        } else if ($this->Area->Education->delete($id)) {
+        } else if ($this->Area->VolunteerSource->delete($id)) {
             $this->Session->setFlash('資料已經刪除');
         }
         $this->redirect(array('action' => 'volunteer_sources_list'));
     }
 
     function volunteer_sources_list() {
-        $this->paginate['Education'] = array(
+        $this->paginate['VolunteerSource'] = array(
             'limit' => 20,
             'contain' => array(
                 'MemberModified' => array('fields' => 'username'),
@@ -352,10 +481,10 @@ class AreasController extends AppController {
                 'modified' => 'DESC'
             ),
         );
-        $items = $this->paginate($this->Area->Education);
+        $items = $this->paginate($this->Area->VolunteerSource);
         foreach ($items AS $k => $v) {
             $items[$k]['Area'] = array(
-                'name' => implode('', Set::extract('{n}.Area.name', $this->Area->getPath($v['Education']['area_id'], array('name')))),
+                'name' => implode('', Set::extract('{n}.Area.name', $this->Area->getPath($v['VolunteerSource']['area_id'], array('name')))),
             );
         }
         $this->set('items', $items);
@@ -364,39 +493,39 @@ class AreasController extends AppController {
     public function volunteer_sources() {
         if (empty($this->data)) {
             $this->data = array(
-                'Education' => array(
+                'VolunteerSource' => array(
                     'the_date' => date('Y-m-d')
                 ),
             );
         } else {
             $savingCount = 0;
-            foreach ($this->data['Education']['area_id'] AS $k => $v) {
+            foreach ($this->data['VolunteerSource']['area_id'] AS $k => $v) {
                 $dataToSave = array(
-                    'Education' => array(
-                        'the_date' => $this->data['Education']['the_date'],
+                    'VolunteerSource' => array(
+                        'the_date' => $this->data['VolunteerSource']['the_date'],
                         'area_id' => $v,
-                        'investigate' => $this->data['Education']['investigate'][$k],
-                        'i_water' => $this->data['Education']['i_water'][$k],
-                        'i_positive' => $this->data['Education']['i_positive'][$k],
-                        'o_water' => $this->data['Education']['o_water'][$k],
-                        'o_positive' => $this->data['Education']['o_positive'][$k],
-                        'positive_done' => $this->data['Education']['positive_done'][$k],
-                        'people' => $this->data['Education']['people'][$k],
-                        'note' => $this->data['Education']['note'][$k],
+                        'investigate' => $this->data['VolunteerSource']['investigate'][$k],
+                        'i_water' => $this->data['VolunteerSource']['i_water'][$k],
+                        'i_positive' => $this->data['VolunteerSource']['i_positive'][$k],
+                        'o_water' => $this->data['VolunteerSource']['o_water'][$k],
+                        'o_positive' => $this->data['VolunteerSource']['o_positive'][$k],
+                        'positive_done' => $this->data['VolunteerSource']['positive_done'][$k],
+                        'people' => $this->data['VolunteerSource']['people'][$k],
+                        'note' => $this->data['VolunteerSource']['note'][$k],
                     ),
                 );
-                $theId = $this->Area->Education->field('id', array(
-                    'the_date' => $dataToSave['Education']['the_date'],
-                    'area_id' => $dataToSave['Education']['area_id'],
+                $theId = $this->Area->VolunteerSource->field('id', array(
+                    'the_date' => $dataToSave['VolunteerSource']['the_date'],
+                    'area_id' => $dataToSave['VolunteerSource']['area_id'],
                 ));
                 if (empty($theId)) {
-                    $this->Area->Education->create();
-                    $dataToSave['Education']['created_by'] = $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+                    $this->Area->VolunteerSource->create();
+                    $dataToSave['VolunteerSource']['created_by'] = $dataToSave['VolunteerSource']['modified_by'] = Configure::read('loginMember.id');
                 } else {
-                    $this->Area->Education->id = $theId;
-                    $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+                    $this->Area->VolunteerSource->id = $theId;
+                    $dataToSave['VolunteerSource']['modified_by'] = Configure::read('loginMember.id');
                 }
-                if ($this->Area->Education->save($dataToSave)) {
+                if ($this->Area->VolunteerSource->save($dataToSave)) {
                     ++$savingCount;
                 }
             }

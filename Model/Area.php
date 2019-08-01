@@ -5,6 +5,12 @@ class Area extends AppModel {
     public $name = 'Area';
     public $actsAs = array('Tree');
     
+    var $belongsTo = array(
+        'Parent' => array(
+            'foreignKey' => 'parent_id',
+            'className' => 'Area',
+        ),
+    );
     var $hasMany = array(
         'Expand' => array(
             'foreignKey' => 'area_id',
