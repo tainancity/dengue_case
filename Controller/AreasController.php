@@ -13,7 +13,7 @@ class AreasController extends AppController {
             $this->Auth->allow(array('cunli'));
         }
     }
-    
+
     public function clinic_reports_list() {
         $this->loadModel('ClinicReport');
         $this->paginate['ClinicReport'] = array(
@@ -28,7 +28,7 @@ class AreasController extends AppController {
         $items = $this->paginate($this->ClinicReport);
         $this->set('items', $items);
     }
-    
+
     public function clinic_reports_delete($id = null) {
         $this->loadModel('ClinicReport');
         if (!$id) {
@@ -38,7 +38,7 @@ class AreasController extends AppController {
         }
         $this->redirect(array('action' => 'clinic_reports_list'));
     }
-    
+
     public function clinic_reports() {
         $this->loadModel('ClinicReport');
         if (empty($this->data)) {
@@ -67,7 +67,7 @@ class AreasController extends AppController {
             $this->redirect(array('action' => 'clinic_reports_list'));
         }
     }
-    
+
     function fever_monitors_delete($id = null) {
         if (!$id) {
             $this->Session->setFlash('請依照網頁指示操作');
@@ -128,7 +128,7 @@ class AreasController extends AppController {
             $this->redirect(array('action' => 'fever_monitors_list'));
         }
     }
-    
+
     function chemicals_delete($id = null) {
         if (!$id) {
             $this->Session->setFlash('請依照網頁指示操作');
@@ -226,7 +226,7 @@ class AreasController extends AppController {
         $items = $this->paginate($this->BureauSource);
         $this->set('items', $items);
     }
-    
+
     public function bureau_sources_delete($id = null) {
         $this->loadModel('BureauSource');
         if (!$id) {
@@ -236,7 +236,7 @@ class AreasController extends AppController {
         }
         $this->redirect(array('action' => 'bureau_sources_list'));
     }
-    
+
     public function bureau_sources() {
         $this->loadModel('BureauSource');
         if (empty($this->data)) {
@@ -271,7 +271,7 @@ class AreasController extends AppController {
             $this->redirect(array('action' => 'bureau_sources_list'));
         }
     }
-    
+
     function educations_delete($id = null) {
         if (!$id) {
             $this->Session->setFlash('請依照網頁指示操作');
@@ -595,6 +595,57 @@ class AreasController extends AppController {
         $this->set('result', $result);
     }
 
+    function health_bureau_list() {
+        $this->paginate['Expand'] = array(
+            'limit' => 20,
+            'contain' => array(
+                'Area' => array('fields' => array('name')),
+                'MemberModified' => array('fields' => array('username')),
+            ),
+            'order' => array(
+                'modified' => 'DESC'
+            ),
+        );
+        $items = $this->paginate($this->Area->Expand);
+        foreach ($items AS $k => $v) {
+            $items[$k]['Fever'] = $this->Area->Fever->find('first', array(
+                        'conditions' => array(
+                            'Fever.the_date' => $v['Expand']['the_date'],
+                            'Fever.area_id' => $v['Expand']['area_id'],
+                        ),
+                    ))['Fever'];
+            $items[$k]['Track'] = $this->Area->Track->find('first', array(
+                        'conditions' => array(
+                            'Track.the_date' => $v['Expand']['the_date'],
+                            'Track.area_id' => $v['Expand']['area_id'],
+                        ),
+                    ))['Track'];
+        }
+        $this->set('items', $items);
+    }
+
+    public function health_bureau_delete($id = 0) {
+        $id = intval($id);
+        if ($id > 0) {
+            $expand = $this->Area->Expand->read(null, $id);
+            if (!empty($expand)) {
+                $this->Area->Fever->deleteAll(array(
+                    'Fever.the_date' => $expand['Expand']['the_date'],
+                    'Fever.area_id' => $expand['Expand']['area_id'],
+                ));
+                $this->Area->Track->deleteAll(array(
+                    'Track.the_date' => $expand['Expand']['the_date'],
+                    'Track.area_id' => $expand['Expand']['area_id'],
+                ));
+                $this->Area->Expand->delete($id);
+            }
+            $this->Session->setFlash('資料已經刪除');
+        } else {
+            $this->Session->setFlash('請依照網頁指示操作');
+        }
+        $this->redirect(array('action' => 'health_bureau_list'));
+    }
+
     public function health_bureau() {
         $this->set('areas', $this->Area->find('list', array(
                     'conditions' => array(
@@ -666,6 +717,7 @@ class AreasController extends AppController {
                 $this->Area->Track->id = $trackId;
             }
             $this->Area->Track->save($dataToSave);
+            $this->redirect(array('action' => 'health_bureau_list'));
         }
     }
 
