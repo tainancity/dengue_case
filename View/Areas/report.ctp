@@ -10,7 +10,7 @@ echo $this->Form->input('the_date', array(
 ?>
 <p><?php echo $theDate; ?> 防治成果如下：</p>
 <p>一、疫情監測</p>
-<p>（一）疫情現況：本土15例，境外25例</p>
+<p>（一）疫情現況：本土 <input type="text" /> 例，境外 <input type="text" /> 例</p>
 <p>（二）擴採人數及結果（衛生所）</p>
 <?php
 $sum = array(
