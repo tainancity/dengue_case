@@ -1,27 +1,23 @@
 <div id="GroupsAdminAcos">
-    <h2><?php echo __('Permission Settings', true); ?></h2>
+    <h2><?php echo $aroGroup['Group']['name']; ?> 權限設定</h2>
     <p>
         <?php
         $urlArray = array('url' => array($groupId));
         ?>
     </p>
-    <table cellpadding="0" cellspacing="0" id="GroupsAdminAcosTable">
+    <table id="GroupsAdminAcosTable" class="table table-bordered table-striped">
         <?php
         $i = 0;
         foreach ($acos as $aco) {
-            $class = null;
-            if ($i++ % 2 == 0) {
-                $class = ' class="altrow"';
-            }
             ?>
-            <tr<?php echo $class; ?>>
+            <tr>
                 <td style="text-align:left;"><?php
                     echo $aco['Aco']['alias'];
                     if (!empty($aco['Aco']['Aco'])) {
                         echo '<input type="checkbox" name="ctrl' . $aco['Aco']['alias'] . '" class="acoController">';
                         echo '<hr /><div id="sub' . $aco['Aco']['alias'] . '">';
                         foreach ($aco['Aco']['Aco'] AS $actionAco) {
-                            echo '<div class="col-md-5"><input type="checkbox" name="' . $aco['Aco']['alias'] . '___' . $actionAco['alias'] . '"';
+                            echo '<div class="col"><input type="checkbox" name="' . $aco['Aco']['alias'] . '___' . $actionAco['alias'] . '"';
                             if ($actionAco['permitted'] == 1) {
                                 echo ' checked="checked"';
                             }

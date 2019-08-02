@@ -78,7 +78,6 @@ class GroupsController extends AppController {
 
     public function admin_acos($groupId = 0) {
         if (empty($groupId) || !$aroGroup = $this->Group->find('first', array(
-            'fields' => array('Group.id'),
             'conditions' => array(
                 'Group.id' => $groupId,
             ),
@@ -105,6 +104,7 @@ class GroupsController extends AppController {
             }
         }
         $this->set('groupId', $groupId);
+        $this->set('aroGroup', $aroGroup);
         /*
          * Find the root node of ACOS
          */
