@@ -5,6 +5,7 @@ App::uses('AppModel', 'Model');
 class Chemical extends AppModel {
 
     var $name = 'Chemical';
+    public $memberControl = true;
     var $belongsTo = array(
         'Area' => array(
             'foreignKey' => 'area_id',

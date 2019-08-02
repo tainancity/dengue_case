@@ -5,6 +5,7 @@ App::uses('AppModel', 'Model');
 class Track extends AppModel {
 
     var $name = 'Track';
+    public $memberControl = true;
     var $belongsTo = array(
         'Area' => array(
             'foreignKey' => 'area_id',

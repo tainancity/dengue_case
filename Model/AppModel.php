@@ -4,6 +4,7 @@ class AppModel extends Model {
 
     public $actsAs = array('Containable');
     public $recursive = -1;
+    public $memberControl = false;
 
     public function checkUnique($data) {
         foreach ($data AS $key => $value) {
@@ -18,6 +19,15 @@ class AppModel extends Model {
                 return !$this->hasAny(array($key => $value));
             }
         }
+    }
+    
+    public function beforeFind($query) {
+        $sw = Configure::read('skipMemberControl');
+        $loginMember = Configure::read('loginMember');
+        if(!$sw && $loginMember['Group']['name'] !== 'admin' && $this->memberControl) {
+            $query['conditions'][$this->name . '.created_by'] = $loginMember['id'];
+        }
+        return $query;
     }
 
 }

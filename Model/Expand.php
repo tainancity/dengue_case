@@ -5,6 +5,7 @@ App::uses('AppModel', 'Model');
 class Expand extends AppModel {
 
     var $name = 'Expand';
+    public $memberControl = true;
     var $belongsTo = array(
         'Area' => array(
             'foreignKey' => 'area_id',

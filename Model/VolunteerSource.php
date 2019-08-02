@@ -5,6 +5,7 @@ App::uses('AppModel', 'Model');
 class VolunteerSource extends AppModel {
 
     var $name = 'VolunteerSource';
+    public $memberControl = true;
     var $belongsTo = array(
         'Area' => array(
             'foreignKey' => 'area_id',

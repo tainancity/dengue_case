@@ -5,6 +5,7 @@ App::uses('AppModel', 'Model');
 class Education extends AppModel {
 
     var $name = 'Education';
+    public $memberControl = true;
     var $belongsTo = array(
         'Area' => array(
             'foreignKey' => 'area_id',

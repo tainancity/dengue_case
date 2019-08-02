@@ -5,6 +5,7 @@ App::uses('AppModel', 'Model');
 class CenterSource extends AppModel {
 
     var $name = 'CenterSource';
+    public $memberControl = true;
     var $belongsTo = array(
         'Area' => array(
             'foreignKey' => 'area_id',

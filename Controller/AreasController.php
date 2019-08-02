@@ -15,6 +15,7 @@ class AreasController extends AppController {
     }
 
     public function report($theDate = '') {
+        Configure::write('skipMemberControl', true);
         if (empty($theDate)) {
             $theDate = date('Y-m-d');
         }
@@ -165,6 +166,7 @@ class AreasController extends AppController {
                     ),
         )));
         $this->set('theDate', $theDate);
+        Configure::write('skipMemberControl', false);
     }
 
     public function clinic_reports_list() {

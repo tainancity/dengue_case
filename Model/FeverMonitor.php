@@ -5,6 +5,7 @@ App::uses('AppModel', 'Model');
 class FeverMonitor extends AppModel {
 
     var $name = 'FeverMonitor';
+    public $memberControl = true;
     var $belongsTo = array(
         'Area' => array(
             'foreignKey' => 'area_id',
