@@ -831,7 +831,7 @@ foreach($clinicReports AS $clinicReport) {
 ?>
 <table class="table table-bordered table-striped">
     <thead>
-    <th>類型</th>
+    <th>區域</th>
     <th>通報件數</th>
     <th>NS1 (+)</th>
     <th>NS1 (-)</th>
