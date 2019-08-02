@@ -184,8 +184,12 @@ class AreasController extends AppController {
         $this->set('items', $items);
     }
 
-    public function clinic_reports_delete($id = null) {
-        if (!$id) {
+    public function clinic_reports_delete($id = 0) {
+        $id = intval($id);
+        if ($id > 0) {
+            $item = $this->Area->ClinicReport->read(array('id'), $id);
+        }
+        if (empty($item)) {
             $this->Session->setFlash('請依照網頁指示操作');
         } else if ($this->Area->ClinicReport->delete($id)) {
             $this->Session->setFlash('資料已經刪除');
@@ -230,8 +234,12 @@ class AreasController extends AppController {
         }
     }
 
-    function fever_monitors_delete($id = null) {
-        if (!$id) {
+    function fever_monitors_delete($id = 0) {
+        $id = intval($id);
+        if ($id > 0) {
+            $item = $this->Area->FeverMonitor->read(array('id'), $id);
+        }
+        if (empty($item)) {
             $this->Session->setFlash('請依照網頁指示操作');
         } else if ($this->Area->FeverMonitor->delete($id)) {
             $this->Session->setFlash('資料已經刪除');
@@ -291,8 +299,12 @@ class AreasController extends AppController {
         }
     }
 
-    function chemicals_delete($id = null) {
-        if (!$id) {
+    function chemicals_delete($id = 0) {
+        $id = intval($id);
+        if ($id > 0) {
+            $item = $this->Area->Chemical->read(array('id'), $id);
+        }
+        if (empty($item)) {
             $this->Session->setFlash('請依照網頁指示操作');
         } else if ($this->Area->Chemical->delete($id)) {
             $this->Session->setFlash('資料已經刪除');
@@ -389,9 +401,13 @@ class AreasController extends AppController {
         $this->set('items', $items);
     }
 
-    public function bureau_sources_delete($id = null) {
+    public function bureau_sources_delete($id = 0) {
         $this->loadModel('BureauSource');
-        if (!$id) {
+        $id = intval($id);
+        if ($id > 0) {
+            $item = $this->BureauSource->read(array('id'), $id);
+        }
+        if (empty($item)) {
             $this->Session->setFlash('請依照網頁指示操作');
         } else if ($this->BureauSource->delete($id)) {
             $this->Session->setFlash('資料已經刪除');
@@ -434,8 +450,12 @@ class AreasController extends AppController {
         }
     }
 
-    function educations_delete($id = null) {
-        if (!$id) {
+    function educations_delete($id = 0) {
+        $id = intval($id);
+        if ($id > 0) {
+            $item = $this->Area->Education->read(array('id'), $id);
+        }
+        if (empty($item)) {
             $this->Session->setFlash('請依照網頁指示操作');
         } else if ($this->Area->Education->delete($id)) {
             $this->Session->setFlash('資料已經刪除');
@@ -495,8 +515,12 @@ class AreasController extends AppController {
         }
     }
 
-    function volunteer_sources_delete($id = null) {
-        if (!$id) {
+    function volunteer_sources_delete($id = 0) {
+        $id = intval($id);
+        if ($id > 0) {
+            $item = $this->Area->VolunteerSource->read(array('id'), $id);
+        }
+        if (empty($item)) {
             $this->Session->setFlash('請依照網頁指示操作');
         } else if ($this->Area->VolunteerSource->delete($id)) {
             $this->Session->setFlash('資料已經刪除');
@@ -576,8 +600,12 @@ class AreasController extends AppController {
         )));
     }
 
-    function area_sources_delete($id = null) {
-        if (!$id) {
+    function area_sources_delete($id = 0) {
+        $id = intval($id);
+        if ($id > 0) {
+            $item = $this->Area->AreaSource->read(array('id'), $id);
+        }
+        if (empty($item)) {
             $this->Session->setFlash('請依照網頁指示操作');
         } else if ($this->Area->AreaSource->delete($id)) {
             $this->Session->setFlash('資料已經刪除');
@@ -657,8 +685,12 @@ class AreasController extends AppController {
         )));
     }
 
-    function center_sources_delete($id = null) {
-        if (!$id) {
+    function center_sources_delete($id = 0) {
+        $id = intval($id);
+        if ($id > 0) {
+            $item = $this->Area->CenterSource->read(array('id'), $id);
+        }
+        if (empty($item)) {
             $this->Session->setFlash('請依照網頁指示操作');
         } else if ($this->Area->CenterSource->delete($id)) {
             $this->Session->setFlash('資料已經刪除');
@@ -790,17 +822,17 @@ class AreasController extends AppController {
         $id = intval($id);
         if ($id > 0) {
             $expand = $this->Area->Expand->read(null, $id);
-            if (!empty($expand)) {
-                $this->Area->Fever->deleteAll(array(
-                    'Fever.the_date' => $expand['Expand']['the_date'],
-                    'Fever.area_id' => $expand['Expand']['area_id'],
-                ));
-                $this->Area->Track->deleteAll(array(
-                    'Track.the_date' => $expand['Expand']['the_date'],
-                    'Track.area_id' => $expand['Expand']['area_id'],
-                ));
-                $this->Area->Expand->delete($id);
-            }
+        }
+        if (!empty($expand)) {
+            $this->Area->Fever->deleteAll(array(
+                'Fever.the_date' => $expand['Expand']['the_date'],
+                'Fever.area_id' => $expand['Expand']['area_id'],
+            ));
+            $this->Area->Track->deleteAll(array(
+                'Track.the_date' => $expand['Expand']['the_date'],
+                'Track.area_id' => $expand['Expand']['area_id'],
+            ));
+            $this->Area->Expand->delete($id);
             $this->Session->setFlash('資料已經刪除');
         } else {
             $this->Session->setFlash('請依照網頁指示操作');
