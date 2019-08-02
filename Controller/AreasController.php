@@ -216,19 +216,27 @@ class AreasController extends AppController {
                 ),
             );
         } else {
-            $dataToSave = $this->data;
-            $theId = $this->Area->ClinicReport->field('id', array(
-                'the_date' => $dataToSave['ClinicReport']['the_date'],
-                'area_id' => $dataToSave['ClinicReport']['area_id'],
-            ));
-            if (empty($theId)) {
-                $this->Area->ClinicReport->create();
-                $dataToSave['ClinicReport']['created_by'] = $dataToSave['ClinicReport']['modified_by'] = Configure::read('loginMember.id');
-            } else {
-                $this->Area->ClinicReport->id = $theId;
-                $dataToSave['ClinicReport']['modified_by'] = Configure::read('loginMember.id');
+            foreach ($this->data['ClinicReport']['area_id'] AS $k => $v) {
+                $dataToSave = array('ClinicReport' => array(
+                        'the_date' => $this->data['ClinicReport']['the_date'],
+                        'area_id' => $this->data['ClinicReport']['area_id'][$k],
+                        'count_p' => $this->data['ClinicReport']['count_p'][$k],
+                        'count_n' => $this->data['ClinicReport']['count_n'][$k],
+                        'note' => $this->data['ClinicReport']['note'][$k],
+                ));
+                $theId = $this->Area->ClinicReport->field('id', array(
+                    'the_date' => $dataToSave['ClinicReport']['the_date'],
+                    'area_id' => $dataToSave['ClinicReport']['area_id'],
+                ));
+                if (empty($theId)) {
+                    $this->Area->ClinicReport->create();
+                    $dataToSave['ClinicReport']['created_by'] = $dataToSave['ClinicReport']['modified_by'] = Configure::read('loginMember.id');
+                } else {
+                    $this->Area->ClinicReport->id = $theId;
+                    $dataToSave['ClinicReport']['modified_by'] = Configure::read('loginMember.id');
+                }
+                $this->Area->ClinicReport->save($dataToSave);
             }
-            $this->Area->ClinicReport->save($dataToSave);
             $this->Session->setFlash('資料已經儲存');
             $this->redirect(array('action' => 'clinic_reports_list'));
         }
