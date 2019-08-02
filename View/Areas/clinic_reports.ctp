@@ -11,20 +11,22 @@
             'div' => 'form-group',
             'class' => 'form-control',
         ));
-        echo $this->Form->input('ClinicReport.type', array(
-            'label' => '類型',
+        echo $this->Form->input('ClinicReport.area_id', array(
+            'type' => 'select',
+            'label' => '區域',
+            'options' => $areas,
             'div' => 'form-group',
             'class' => 'form-control',
         ));
-        echo $this->Form->input('ClinicReport.count_report', array(
-            'type' => 'number',
-            'label' => '通報件數',
-            'div' => 'form-group',
-            'class' => 'form-control',
-        ));
-        echo $this->Form->input('ClinicReport.count_positive', array(
+        echo $this->Form->input('ClinicReport.count_p', array(
             'type' => 'number',
             'label' => 'NS1 (+)',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('ClinicReport.count_n', array(
+            'type' => 'number',
+            'label' => 'NS1 (-)',
             'div' => 'form-group',
             'class' => 'form-control',
         ));

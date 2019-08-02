@@ -23,6 +23,11 @@ class AreasController extends AppController {
                     'conditions' => array(
                         'ClinicReport.the_date' => $theDate,
                     ),
+                    'contain' => array(
+                        'Area' => array(
+                            'fields' => array('name'),
+                        )
+                    ),
         )));
         $this->set('feverMonitors', $this->Area->FeverMonitor->find('all', array(
                     'conditions' => array(
@@ -163,54 +168,61 @@ class AreasController extends AppController {
     }
 
     public function clinic_reports_list() {
-        $this->loadModel('ClinicReport');
         $this->paginate['ClinicReport'] = array(
             'limit' => 20,
             'contain' => array(
                 'MemberModified' => array('fields' => array('username')),
+                'Area' => array('fields' => array('name')),
             ),
             'order' => array(
                 'modified' => 'DESC'
             ),
         );
-        $items = $this->paginate($this->ClinicReport);
+        $items = $this->paginate($this->Area->ClinicReport);
         $this->set('items', $items);
     }
 
     public function clinic_reports_delete($id = null) {
-        $this->loadModel('ClinicReport');
         if (!$id) {
             $this->Session->setFlash('請依照網頁指示操作');
-        } else if ($this->ClinicReport->delete($id)) {
+        } else if ($this->Area->ClinicReport->delete($id)) {
             $this->Session->setFlash('資料已經刪除');
         }
         $this->redirect(array('action' => 'clinic_reports_list'));
     }
 
     public function clinic_reports() {
-        $this->loadModel('ClinicReport');
+        $this->set('areas', $this->Area->find('list', array(
+                    'conditions' => array(
+                        'Area.parent_id IS NULL'
+                    ),
+                    'fields' => array('id', 'name'),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
         if (empty($this->data)) {
             $this->data = array(
                 'ClinicReport' => array(
                     'the_date' => date('Y-m-d'),
-                    'count_report' => 0,
-                    'count_positive' => 0,
+                    'count_p' => 0,
+                    'count_n' => 0,
                 ),
             );
         } else {
             $dataToSave = $this->data;
-            $educationId = $this->ClinicReport->field('id', array(
+            $theId = $this->Area->ClinicReport->field('id', array(
                 'the_date' => $dataToSave['ClinicReport']['the_date'],
-                'type' => $dataToSave['ClinicReport']['type'],
+                'area_id' => $dataToSave['ClinicReport']['area_id'],
             ));
-            if (empty($educationId)) {
-                $this->ClinicReport->create();
+            if (empty($theId)) {
+                $this->Area->ClinicReport->create();
                 $dataToSave['ClinicReport']['created_by'] = $dataToSave['ClinicReport']['modified_by'] = Configure::read('loginMember.id');
             } else {
-                $this->ClinicReport->id = $educationId;
+                $this->Area->ClinicReport->id = $theId;
                 $dataToSave['ClinicReport']['modified_by'] = Configure::read('loginMember.id');
             }
-            $this->ClinicReport->save($dataToSave);
+            $this->Area->ClinicReport->save($dataToSave);
             $this->Session->setFlash('資料已經儲存');
             $this->redirect(array('action' => 'clinic_reports_list'));
         }

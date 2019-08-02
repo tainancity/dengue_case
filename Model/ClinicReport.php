@@ -6,6 +6,10 @@ class ClinicReport extends AppModel {
 
     var $name = 'ClinicReport';
     var $belongsTo = array(
+        'Area' => array(
+            'foreignKey' => 'area_id',
+            'className' => 'Area',
+        ),
         'MemberCreated' => array(
             'foreignKey' => 'created_by',
             'className' => 'Member',

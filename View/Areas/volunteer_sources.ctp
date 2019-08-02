@@ -67,7 +67,7 @@
             </div>
             <div class="input-group mb-2 mr-sm-2 float-left" style="width: 30%;">
                 <div class="input-group-prepend">
-                    <div class="input-group-text">動員人數</div>
+                    <div class="input-group-text">志工人數</div>
                 </div>
                 <input type="number" class="form-control" name="VolunteerSource[people][]" value="0">
             </div>

@@ -14,9 +14,9 @@ if (!isset($url)) {
         <thead>
             <tr>
                 <th><?php echo $this->Paginator->sort('ClinicReport.the_date', '日期', array('url' => $url)); ?></th>
-                <th>類型</th>
-                <th>通報件數</th>
+                <th>區域</th>
                 <th>NS1(+)</th>
+                <th>NS1(-)</th>
                 <th>異動者</th>
                 <th><?php echo $this->Paginator->sort('ClinicReport.modified', '更新時間', array('url' => $url)); ?></th>
                 <th class="actions">操作</th>
@@ -36,13 +36,13 @@ if (!isset($url)) {
                         echo $item['ClinicReport']['the_date'];
                         ?></td>
                 <td><?php
-                        echo $item['ClinicReport']['type'];
+                        echo $item['Area']['name'];
                         ?></td>
                 <td><?php
-                        echo $item['ClinicReport']['count_report'];
+                        echo $item['ClinicReport']['count_p'];
                         ?></td>
                 <td><?php
-                        echo $item['ClinicReport']['count_positive'];
+                        echo $item['ClinicReport']['count_n'];
                         ?></td>
                 <td><?php
                         echo $item['MemberModified']['username'];

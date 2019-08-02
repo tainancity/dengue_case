@@ -132,14 +132,14 @@ foreach($tracks AS $track) {
         <td><?php echo $sum['track_done']; ?></td>
         <td><?php
         if($sum['track_count'] > 0) {
-            echo round($sum['track_done'] / $sum['track_count'], 2);
+            echo (round($sum['track_done'] / $sum['track_count'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $sum['fever_count']; ?></td>
         <td><?php echo $sum['fever_draw']; ?></td>
         <td><?php
         if($sum['track_count'] > 0) {
-            echo round($sum['fever_count'] / $sum['track_count'], 2); 
+            echo (round($sum['fever_count'] / $sum['track_count'], 3) * 100) . '%';
         }
         ?></td>
         <td> </td>
@@ -151,14 +151,14 @@ foreach($tracks AS $track) {
         <td><?php echo $track['Track']['track_done']; ?></td>
         <td><?php
         if($track['Track']['track_count'] > 0) {
-            echo round($track['Track']['track_done'] / $track['Track']['track_count'], 2);
+            echo (round($track['Track']['track_done'] / $track['Track']['track_count'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $track['Track']['fever_count']; ?></td>
         <td><?php echo $track['Track']['fever_draw']; ?></td>
         <td><?php
         if($track['Track']['track_count'] > 0) {
-            echo round($track['Track']['fever_count'] / $track['Track']['track_count'], 2); 
+            echo (round($track['Track']['fever_count'] / $track['Track']['track_count'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $track['Track']['note']; ?></td>
@@ -212,14 +212,14 @@ foreach($centerSources AS $centerSource) {
         <td><?php echo $sum['i_positive']; ?></td>
         <td><?php
         if($sum['i_water'] > 0) {
-            echo round($sum['i_positive'] / $sum['i_water'], 2);
+            echo (round($sum['i_positive'] / $sum['i_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $sum['o_water']; ?></td>
         <td><?php echo $sum['o_positive']; ?></td>
         <td><?php
         if($sum['o_water'] > 0) {
-            echo round($sum['o_positive'] / $sum['o_water'], 2);
+            echo (round($sum['o_positive'] / $sum['o_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $sum['positive_done']; ?></td>
@@ -238,14 +238,14 @@ foreach($centerSources AS $centerSource) {
         <td><?php echo $areaSum[$centerSource['Area']['Parent']['name']]['i_positive']; ?></td>
         <td><?php
         if($areaSum[$centerSource['Area']['Parent']['name']]['i_water'] > 0) {
-            echo round($areaSum[$centerSource['Area']['Parent']['name']]['i_positive'] / $areaSum[$centerSource['Area']['Parent']['name']]['i_water'], 2);
+            echo (round($areaSum[$centerSource['Area']['Parent']['name']]['i_positive'] / $areaSum[$centerSource['Area']['Parent']['name']]['i_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $areaSum[$centerSource['Area']['Parent']['name']]['o_water']; ?></td>
         <td><?php echo $areaSum[$centerSource['Area']['Parent']['name']]['o_positive']; ?></td>
         <td><?php
         if($areaSum[$centerSource['Area']['Parent']['name']]['o_water'] > 0) {
-            echo round($areaSum[$centerSource['Area']['Parent']['name']]['o_positive'] / $areaSum[$centerSource['Area']['Parent']['name']]['o_water'], 2);
+            echo (round($areaSum[$centerSource['Area']['Parent']['name']]['o_positive'] / $areaSum[$centerSource['Area']['Parent']['name']]['o_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $areaSum[$centerSource['Area']['Parent']['name']]['positive_done']; ?></td>
@@ -265,14 +265,14 @@ foreach($centerSources AS $centerSource) {
         <td><?php echo $centerSource['CenterSource']['i_positive']; ?></td>
         <td><?php
         if($centerSource['CenterSource']['i_water'] > 0) {
-            echo round($centerSource['CenterSource']['i_positive'] / $centerSource['CenterSource']['i_water'], 2);
+            echo (round($centerSource['CenterSource']['i_positive'] / $centerSource['CenterSource']['i_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $centerSource['CenterSource']['o_water']; ?></td>
         <td><?php echo $centerSource['CenterSource']['o_positive']; ?></td>
         <td><?php
         if($centerSource['CenterSource']['o_water'] > 0) {
-            echo round($centerSource['CenterSource']['o_positive'] / $centerSource['CenterSource']['o_water'], 2);
+            echo (round($centerSource['CenterSource']['o_positive'] / $centerSource['CenterSource']['o_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $centerSource['CenterSource']['positive_done']; ?></td>
@@ -328,14 +328,14 @@ foreach($areaSources AS $areaSource) {
         <td><?php echo $sum['i_positive']; ?></td>
         <td><?php
         if($sum['i_water'] > 0) {
-            echo round($sum['i_positive'] / $sum['i_water'], 2);
+            echo (round($sum['i_positive'] / $sum['i_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $sum['o_water']; ?></td>
         <td><?php echo $sum['o_positive']; ?></td>
         <td><?php
         if($sum['o_water'] > 0) {
-            echo round($sum['o_positive'] / $sum['o_water'], 2);
+            echo (round($sum['o_positive'] / $sum['o_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $sum['positive_done']; ?></td>
@@ -353,14 +353,14 @@ foreach($areaSources AS $areaSource) {
         <td><?php echo $areaSum[$areaSource['Area']['Parent']['name']]['i_positive']; ?></td>
         <td><?php
         if($areaSum[$areaSource['Area']['Parent']['name']]['i_water'] > 0) {
-            echo round($areaSum[$areaSource['Area']['Parent']['name']]['i_positive'] / $areaSum[$areaSource['Area']['Parent']['name']]['i_water'], 2);
+            echo (round($areaSum[$areaSource['Area']['Parent']['name']]['i_positive'] / $areaSum[$areaSource['Area']['Parent']['name']]['i_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $areaSum[$areaSource['Area']['Parent']['name']]['o_water']; ?></td>
         <td><?php echo $areaSum[$areaSource['Area']['Parent']['name']]['o_positive']; ?></td>
         <td><?php
         if($areaSum[$areaSource['Area']['Parent']['name']]['o_water'] > 0) {
-            echo round($areaSum[$areaSource['Area']['Parent']['name']]['o_positive'] / $areaSum[$areaSource['Area']['Parent']['name']]['o_water'], 2);
+            echo (round($areaSum[$areaSource['Area']['Parent']['name']]['o_positive'] / $areaSum[$areaSource['Area']['Parent']['name']]['o_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $areaSum[$areaSource['Area']['Parent']['name']]['positive_done']; ?></td>
@@ -379,14 +379,14 @@ foreach($areaSources AS $areaSource) {
         <td><?php echo $areaSource['AreaSource']['i_positive']; ?></td>
         <td><?php
         if($areaSource['AreaSource']['i_water'] > 0) {
-            echo round($areaSource['AreaSource']['i_positive'] / $areaSource['AreaSource']['i_water'], 2);
+            echo (round($areaSource['AreaSource']['i_positive'] / $areaSource['AreaSource']['i_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $areaSource['AreaSource']['o_water']; ?></td>
         <td><?php echo $areaSource['AreaSource']['o_positive']; ?></td>
         <td><?php
         if($areaSource['AreaSource']['o_water'] > 0) {
-            echo round($areaSource['AreaSource']['o_positive'] / $areaSource['AreaSource']['o_water'], 2);
+            echo (round($areaSource['AreaSource']['o_positive'] / $areaSource['AreaSource']['o_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $areaSource['AreaSource']['positive_done']; ?></td>
@@ -442,14 +442,14 @@ foreach($volunteerSources AS $volunteerSource) {
         <td><?php echo $sum['i_positive']; ?></td>
         <td><?php
         if($sum['i_water'] > 0) {
-            echo round($sum['i_positive'] / $sum['i_water'], 2);
+            echo (round($sum['i_positive'] / $sum['i_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $sum['o_water']; ?></td>
         <td><?php echo $sum['o_positive']; ?></td>
         <td><?php
         if($sum['o_water'] > 0) {
-            echo round($sum['o_positive'] / $sum['o_water'], 2);
+            echo (round($sum['o_positive'] / $sum['o_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $sum['positive_done']; ?></td>
@@ -467,14 +467,14 @@ foreach($volunteerSources AS $volunteerSource) {
         <td><?php echo $areaSum[$volunteerSource['Area']['Parent']['name']]['i_positive']; ?></td>
         <td><?php
         if($areaSum[$volunteerSource['Area']['Parent']['name']]['i_water'] > 0) {
-            echo round($areaSum[$volunteerSource['Area']['Parent']['name']]['i_positive'] / $areaSum[$volunteerSource['Area']['Parent']['name']]['i_water'], 2);
+            echo (round($areaSum[$volunteerSource['Area']['Parent']['name']]['i_positive'] / $areaSum[$volunteerSource['Area']['Parent']['name']]['i_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $areaSum[$volunteerSource['Area']['Parent']['name']]['o_water']; ?></td>
         <td><?php echo $areaSum[$volunteerSource['Area']['Parent']['name']]['o_positive']; ?></td>
         <td><?php
         if($areaSum[$volunteerSource['Area']['Parent']['name']]['o_water'] > 0) {
-            echo round($areaSum[$volunteerSource['Area']['Parent']['name']]['o_positive'] / $areaSum[$volunteerSource['Area']['Parent']['name']]['o_water'], 2);
+            echo (round($areaSum[$volunteerSource['Area']['Parent']['name']]['o_positive'] / $areaSum[$volunteerSource['Area']['Parent']['name']]['o_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $areaSum[$volunteerSource['Area']['Parent']['name']]['positive_done']; ?></td>
@@ -493,14 +493,14 @@ foreach($volunteerSources AS $volunteerSource) {
         <td><?php echo $volunteerSource['VolunteerSource']['i_positive']; ?></td>
         <td><?php
         if($volunteerSource['VolunteerSource']['i_water'] > 0) {
-            echo round($volunteerSource['VolunteerSource']['i_positive'] / $volunteerSource['VolunteerSource']['i_water'], 2);
+            echo (round($volunteerSource['VolunteerSource']['i_positive'] / $volunteerSource['VolunteerSource']['i_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $volunteerSource['VolunteerSource']['o_water']; ?></td>
         <td><?php echo $volunteerSource['VolunteerSource']['o_positive']; ?></td>
         <td><?php
         if($volunteerSource['VolunteerSource']['o_water'] > 0) {
-            echo round($volunteerSource['VolunteerSource']['o_positive'] / $volunteerSource['VolunteerSource']['o_water'], 2);
+            echo (round($volunteerSource['VolunteerSource']['o_positive'] / $volunteerSource['VolunteerSource']['o_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $volunteerSource['VolunteerSource']['positive_done']; ?></td>
@@ -583,13 +583,13 @@ foreach($bureauSources AS $bureauSource) {
         <td><?php echo $sum['i_positive']; ?></td>
         <td><?php
         if($sum['i_water'] > 0) {
-            echo round($sum['i_positive'] / $sum['i_water'], 2);
+            echo (round($sum['i_positive'] / $sum['i_water'], 3) * 100) . '%';
         }; ?></td>
         <td><?php echo $sum['o_water']; ?></td>
         <td><?php echo $sum['o_positive']; ?></td>
         <td><?php
         if($sum['o_water'] > 0) {
-            echo round($sum['o_positive'] / $sum['o_water'], 2);
+            echo (round($sum['o_positive'] / $sum['o_water'], 3) * 100) . '%';
         }; ?></td>
         <td><?php echo $sum['positive_done']; ?></td>
         <td><?php echo $sum['education']; ?></td>
@@ -606,13 +606,13 @@ foreach($bureauSources AS $bureauSource) {
         <td><?php echo $bureauSource['BureauSource']['i_positive']; ?></td>
         <td><?php
         if($bureauSource['BureauSource']['i_water'] > 0) {
-            echo round($bureauSource['BureauSource']['i_positive'] / $bureauSource['BureauSource']['i_water'], 2);
+            echo (round($bureauSource['BureauSource']['i_positive'] / $bureauSource['BureauSource']['i_water'], 3) * 100) . '%';
         }; ?></td>
         <td><?php echo $bureauSource['BureauSource']['o_water']; ?></td>
         <td><?php echo $bureauSource['BureauSource']['o_positive']; ?></td>
         <td><?php
         if($bureauSource['BureauSource']['o_water'] > 0) {
-            echo round($bureauSource['BureauSource']['o_positive'] / $bureauSource['BureauSource']['o_water'], 2);
+            echo (round($bureauSource['BureauSource']['o_positive'] / $bureauSource['BureauSource']['o_water'], 3) * 100) . '%';
         }; ?></td>
         <td><?php echo $bureauSource['BureauSource']['positive_done']; ?></td>
         <td><?php echo $bureauSource['BureauSource']['education']; ?></td>
@@ -672,7 +672,7 @@ foreach($chemicals AS $chemical) {
         <td><?php echo $sum['door_done']; ?></td>
         <td><?php
         if($sum['door_count'] > 0) {
-            echo round($sum['door_done'] / $sum['door_count'], 2);
+            echo (round($sum['door_done'] / $sum['door_count'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $sum['fine']; ?></td>
@@ -681,14 +681,14 @@ foreach($chemicals AS $chemical) {
         <td><?php echo $sum['i_positive']; ?></td>
         <td><?php
         if($sum['i_water'] > 0) {
-            echo round($sum['i_positive'] / $sum['i_water'], 2);
+            echo (round($sum['i_positive'] / $sum['i_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $sum['o_water']; ?></td>
         <td><?php echo $sum['o_positive']; ?></td>
         <td><?php
         if($sum['o_water'] > 0) {
-            echo round($sum['o_positive'] / $sum['o_water'], 2);
+            echo (round($sum['o_positive'] / $sum['o_water'], 3) * 100) . '%';
         }
         ?></td>
         <td> </td>
@@ -704,7 +704,7 @@ foreach($chemicals AS $chemical) {
         <td><?php echo $areaSum[$chemical['Area']['Parent']['name']]['door_done']; ?></td>
         <td><?php
         if($areaSum[$chemical['Area']['Parent']['name']]['door_count'] > 0) {
-            echo round($areaSum[$chemical['Area']['Parent']['name']]['door_done'] / $areaSum[$chemical['Area']['Parent']['name']]['door_count'], 2);
+            echo (round($areaSum[$chemical['Area']['Parent']['name']]['door_done'] / $areaSum[$chemical['Area']['Parent']['name']]['door_count'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $areaSum[$chemical['Area']['Parent']['name']]['fine']; ?></td>
@@ -713,14 +713,14 @@ foreach($chemicals AS $chemical) {
         <td><?php echo $areaSum[$chemical['Area']['Parent']['name']]['i_positive']; ?></td>
         <td><?php
         if($areaSum[$chemical['Area']['Parent']['name']]['i_water'] > 0) {
-            echo round($areaSum[$chemical['Area']['Parent']['name']]['i_positive'] / $areaSum[$chemical['Area']['Parent']['name']]['i_water'], 2);
+            echo (round($areaSum[$chemical['Area']['Parent']['name']]['i_positive'] / $areaSum[$chemical['Area']['Parent']['name']]['i_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $areaSum[$chemical['Area']['Parent']['name']]['o_water']; ?></td>
         <td><?php echo $areaSum[$chemical['Area']['Parent']['name']]['o_positive']; ?></td>
         <td><?php
         if($areaSum[$chemical['Area']['Parent']['name']]['o_water'] > 0) {
-            echo round($areaSum[$chemical['Area']['Parent']['name']]['o_positive'] / $areaSum[$chemical['Area']['Parent']['name']]['o_water'], 2);
+            echo (round($areaSum[$chemical['Area']['Parent']['name']]['o_positive'] / $areaSum[$chemical['Area']['Parent']['name']]['o_water'], 3) * 100) . '%';
         }
         ?></td>
         <td></td>
@@ -737,7 +737,7 @@ foreach($chemicals AS $chemical) {
         <td><?php echo $chemical['Chemical']['door_done']; ?></td>
         <td><?php
         if($chemical['Chemical']['door_count'] > 0) {
-            echo round($chemical['Chemical']['door_done'] / $chemical['Chemical']['door_count'], 2);
+            echo (round($chemical['Chemical']['door_done'] / $chemical['Chemical']['door_count'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $chemical['Chemical']['fine']; ?></td>
@@ -746,14 +746,14 @@ foreach($chemicals AS $chemical) {
         <td><?php echo $chemical['Chemical']['i_positive']; ?></td>
         <td><?php
         if($chemical['Chemical']['i_water'] > 0) {
-            echo round($chemical['Chemical']['i_positive'] / $chemical['Chemical']['i_water'], 2);
+            echo (round($chemical['Chemical']['i_positive'] / $chemical['Chemical']['i_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $chemical['Chemical']['o_water']; ?></td>
         <td><?php echo $chemical['Chemical']['o_positive']; ?></td>
         <td><?php
         if($chemical['Chemical']['o_water'] > 0) {
-            echo round($chemical['Chemical']['o_positive'] / $chemical['Chemical']['o_water'], 2);
+            echo (round($chemical['Chemical']['o_positive'] / $chemical['Chemical']['o_water'], 3) * 100) . '%';
         }
         ?></td>
         <td><?php echo $chemical['Chemical']['note']; ?></td>
@@ -793,7 +793,7 @@ foreach($feverMonitors AS $feverMonitor) {
         <td><?php echo ($sum['people_count'] - $sum['people_track']); ?></td>
         <td><?php
         if($sum['people_count'] > 0) {
-            echo round($sum['people_track'] / $sum['people_count'], 2);
+            echo (round($sum['people_track'] / $sum['people_count'], 3) * 100) . '%';
         }
         ?></td>
         <td></td>
@@ -807,7 +807,7 @@ foreach($feverMonitors AS $feverMonitor) {
         <td><?php echo ($feverMonitor['FeverMonitor']['people_count'] - $feverMonitor['FeverMonitor']['people_track']); ?></td>
         <td><?php
         if($feverMonitor['FeverMonitor']['people_count'] > 0) {
-            echo round($feverMonitor['FeverMonitor']['people_track'] / $feverMonitor['FeverMonitor']['people_count'], 2);
+            echo (round($feverMonitor['FeverMonitor']['people_track'] / $feverMonitor['FeverMonitor']['people_count'], 3) * 100) . '%';
         }; ?></td>
         <td><?php echo $feverMonitor['FeverMonitor']['note']; ?></td>
     </tr>
@@ -817,7 +817,7 @@ foreach($feverMonitors AS $feverMonitor) {
 
 <p>九、醫療院所通報數（疫情組）</p>
 <?php
-$keys = array('count_report', 'count_positive');
+$keys = array('count_p', 'count_n');
 $sum = array();
 foreach($keys AS $key) {
     $sum[$key] = 0;
@@ -840,18 +840,18 @@ foreach($clinicReports AS $clinicReport) {
 <tbody>
     <tr>
         <td>累計</td>
-        <td><?php echo $sum['count_report']; ?></td>
-        <td><?php echo $sum['count_positive']; ?></td>
-        <td><?php echo ($sum['count_report'] - $sum['count_positive']); ?></td>
+        <td><?php echo ($sum['count_p'] + $sum['count_n']); ?></td>
+        <td><?php echo $sum['count_p']; ?></td>
+        <td><?php echo $sum['count_n']; ?></td>
         <td></td>
     </tr>
     <?php foreach($clinicReports AS $clinicReport) {
         ?>
     <tr>
-        <td><?php echo $clinicReport['ClinicReport']['type']; ?></td>
-        <td><?php echo $clinicReport['ClinicReport']['count_report']; ?></td>
-        <td><?php echo $clinicReport['ClinicReport']['count_positive']; ?></td>
-        <td><?php echo ($clinicReport['ClinicReport']['count_report'] - $clinicReport['ClinicReport']['count_positive']); ?></td>
+        <td><?php echo $clinicReport['Area']['name']; ?></td>
+        <td><?php echo ($clinicReport['ClinicReport']['count_p'] + $clinicReport['ClinicReport']['count_n']); ?></td>
+        <td><?php echo $clinicReport['ClinicReport']['count_p']; ?></td>
+        <td><?php echo $clinicReport['ClinicReport']['count_n']; ?></td>
         <td><?php echo $clinicReport['ClinicReport']['note']; ?></td>
     </tr>
     <?php } ?>

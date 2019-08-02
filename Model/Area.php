@@ -57,6 +57,11 @@ class Area extends AppModel {
             'dependent' => false,
             'className' => 'FeverMonitor',
         ),
+        'ClinicReport' => array(
+            'foreignKey' => 'area_id',
+            'dependent' => false,
+            'className' => 'ClinicReport',
+        ),
     );
 
 }
