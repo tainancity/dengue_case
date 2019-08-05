@@ -24,7 +24,7 @@ class AppModel extends Model {
     public function beforeFind($query) {
         $sw = Configure::read('skipMemberControl');
         $loginMember = Configure::read('loginMember');
-        if(!$sw && $loginMember['Group']['name'] !== 'admin' && $this->memberControl) {
+        if(!$sw && $loginMember['Group']['id'] != 1 && $this->memberControl) {
             $query['conditions'][$this->name . '.created_by'] = $loginMember['id'];
         }
         return $query;
