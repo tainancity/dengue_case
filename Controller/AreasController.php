@@ -19,8 +19,13 @@ class AreasController extends AppController {
         if (empty($theDate)) {
             $theDate = date('Y-m-d');
         }
-        $this->loadModel('ClinicReport');
-        $this->set('clinicReports', $this->ClinicReport->find('all', array(
+        $this->loadModel('DailyCase');
+        $this->set('dailyCase', $this->DailyCase->find('first', array(
+                    'conditions' => array(
+                        'DailyCase.the_date' => $theDate,
+                    ),
+        )));
+        $this->set('clinicReports', $this->Area->ClinicReport->find('all', array(
                     'conditions' => array(
                         'ClinicReport.the_date' => $theDate,
                     ),
@@ -28,6 +33,9 @@ class AreasController extends AppController {
                         'Area' => array(
                             'fields' => array('name'),
                         )
+                    ),
+                    'order' => array(
+                        'Area.code' => 'DESC'
                     ),
         )));
         $this->set('feverMonitors', $this->Area->FeverMonitor->find('all', array(
@@ -392,6 +400,63 @@ class AreasController extends AppController {
                         'Area.code' => 'DESC'
                     ),
         )));
+    }
+    
+    public function daily_cases_list() {
+        $this->loadModel('DailyCase');
+        $this->paginate['DailyCase'] = array(
+            'limit' => 20,
+            'contain' => array(
+                'MemberModified' => array('fields' => array('username')),
+            ),
+            'order' => array(
+                'modified' => 'DESC'
+            ),
+        );
+        $items = $this->paginate($this->DailyCase);
+        $this->set('items', $items);
+    }
+
+    public function daily_cases_delete($id = 0) {
+        $this->loadModel('DailyCase');
+        $id = intval($id);
+        if ($id > 0) {
+            $item = $this->DailyCase->read(array('id'), $id);
+        }
+        if (empty($item)) {
+            $this->Session->setFlash('請依照網頁指示操作');
+        } else if ($this->DailyCase->delete($id)) {
+            $this->Session->setFlash('資料已經刪除');
+        }
+        $this->redirect(array('action' => 'daily_cases_list'));
+    }
+
+    public function daily_cases() {
+        $this->loadModel('DailyCase');
+        if (empty($this->data)) {
+            $this->data = array(
+                'DailyCase' => array(
+                    'the_date' => date('Y-m-d'),
+                    'count_local' => 0,
+                    'count_imported' => 0,
+                ),
+            );
+        } else {
+            $dataToSave = $this->data;
+            $theId = $this->DailyCase->field('id', array(
+                'the_date' => $dataToSave['DailyCase']['the_date'],
+            ));
+            if (empty($educationId)) {
+                $this->DailyCase->create();
+                $dataToSave['DailyCase']['created_by'] = $dataToSave['DailyCase']['modified_by'] = Configure::read('loginMember.id');
+            } else {
+                $this->DailyCase->id = $theId;
+                $dataToSave['DailyCase']['modified_by'] = Configure::read('loginMember.id');
+            }
+            $this->DailyCase->save($dataToSave);
+            $this->Session->setFlash('資料已經儲存');
+            $this->redirect(array('action' => 'daily_cases_list'));
+        }
     }
 
     public function bureau_sources_list() {
