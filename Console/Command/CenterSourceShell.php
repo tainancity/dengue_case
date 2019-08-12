@@ -16,8 +16,21 @@ class CenterSourceShell extends AppShell {
                     'fields' => array('id', 'name'),
                 )),
         ));
-        $areaList = array(
+        $nameMap = array(
+            '麻豆區?江里' => '麻豆區[晉]江里',
+            '麻豆區寮?里' => '麻豆區寮[部]里',
+            '安南區公塭里' => '安南區公[塭]里',
+            '安南區?田里' => '安南區鹽*田里',
+            '安南區塭南里' => '安南區[塭]南里',
+            '永康區?興里' => '永康區鹽*興里',
+            '永康區?洲里' => '永康區鹽*洲里',
+            '永康區?行里' => '永康區[鹽]行里',
+            '官田區南?里' => '官田區南[部]里',
+            '山上區玉峰里' => '山上區玉[峰]里',
+            '龍崎區石??里' => '龍崎區石[曹]里',
+            '新化區山?里' => '新化區山[腳]里',
         );
+        $areaList = array();
         foreach ($areas AS $area) {
             $areaList["{$area['Parent']['name']}{$area['Area']['name']}"] = $area['Area']['id'];
         }
@@ -30,6 +43,9 @@ class CenterSourceShell extends AppShell {
             $errorPool = array();
             foreach ($result as $row) {
                 $areaKey = $row['DISTRICT_NAME'] . $row['VILLAGE_NAME'];
+                if(isset($nameMap[$areaKey])) {
+                    $areaKey = $nameMap[$areaKey];
+                }
                 if (!isset($areaList[$areaKey])) {
                     $errorPool[$areaKey] = true;
                 } else {
