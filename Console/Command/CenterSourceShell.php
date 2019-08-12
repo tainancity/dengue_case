@@ -26,13 +26,15 @@ class CenterSourceShell extends AppShell {
         //$result = $dbh->query('SELECT * FROM Mosquito_Density1 WHERE DATE = CAST(\'' . $today . '\' AS DATE)');
         $result = $dbh->query('SELECT * FROM Mosquito_Density1 ORDER BY DATE DESC');
         if ($result) {
+            $errorPool = array();
             foreach ($result as $row) {
                 $areaKey = $row['DISTRICT_NAME'] . $row['VILLAGE_NAME'];
                 if (!isset($areaList[$areaKey])) {
-                    echo "{$areaKey}\n";
+                    $errorPool[$areaKey] = true;
                 } else {
                     $this->CenterSource->create();
                     $this->CenterSource->save(array('CenterSource' => array(
+                            'the_date' => $row['DATE'],
                             'area_id' => $areaList[$areaKey],
                             'investigate' => $row['SURVEY_HOUSEHOLD'],
                             'positive_done' => $row['POSITIVE_HOUSEHOLD'],
@@ -43,6 +45,7 @@ class CenterSourceShell extends AppShell {
                     )));
                 }
             }
+            echo var_export($errorPool);
         }
     }
 
