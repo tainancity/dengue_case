@@ -19,7 +19,7 @@ if (!isset($url)) {
                 <th>戶內陽性率</th>
                 <th>戶外陽性率</th>
                 <th>已處理陽性數</th>
-                <th>志工人數</th>
+                <th>動員人數</th>
                 <th>異動者</th>
                 <th><?php echo $this->Paginator->sort('CenterSource.modified', '更新時間', array('url' => $url)); ?></th>
                 <th class="actions">操作</th>
