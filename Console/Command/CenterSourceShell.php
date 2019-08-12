@@ -40,23 +40,24 @@ class CenterSourceShell extends AppShell {
         //$result = $dbh->query('SELECT * FROM Mosquito_Density1 WHERE DATE = CAST(\'' . $today . '\' AS DATE)');
         $result = $dbh->query('SELECT * FROM Mosquito_Density1 WHERE DATE > CAST(\'2019-06-01\' AS DATE) ORDER BY DATE DESC');
         if ($result) {
-            $this->CenterSource->cacheQueries = false;
+            $dataPool = array();
             foreach ($result as $row) {
                 $areaKey = $row['DISTRICT_NAME'] . $row['VILLAGE_NAME'];
                 if (isset($nameMap[$areaKey])) {
                     $areaKey = $nameMap[$areaKey];
                 }
                 if (isset($areaList[$areaKey])) {
-                    $theId = $this->CenterSource->field('id', array(
-                        'the_date' => $row['DATE'],
-                        'area_id' => $areaList[$areaKey],
-                    ));
-                    if (empty($theId)) {
-                        $this->CenterSource->create();
+                    $dataKey = $row['DATE'] . $areaList[$areaKey];
+                    if (isset($dataPool[$dataKey])) {
+                        $dataPool[$dataKey]['investigate'] += intval($row['SURVEY_HOUSEHOLD']);
+                        $dataPool[$dataKey]['positive_done'] += intval($row['POSITIVE_HOUSEHOLD']);
+                        $dataPool[$dataKey]['i_water'] += intval($row['SURVEY_CONTAINER_IN']);
+                        $dataPool[$dataKey]['o_water'] += intval($row['SURVEY_CONTAINER_OUT']);
+                        $dataPool[$dataKey]['i_positive'] += intval($row['POSITIVE_CONTAINER_IN']);
+                        $dataPool[$dataKey]['o_positive'] += intval($row['POSITIVE_CONTAINER_OUT']);
+                        $theId = $dataPool[$dataKey]['id'];
                     } else {
-                        $this->CenterSource->id = $theId;
-                    }
-                    $this->CenterSource->save(array('CenterSource' => array(
+                        $dataPool[$dataKey] = array(
                             'the_date' => $row['DATE'],
                             'area_id' => $areaList[$areaKey],
                             'investigate' => $row['SURVEY_HOUSEHOLD'],
@@ -65,7 +66,21 @@ class CenterSourceShell extends AppShell {
                             'o_water' => $row['SURVEY_CONTAINER_OUT'],
                             'i_positive' => $row['POSITIVE_CONTAINER_IN'],
                             'o_positive' => $row['POSITIVE_CONTAINER_OUT'],
-                    )));
+                        );
+                        $theId = $this->CenterSource->field('id', array(
+                            'the_date' => $row['DATE'],
+                            'area_id' => $areaList[$areaKey],
+                        ));
+                    }
+
+                    if (empty($theId)) {
+                        $this->CenterSource->create();
+                        $this->CenterSource->save(array('CenterSource' => $dataPool[$dataKey]));
+                        $dataPool[$dataKey]['id'] = $this->CenterSource->getInsertID();
+                    } else {
+                        $this->CenterSource->id = $theId;
+                        $this->CenterSource->save(array('CenterSource' => $dataPool[$dataKey]));
+                    }
                 }
             }
         }
