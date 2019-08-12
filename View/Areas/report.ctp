@@ -36,6 +36,7 @@ foreach($expands AS $expand) {
     <th>備註</th>
 </thead>
 <tbody>
+    <?php if(count($expands) > 1) { ?>
     <tr class="table-info">
         <td>累計</td>
         <td><?php echo ($sum['count_p'] + $sum['count_n']); ?></td>
@@ -43,6 +44,7 @@ foreach($expands AS $expand) {
         <td><?php echo $sum['count_n']; ?></td>
         <td> </td>
     </tr>
+    <?php } ?>
     <?php foreach($expands AS $expand) { ?>
     <tr>
         <td><?php echo $expand['Area']['name']; ?></td>
@@ -82,6 +84,7 @@ foreach($fevers AS $fever) {
     <th>備註</th>
 </thead>
 <tbody>
+    <?php if(count($fevers) > 1) { ?>
     <tr class="table-info">
         <td>累計</td>
         <td><?php echo $sum['count_people']; ?></td>
@@ -91,6 +94,7 @@ foreach($fevers AS $fever) {
         <td><?php echo $sum['count_n']; ?></td>
         <td> </td>
     </tr>
+    <?php } ?>
     <?php foreach($fevers AS $fever) { ?>
     <tr>
         <td><?php echo $fever['Area']['name']; ?></td>
@@ -131,6 +135,7 @@ foreach($tracks AS $track) {
     <th>備註</th>
 </thead>
 <tbody>
+    <?php if(count($tracks) > 1) { ?>
     <tr class="table-info">
         <td>累計</td>
         <td><?php echo $sum['track_count']; ?></td>
@@ -149,6 +154,7 @@ foreach($tracks AS $track) {
         ?></td>
         <td> </td>
     </tr>
+    <?php } ?>
     <?php foreach($tracks AS $track) { ?>
     <tr>
         <td><?php echo $track['Area']['name']; ?></td>
@@ -185,11 +191,13 @@ foreach($centerSources AS $centerSource) {
         foreach($keys AS $key) {
             $areaSum[$centerSource['Area']['Parent']['name']][$key] = 0;
         }
+        $areaSum[$centerSource['Area']['Parent']['name']]['count'] = 0;
     }
     foreach($keys AS $key) {
         $sum[$key] += $centerSource['CenterSource'][$key];
         $areaSum[$centerSource['Area']['Parent']['name']][$key] += $centerSource['CenterSource'][$key];
     }
+    $areaSum[$centerSource['Area']['Parent']['name']]['count'] += 1;
 }
 ?>
 <table class="table table-bordered">
@@ -209,6 +217,7 @@ foreach($centerSources AS $centerSource) {
     <th>備註</th>
 </thead>
 <tbody>
+    <?php if(count($centerSources) > 1) { ?>
     <tr class="table-info">
         <td>累計</td>
         <td></td>
@@ -232,8 +241,9 @@ foreach($centerSources AS $centerSource) {
         <td><?php echo $sum['people']; ?></td>
         <td> </td>
     </tr>
+    <?php } ?>
     <?php foreach($centerSources AS $centerSource) {
-        if(isset($areaSum[$centerSource['Area']['Parent']['name']])) {
+        if(isset($areaSum[$centerSource['Area']['Parent']['name']]) && $areaSum[$centerSource['Area']['Parent']['name']]['count'] > 1) {
             ?>
     <tr class="table-warning">
         <td><?php echo $centerSource['Area']['Parent']['name']; ?>累計</td>
@@ -302,11 +312,13 @@ foreach($areaSources AS $areaSource) {
         foreach($keys AS $key) {
             $areaSum[$areaSource['Area']['Parent']['name']][$key] = 0;
         }
+        $areaSum[$areaSource['Area']['Parent']['name']]['count'] = 0;
     }
     foreach($keys AS $key) {
         $sum[$key] += $areaSource['AreaSource'][$key];
         $areaSum[$areaSource['Area']['Parent']['name']][$key] += $areaSource['AreaSource'][$key];
     }
+    $areaSum[$areaSource['Area']['Parent']['name']]['count'] += 1;
 }
 ?>
 <table class="table table-bordered">
@@ -325,6 +337,7 @@ foreach($areaSources AS $areaSource) {
     <th>備註</th>
 </thead>
 <tbody>
+    <?php if(count($areaSources) > 1) { ?>
     <tr class="table-info">
         <td>累計</td>
         <td></td>
@@ -347,8 +360,9 @@ foreach($areaSources AS $areaSource) {
         <td><?php echo $sum['people']; ?></td>
         <td> </td>
     </tr>
+    <?php } ?>
     <?php foreach($areaSources AS $areaSource) {
-        if(isset($areaSum[$areaSource['Area']['Parent']['name']])) {
+        if(isset($areaSum[$areaSource['Area']['Parent']['name']]) && $areaSum[$areaSource['Area']['Parent']['name']]['count'] > 1) {
             ?>
     <tr class="table-warning">
         <td><?php echo $areaSource['Area']['Parent']['name']; ?>累計</td>
@@ -416,11 +430,13 @@ foreach($volunteerSources AS $volunteerSource) {
         foreach($keys AS $key) {
             $areaSum[$volunteerSource['Area']['Parent']['name']][$key] = 0;
         }
+        $areaSum[$volunteerSource['Area']['Parent']['name']]['count'] = 0;
     }
     foreach($keys AS $key) {
         $sum[$key] += $volunteerSource['VolunteerSource'][$key];
         $areaSum[$volunteerSource['Area']['Parent']['name']][$key] += $volunteerSource['VolunteerSource'][$key];
     }
+    $areaSum[$volunteerSource['Area']['Parent']['name']]['count'] += 1;
 }
 ?>
 <table class="table table-bordered">
@@ -439,6 +455,7 @@ foreach($volunteerSources AS $volunteerSource) {
     <th>備註</th>
 </thead>
 <tbody>
+    <?php if(count($volunteerSources) > 1) { ?>
     <tr class="table-info">
         <td>累計</td>
         <td></td>
@@ -461,8 +478,9 @@ foreach($volunteerSources AS $volunteerSource) {
         <td><?php echo $sum['people']; ?></td>
         <td> </td>
     </tr>
+    <?php } ?>
     <?php foreach($volunteerSources AS $volunteerSource) {
-        if(isset($areaSum[$volunteerSource['Area']['Parent']['name']])) {
+        if(isset($areaSum[$volunteerSource['Area']['Parent']['name']]) && $areaSum[$volunteerSource['Area']['Parent']['name']]['count'] > 1) {
             ?>
     <tr class="table-warning">
         <td><?php echo $volunteerSource['Area']['Parent']['name']; ?>累計</td>
@@ -536,10 +554,12 @@ foreach($educations AS $education) {
     <th>宣導人次</th>
 </thead>
 <tbody>
+    <?php if(count($educations) > 1) { ?>
     <tr class="table-info">
         <td>累計</td>
         <td><?php echo $sum['education']; ?></td>
     </tr>
+    <?php } ?>
     <?php foreach($educations AS $education) {
         ?>
     <tr>
@@ -581,6 +601,7 @@ foreach($bureauSources AS $bureauSource) {
     <th>備註</th>
 </thead>
 <tbody>
+    <?php if(count($bureauSources) > 1) { ?>
     <tr class="table-info">
         <td>累計</td>
         <td><?php echo $sum['investigate']; ?></td>
@@ -602,6 +623,7 @@ foreach($bureauSources AS $bureauSource) {
         <td></td>
         <td></td>
     </tr>
+    <?php } ?>
     <?php foreach($bureauSources AS $bureauSource) {
         ?>
     <tr>
@@ -643,11 +665,13 @@ foreach($chemicals AS $chemical) {
         foreach($keys AS $key) {
             $areaSum[$chemical['Area']['Parent']['name']][$key] = 0;
         }
+        $areaSum[$chemical['Area']['Parent']['name']]['count'] = 0;
     }
     foreach($keys AS $key) {
         $sum[$key] += $chemical['Chemical'][$key];
         $areaSum[$chemical['Area']['Parent']['name']][$key] += $chemical['Chemical'][$key];
     }
+    $areaSum[$chemical['Area']['Parent']['name']]['count'] += 1;
 }
 ?>
 <table class="table table-bordered">
@@ -669,6 +693,7 @@ foreach($chemicals AS $chemical) {
     <th>備註</th>
 </thead>
 <tbody>
+    <?php if(count($chemicals) > 1) { ?>
     <tr class="table-info">
         <td>累計</td>
         <td></td>
@@ -698,8 +723,9 @@ foreach($chemicals AS $chemical) {
         ?></td>
         <td> </td>
     </tr>
+    <?php } ?>
     <?php foreach($chemicals AS $chemical) {
-        if(isset($areaSum[$chemical['Area']['Parent']['name']])) {
+        if(isset($areaSum[$chemical['Area']['Parent']['name']]) && $areaSum[$chemical['Area']['Parent']['name']]['count'] > 1) {
             ?>
     <tr class="table-warning">
         <td><?php echo $chemical['Area']['Parent']['name']; ?>累計</td>
@@ -791,6 +817,7 @@ foreach($feverMonitors AS $feverMonitor) {
     <th>備註</th>
 </thead>
 <tbody>
+    <?php if(count($feverMonitors) > 1) { ?>
     <tr class="table-info">
         <td>累計</td>
         <td><?php echo $sum['people_count']; ?></td>
@@ -803,6 +830,7 @@ foreach($feverMonitors AS $feverMonitor) {
         ?></td>
         <td></td>
     </tr>
+    <?php } ?>
     <?php foreach($feverMonitors AS $feverMonitor) {
         ?>
     <tr>
@@ -843,6 +871,7 @@ foreach($clinicReports AS $clinicReport) {
     <th>備註</th>
 </thead>
 <tbody>
+    <?php if(count($clinicReports) > 1) { ?>
     <tr class="table-info">
         <td>累計</td>
         <td><?php echo ($sum['count_p'] + $sum['count_n']); ?></td>
@@ -850,6 +879,7 @@ foreach($clinicReports AS $clinicReport) {
         <td><?php echo $sum['count_n']; ?></td>
         <td></td>
     </tr>
+    <?php } ?>
     <?php foreach($clinicReports AS $clinicReport) {
         ?>
     <tr>
