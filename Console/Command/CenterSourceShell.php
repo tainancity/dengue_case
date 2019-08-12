@@ -40,6 +40,7 @@ class CenterSourceShell extends AppShell {
         //$result = $dbh->query('SELECT * FROM Mosquito_Density1 WHERE DATE = CAST(\'' . $today . '\' AS DATE)');
         $result = $dbh->query('SELECT * FROM Mosquito_Density1 WHERE DATE > CAST(\'2019-06-01\' AS DATE) ORDER BY DATE DESC');
         if ($result) {
+            $this->CenterSource->cacheQueries = false;
             foreach ($result as $row) {
                 $areaKey = $row['DISTRICT_NAME'] . $row['VILLAGE_NAME'];
                 if (isset($nameMap[$areaKey])) {
