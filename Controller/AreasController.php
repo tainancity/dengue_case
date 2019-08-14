@@ -192,6 +192,182 @@ class AreasController extends AppController {
         $this->set('items', $items);
     }
 
+    public function health_add() {
+        $this->set('areas', $this->Area->find('list', array(
+                    'conditions' => array(
+                        'Area.parent_id IS NULL'
+                    ),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
+        if (empty($this->data)) {
+            $this->data = array(
+                'Education' => array(
+                    'education' => 0,
+                ),
+                'Expand' => array(
+                    'the_date' => date('Y-m-d'),
+                    'count_p' => 0,
+                    'count_n' => 0,
+                ),
+                'Fever' => array(
+                    'count_people' => 0,
+                    'count_fever' => 0,
+                    'count_draw' => 0,
+                    'count_p' => 0,
+                    'count_n' => 0,
+                ),
+                'Track' => array(
+                    'track_count' => 0,
+                    'track_done' => 0,
+                    'fever_count' => 0,
+                    'fever_draw' => 0,
+                ),
+            );
+        } else {
+            $dataToSave = $this->data;
+            $selectedDate = $dataToSave['Expand']['the_date'];
+            $dataToSave['Fever']['the_date'] = $selectedDate;
+            $dataToSave['Fever']['area_id'] = $dataToSave['Expand']['area_id'];
+            $dataToSave['Track']['the_date'] = $selectedDate;
+            $dataToSave['Track']['area_id'] = $dataToSave['Expand']['area_id'];
+            $dataToSave['Education']['the_date'] = $selectedDate;
+            $dataToSave['Education']['area_id'] = $dataToSave['Expand']['area_id'];
+            $dataToSave['Education']['unit'] = '衛生所';
+
+            $expandId = $this->Area->Expand->field('id', array(
+                'the_date' => $selectedDate,
+                'area_id' => $dataToSave['Expand']['area_id'],
+            ));
+            if (empty($expandId)) {
+                $this->Area->Expand->create();
+                $dataToSave['Expand']['created_by'] = $dataToSave['Fever']['created_by'] = $dataToSave['Track']['created_by'] = $dataToSave['Expand']['modified_by'] = $dataToSave['Fever']['modified_by'] = $dataToSave['Track']['modified_by'] = Configure::read('loginMember.id');
+            } else {
+                $this->Area->Expand->id = $expandId;
+                $dataToSave['Expand']['modified_by'] = $dataToSave['Fever']['modified_by'] = $dataToSave['Track']['modified_by'] = Configure::read('loginMember.id');
+            }
+            $this->Area->Expand->save($dataToSave);
+            
+            $educationId = $this->Area->Education->field('id', array(
+                'the_date' => $dataToSave['Education']['the_date'],
+                'area_id' => $dataToSave['Education']['area_id'],
+                'unit' => $dataToSave['Education']['unit'],
+            ));
+            if (empty($educationId)) {
+                $this->Area->Education->create();
+                $dataToSave['Education']['created_by'] = $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+            } else {
+                $this->Area->Education->id = $educationId;
+                $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+            }
+            $this->Area->Education->save($dataToSave);
+
+            $feverId = $this->Area->Fever->field('id', array(
+                'the_date' => $selectedDate,
+                'area_id' => $dataToSave['Fever']['area_id'],
+            ));
+            if (empty($feverId)) {
+                $this->Area->Fever->create();
+            } else {
+                $this->Area->Fever->id = $feverId;
+            }
+            $this->Area->Fever->save($dataToSave);
+
+            $trackId = $this->Area->Track->field('id', array(
+                'the_date' => $selectedDate,
+                'area_id' => $dataToSave['Track']['area_id'],
+            ));
+            if (empty($trackId)) {
+                $this->Area->Track->create();
+            } else {
+                $this->Area->Track->id = $trackId;
+            }
+            $this->Area->Track->save($dataToSave);
+
+            $savingCount = 0;
+            foreach ($this->data['CenterSource']['area_id'] AS $k => $v) {
+                $dataToSave = array(
+                    'CenterSource' => array(
+                        'the_date' => $selectedDate,
+                        'area_id' => $v,
+                        'investigate' => $this->data['CenterSource']['investigate'][$k],
+                        'i_water' => $this->data['CenterSource']['i_water'][$k],
+                        'i_positive' => $this->data['CenterSource']['i_positive'][$k],
+                        'o_water' => $this->data['CenterSource']['o_water'][$k],
+                        'o_positive' => $this->data['CenterSource']['o_positive'][$k],
+                        'positive_done' => $this->data['CenterSource']['positive_done'][$k],
+                        'fine' => $this->data['CenterSource']['fine'][$k],
+                        'people' => $this->data['CenterSource']['people'][$k],
+                        'note' => $this->data['CenterSource']['note'][$k],
+                    ),
+                );
+                $theId = $this->Area->CenterSource->field('id', array(
+                    'the_date' => $selectedDate,
+                    'area_id' => $dataToSave['CenterSource']['area_id'],
+                ));
+                if (empty($theId)) {
+                    $this->Area->CenterSource->create();
+                    $dataToSave['CenterSource']['created_by'] = $dataToSave['CenterSource']['modified_by'] = Configure::read('loginMember.id');
+                } else {
+                    $this->Area->CenterSource->id = $theId;
+                    $dataToSave['CenterSource']['modified_by'] = Configure::read('loginMember.id');
+                }
+                $this->Area->CenterSource->save($dataToSave);
+            }
+            $this->redirect(array('action' => 'health_list'));
+        }
+    }
+
+    public function health_edit() {
+        
+    }
+
+    public function health_list() {
+        $this->paginate['Expand'] = array(
+            'limit' => 20,
+            'contain' => array(
+                'Area' => array('fields' => array('name')),
+                'MemberModified' => array('fields' => array('username')),
+            ),
+            'order' => array(
+                'modified' => 'DESC'
+            ),
+        );
+        $items = $this->paginate($this->Area->Expand);
+        foreach ($items AS $k => $v) {
+            $items[$k]['Fever'] = $this->Area->Fever->find('first', array(
+                        'conditions' => array(
+                            'Fever.the_date' => $v['Expand']['the_date'],
+                            'Fever.area_id' => $v['Expand']['area_id'],
+                        ),
+                    ))['Fever'];
+            $items[$k]['Track'] = $this->Area->Track->find('first', array(
+                        'conditions' => array(
+                            'Track.the_date' => $v['Expand']['the_date'],
+                            'Track.area_id' => $v['Expand']['area_id'],
+                        ),
+                    ))['Track'];
+        }
+        $this->set('items', $items);
+    }
+
+    public function bureau_add() {
+        
+    }
+
+    public function bureau_edit() {
+        
+    }
+
+    public function center_add() {
+        
+    }
+
+    public function center_edit() {
+        
+    }
+
     public function clinic_reports_delete($id = 0) {
         $id = intval($id);
         if ($id > 0) {
@@ -401,7 +577,7 @@ class AreasController extends AppController {
                     ),
         )));
     }
-    
+
     public function daily_cases_list() {
         $this->loadModel('DailyCase');
         $this->paginate['DailyCase'] = array(
