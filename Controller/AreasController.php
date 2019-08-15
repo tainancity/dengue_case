@@ -248,7 +248,7 @@ class AreasController extends AppController {
                 $dataToSave['Expand']['modified_by'] = $dataToSave['Fever']['modified_by'] = $dataToSave['Track']['modified_by'] = Configure::read('loginMember.id');
             }
             $this->Area->Expand->save($dataToSave);
-            
+
             $educationId = $this->Area->Education->field('id', array(
                 'the_date' => $dataToSave['Education']['the_date'],
                 'area_id' => $dataToSave['Education']['area_id'],
@@ -319,8 +319,157 @@ class AreasController extends AppController {
         }
     }
 
-    public function health_edit() {
-        
+    public function health_edit($expandId = 0) {
+        $expandId = intval($expandId);
+        if ($expandId > 0) {
+            $expand = $this->Area->Expand->find('first', array(
+                'conditions' => array(
+                    'Expand.id' => $expandId,
+                ),
+                'contain' => array(
+                    'Area' => array(
+                        'fields' => array('name'),
+                    ),
+                ),
+            ));
+        }
+        if (!empty($expand)) {
+            $cunlis = $this->Area->find('list', array(
+                'conditions' => array(
+                    'Area.parent_id' => $expand['Expand']['area_id'],
+                ),
+                'fields' => array('Area.id', 'Area.name'),
+            ));
+            $education = $this->Area->Education->find('first', array(
+                'conditions' => array(
+                    'the_date' => $expand['Expand']['the_date'],
+                    'area_id' => $expand['Expand']['area_id'],
+                ),
+            ));
+            $fever = $this->Area->Fever->find('first', array(
+                'conditions' => array(
+                    'the_date' => $expand['Expand']['the_date'],
+                    'area_id' => $expand['Expand']['area_id'],
+                ),
+            ));
+            $track = $this->Area->Track->find('first', array(
+                'conditions' => array(
+                    'the_date' => $expand['Expand']['the_date'],
+                    'area_id' => $expand['Expand']['area_id'],
+                ),
+            ));
+            $centerSources = $this->Area->CenterSource->find('all', array(
+                'conditions' => array(
+                    'the_date' => $expand['Expand']['the_date'],
+                    'area_id' => array_keys($cunlis),
+                ),
+            ));
+
+            if (empty($this->data)) {
+                $this->data = array(
+                    'Expand' => $expand['Expand'],
+                    'Education' => $education['Education'],
+                    'Fever' => $fever['Fever'],
+                    'Track' => $track['Track'],
+                );
+            } else {
+                $dataToSave = $this->data;
+                $this->Area->Expand->id = $dataToSave['Expand']['id'];
+                $dataToSave['Expand']['modified_by'] = Configure::read('loginMember.id');
+                $this->Area->Expand->save($dataToSave);
+                $this->Area->Fever->id = $dataToSave['Fever']['id'];
+                $dataToSave['Fever']['modified_by'] = Configure::read('loginMember.id');
+                $this->Area->Fever->save($dataToSave);
+                $this->Area->Track->id = $dataToSave['Track']['id'];
+                $dataToSave['Track']['modified_by'] = Configure::read('loginMember.id');
+                $this->Area->Track->save($dataToSave);
+                $this->Area->Education->id = $dataToSave['Education']['id'];
+                $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+                $this->Area->Education->save($dataToSave);
+                $areaIdPool = array();
+                foreach ($dataToSave['CenterSource']['id'] AS $key => $id) {
+                    if (isset($dataToSave['CenterSource']['delete']) && in_array($id, $dataToSave['CenterSource']['delete'])) {
+                        $this->Area->CenterSource->delete($id);
+                    } else {
+                        if (isset($areaIdPool[$dataToSave['CenterSource']['area_id'][$key]])) {
+                            $theId = $areaIdPool[$dataToSave['CenterSource']['area_id'][$key]];
+                        } else {
+                            $theId = $this->Area->CenterSource->field('id', array(
+                                'the_date' => $expand['Expand']['the_date'],
+                                'area_id' => $dataToSave['CenterSource']['area_id'][$key],
+                            ));
+                        }
+                        $centerSource = array('CenterSource' => array(
+                                'the_date' => $expand['Expand']['the_date'],
+                                'area_id' => $dataToSave['CenterSource']['area_id'][$key],
+                                'investigate' => $dataToSave['CenterSource']['investigate'][$key],
+                                'i_water' => $dataToSave['CenterSource']['i_water'][$key],
+                                'i_positive' => $dataToSave['CenterSource']['i_positive'][$key],
+                                'o_water' => $dataToSave['CenterSource']['o_water'][$key],
+                                'o_positive' => $dataToSave['CenterSource']['o_positive'][$key],
+                                'positive_done' => $dataToSave['CenterSource']['positive_done'][$key],
+                                'fine' => $dataToSave['CenterSource']['fine'][$key],
+                                'people' => $dataToSave['CenterSource']['people'][$key],
+                                'note' => $dataToSave['CenterSource']['note'][$key],
+                        ));
+                        if (empty($theId)) {
+                            $this->Area->CenterSource->create();
+                            $centerSource['CenterSource']['created_by'] = $centerSource['CenterSource']['modified_by'] = Configure::read('loginMember.id');
+                        } else {
+                            $areaIdPool[$dataToSave['CenterSource']['area_id'][$key]] = $theId;
+                            $this->Area->CenterSource->id = $theId;
+                            $centerSource['CenterSource']['modified_by'] = Configure::read('loginMember.id');
+                        }
+                        $this->Area->CenterSource->save($centerSource);
+                        if (empty($theId)) {
+                            $areaIdPool[$dataToSave['CenterSource']['area_id'][$key]] = $this->Area->CenterSource->getInsertID();
+                        }
+                    }
+                }
+                $this->redirect(array('action' => 'health_list'));
+            }
+            $this->set('expand', $expand);
+            $this->set('cunlis', $cunlis);
+            $this->set('centerSources', $centerSources);
+        }
+    }
+
+    public function health_delete($expandId) {
+        $expandId = intval($expandId);
+        if ($expandId > 0) {
+            $expand = $this->Area->Expand->find('first', array(
+                'conditions' => array(
+                    'Expand.id' => $expandId,
+                ),
+            ));
+            $cunlis = $this->Area->find('list', array(
+                'conditions' => array(
+                    'Area.parent_id' => $expand['Expand']['area_id'],
+                ),
+                'fields' => array('Area.id', 'Area.id'),
+            ));
+            $this->Area->CenterSource->deleteAll(array(
+                'the_date' => $expand['Expand']['the_date'],
+                'area_id' => $cunlis,
+            ));
+            $this->Area->Education->deleteAll(array(
+                'the_date' => $expand['Expand']['the_date'],
+                'area_id' => $expand['Expand']['area_id'],
+            ));
+            $this->Area->Fever->deleteAll(array(
+                'the_date' => $expand['Expand']['the_date'],
+                'area_id' => $expand['Expand']['area_id'],
+            ));
+            $this->Area->Track->deleteAll(array(
+                'the_date' => $expand['Expand']['the_date'],
+                'area_id' => $expand['Expand']['area_id'],
+            ));
+            $this->Area->Expand->deleteAll(array(
+                'the_date' => $expand['Expand']['the_date'],
+                'area_id' => $expand['Expand']['area_id'],
+            ));
+        }
+        $this->redirect(array('action' => 'health_list'));
     }
 
     public function health_list() {
