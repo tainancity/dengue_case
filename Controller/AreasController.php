@@ -344,8 +344,16 @@ class AreasController extends AppController {
                 'conditions' => array(
                     'the_date' => $expand['Expand']['the_date'],
                     'area_id' => $expand['Expand']['area_id'],
+                    'unit' => '衛生所',
                 ),
             ));
+            if(empty($education)) {
+                $education = array(
+                    'Education' => array(
+                        'education' => 0,
+                    ),
+                );
+            }
             $fever = $this->Area->Fever->find('first', array(
                 'conditions' => array(
                     'the_date' => $expand['Expand']['the_date'],
@@ -364,6 +372,22 @@ class AreasController extends AppController {
                     'area_id' => array_keys($cunlis),
                 ),
             ));
+            if(empty($centerSources)) {
+                $centerSources = array(
+                    array('CenterSource' => array(
+                        'id' => 0,
+                        'investigate' => 0,
+                        'i_water' => 0,
+                        'o_water' => 0,
+                        'i_positive' => 0,
+                        'o_positive' => 0,
+                        'positive_done' => 0,
+                        'people' => 0,
+                        'fine' => 0,
+                        'note' => '',
+                    ))
+                );
+            }
 
             if (empty($this->data)) {
                 $this->data = array(
@@ -384,6 +408,12 @@ class AreasController extends AppController {
                 $dataToSave['Track']['modified_by'] = Configure::read('loginMember.id');
                 $this->Area->Track->save($dataToSave);
                 $this->Area->Education->id = $dataToSave['Education']['id'];
+                if(empty($dataToSave['Education']['id'])) {
+                    $dataToSave['Education']['the_date'] = $expand['Expand']['the_date'];
+                    $dataToSave['Education']['area_id'] = $expand['Expand']['area_id'];
+                    $dataToSave['Education']['unit'] = '衛生所';
+                    $dataToSave['Education']['created_by'] = Configure::read('loginMember.id');
+                }
                 $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
                 $this->Area->Education->save($dataToSave);
                 $areaIdPool = array();
@@ -455,6 +485,7 @@ class AreasController extends AppController {
             $this->Area->Education->deleteAll(array(
                 'the_date' => $expand['Expand']['the_date'],
                 'area_id' => $expand['Expand']['area_id'],
+                'unit' => '衛生所',
             ));
             $this->Area->Fever->deleteAll(array(
                 'the_date' => $expand['Expand']['the_date'],
@@ -502,11 +533,298 @@ class AreasController extends AppController {
     }
 
     public function bureau_add() {
-        
+        if (empty($this->data)) {
+            $this->data = array(
+                'Education' => array(
+                    'the_date' => date('Y-m-d'),
+                    'education' => 0,
+                ),
+            );
+        } else {
+            $dataToSave = $this->data;
+            $dataToSave['Education']['unit'] = '區公所';
+            $educationId = $this->Area->Education->field('id', array(
+                'the_date' => $dataToSave['Education']['the_date'],
+                'area_id' => $dataToSave['Education']['area_id'],
+                'unit' => $dataToSave['Education']['unit'],
+            ));
+            if (empty($educationId)) {
+                $this->Area->Education->create();
+                $dataToSave['Education']['created_by'] = $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+            } else {
+                $this->Area->Education->id = $educationId;
+                $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+            }
+            $this->Area->Education->save($dataToSave);
+
+            foreach ($this->data['AreaSource']['area_id'] AS $k => $v) {
+                $areaSource = array(
+                    'AreaSource' => array(
+                        'the_date' => $dataToSave['Education']['the_date'],
+                        'area_id' => $v,
+                        'investigate' => $this->data['AreaSource']['investigate'][$k],
+                        'i_water' => $this->data['AreaSource']['i_water'][$k],
+                        'i_positive' => $this->data['AreaSource']['i_positive'][$k],
+                        'o_water' => $this->data['AreaSource']['o_water'][$k],
+                        'o_positive' => $this->data['AreaSource']['o_positive'][$k],
+                        'positive_done' => $this->data['AreaSource']['positive_done'][$k],
+                        'people' => $this->data['AreaSource']['people'][$k],
+                        'note' => $this->data['AreaSource']['note'][$k],
+                    ),
+                );
+                $theId = $this->Area->AreaSource->field('id', array(
+                    'the_date' => $dataToSave['Education']['the_date'],
+                    'area_id' => $areaSource['AreaSource']['area_id'],
+                ));
+                if (empty($theId)) {
+                    $this->Area->AreaSource->create();
+                    $areaSource['AreaSource']['created_by'] = $areaSource['AreaSource']['modified_by'] = Configure::read('loginMember.id');
+                } else {
+                    $this->Area->AreaSource->id = $theId;
+                    $areaSource['AreaSource']['modified_by'] = Configure::read('loginMember.id');
+                }
+                $this->Area->AreaSource->save($areaSource);
+            }
+
+            foreach ($this->data['VolunteerSource']['area_id'] AS $k => $v) {
+                $volunteerSource = array(
+                    'VolunteerSource' => array(
+                        'the_date' => $dataToSave['Education']['the_date'],
+                        'area_id' => $v,
+                        'investigate' => $this->data['VolunteerSource']['investigate'][$k],
+                        'i_water' => $this->data['VolunteerSource']['i_water'][$k],
+                        'i_positive' => $this->data['VolunteerSource']['i_positive'][$k],
+                        'o_water' => $this->data['VolunteerSource']['o_water'][$k],
+                        'o_positive' => $this->data['VolunteerSource']['o_positive'][$k],
+                        'positive_done' => $this->data['VolunteerSource']['positive_done'][$k],
+                        'people' => $this->data['VolunteerSource']['people'][$k],
+                        'note' => $this->data['VolunteerSource']['note'][$k],
+                    ),
+                );
+                $theId = $this->Area->VolunteerSource->field('id', array(
+                    'the_date' => $dataToSave['Education']['the_date'],
+                    'area_id' => $volunteerSource['VolunteerSource']['area_id'],
+                ));
+                if (empty($theId)) {
+                    $this->Area->VolunteerSource->create();
+                    $volunteerSource['VolunteerSource']['created_by'] = $volunteerSource['VolunteerSource']['modified_by'] = Configure::read('loginMember.id');
+                } else {
+                    $this->Area->VolunteerSource->id = $theId;
+                    $volunteerSource['VolunteerSource']['modified_by'] = Configure::read('loginMember.id');
+                }
+                $this->Area->VolunteerSource->save($volunteerSource);
+            }
+            $this->redirect(array('action' => 'bureau_list'));
+        }
+        $this->set('areas', $this->Area->find('list', array(
+                    'conditions' => array(
+                        'Area.parent_id IS NULL'
+                    ),
+                    'fields' => array('id', 'name'),
+                    'order' => array(
+                        'Area.code' => 'DESC'
+                    ),
+        )));
     }
 
-    public function bureau_edit() {
-        
+    public function bureau_edit($educationId = 0) {
+        $educationId = intval($educationId);
+        if ($educationId > 0) {
+            $education = $this->Area->Education->find('first', array(
+                'conditions' => array('Education.id' => $educationId),
+                'contain' => array(
+                    'Area' => array(
+                        'fields' => array('name')
+                    ),
+                ),
+            ));
+        }
+        if (!empty($education)) {
+            if (empty($this->data)) {
+                $cunlis = $this->Area->find('list', array(
+                    'conditions' => array(
+                        'Area.parent_id' => $education['Education']['area_id'],
+                    ),
+                    'fields' => array('Area.id', 'Area.name'),
+                ));
+                $areaSources = $this->Area->AreaSource->find('all', array(
+                    'conditions' => array(
+                        'the_date' => $education['Education']['the_date'],
+                        'area_id' => array_keys($cunlis),
+                    ),
+                ));
+                if (empty($areaSources)) {
+                    $areaSources = array(
+                        array('AreaSource' => array(
+                                'id' => 0,
+                                'area_id' => 0,
+                                'investigate' => 0,
+                                'i_water' => 0,
+                                'i_positive' => 0,
+                                'o_water' => 0,
+                                'o_positive' => 0,
+                                'positive_done' => 0,
+                                'people' => 0,
+                                'note' => '',
+                            )),
+                    );
+                }
+                $volunteerSources = $this->Area->VolunteerSource->find('all', array(
+                    'conditions' => array(
+                        'the_date' => $education['Education']['the_date'],
+                        'area_id' => array_keys($cunlis),
+                    ),
+                ));
+                if (empty($volunteerSources)) {
+                    $volunteerSources = array(
+                        array('VolunteerSource' => array(
+                                'id' => 0,
+                                'area_id' => 0,
+                                'investigate' => 0,
+                                'i_water' => 0,
+                                'i_positive' => 0,
+                                'o_water' => 0,
+                                'o_positive' => 0,
+                                'positive_done' => 0,
+                                'people' => 0,
+                                'note' => '',
+                            ))
+                    );
+                }
+                $this->set('education', $education);
+                $this->set('cunlis', $cunlis);
+                $this->set('areaSources', $areaSources);
+                $this->set('volunteerSources', $volunteerSources);
+            } else {
+                $dataToSave = $this->data;
+                $dataToSave['Education']['unit'] = '區公所';
+                $educationId = $this->Area->Education->field('id', array(
+                    'the_date' => $education['Education']['the_date'],
+                    'area_id' => $education['Education']['area_id'],
+                    'unit' => $education['Education']['unit'],
+                ));
+                if (empty($educationId)) {
+                    $this->Area->Education->create();
+                    $dataToSave['Education']['created_by'] = $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+                } else {
+                    $this->Area->Education->id = $educationId;
+                    $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+                }
+                $this->Area->Education->save($dataToSave);
+
+                foreach ($this->data['AreaSource']['id'] AS $k => $v) {
+                    if (isset($this->data['AreaSource']['delete']) && in_array($v, $this->data['AreaSource']['delete'])) {
+                        $this->Area->AreaSource->delete($v);
+                    } else {
+                        $areaSource = array(
+                            'AreaSource' => array(
+                                'the_date' => $education['Education']['the_date'],
+                                'area_id' => $this->data['AreaSource']['area_id'][$k],
+                                'investigate' => $this->data['AreaSource']['investigate'][$k],
+                                'i_water' => $this->data['AreaSource']['i_water'][$k],
+                                'i_positive' => $this->data['AreaSource']['i_positive'][$k],
+                                'o_water' => $this->data['AreaSource']['o_water'][$k],
+                                'o_positive' => $this->data['AreaSource']['o_positive'][$k],
+                                'positive_done' => $this->data['AreaSource']['positive_done'][$k],
+                                'people' => $this->data['AreaSource']['people'][$k],
+                                'note' => $this->data['AreaSource']['note'][$k],
+                            ),
+                        );
+                        $theId = $this->Area->AreaSource->field('id', array(
+                            'the_date' => $education['Education']['the_date'],
+                            'area_id' => $areaSource['AreaSource']['area_id'],
+                        ));
+                        if (empty($theId)) {
+                            $this->Area->AreaSource->create();
+                            $areaSource['AreaSource']['created_by'] = $areaSource['AreaSource']['modified_by'] = Configure::read('loginMember.id');
+                        } else {
+                            $this->Area->AreaSource->id = $theId;
+                            $areaSource['AreaSource']['modified_by'] = Configure::read('loginMember.id');
+                        }
+                        $this->Area->AreaSource->save($areaSource);
+                    }
+                }
+
+                foreach ($this->data['VolunteerSource']['id'] AS $k => $v) {
+                    if (isset($this->data['VolunteerSource']['delete']) && in_array($v, $this->data['VolunteerSource']['delete'])) {
+                        $this->Area->VolunteerSource->delete($v);
+                    } else {
+                        $volunteerSource = array(
+                            'VolunteerSource' => array(
+                                'the_date' => $education['Education']['the_date'],
+                                'area_id' => $this->data['VolunteerSource']['area_id'][$k],
+                                'investigate' => $this->data['VolunteerSource']['investigate'][$k],
+                                'i_water' => $this->data['VolunteerSource']['i_water'][$k],
+                                'i_positive' => $this->data['VolunteerSource']['i_positive'][$k],
+                                'o_water' => $this->data['VolunteerSource']['o_water'][$k],
+                                'o_positive' => $this->data['VolunteerSource']['o_positive'][$k],
+                                'positive_done' => $this->data['VolunteerSource']['positive_done'][$k],
+                                'people' => $this->data['VolunteerSource']['people'][$k],
+                                'note' => $this->data['VolunteerSource']['note'][$k],
+                            ),
+                        );
+                        $theId = $this->Area->VolunteerSource->field('id', array(
+                            'the_date' => $education['Education']['the_date'],
+                            'area_id' => $volunteerSource['VolunteerSource']['area_id'],
+                        ));
+                        if (empty($theId)) {
+                            $this->Area->VolunteerSource->create();
+                            $volunteerSource['VolunteerSource']['created_by'] = $volunteerSource['VolunteerSource']['modified_by'] = Configure::read('loginMember.id');
+                        } else {
+                            $this->Area->VolunteerSource->id = $theId;
+                            $volunteerSource['VolunteerSource']['modified_by'] = Configure::read('loginMember.id');
+                        }
+                        $this->Area->VolunteerSource->save($volunteerSource);
+                    }
+                }
+                $this->redirect(array('action' => 'bureau_list'));
+            }
+        } else {
+            $this->Session->setFlash('請依照網頁指示操作');
+            $this->redirect(array('action' => 'bureau_list'));
+        }
+    }
+
+    public function bureau_delete($educationId = 0) {
+        $educationId = intval($educationId);
+        if ($educationId > 0) {
+            $education = $this->Area->Education->find('first', array(
+                'conditions' => array('Education.id' => $educationId),
+            ));
+        }
+        if (!empty($education)) {
+            $cunlis = $this->Area->find('list', array(
+                'conditions' => array(
+                    'Area.parent_id' => $education['Education']['area_id'],
+                ),
+                'fields' => array('Area.id', 'Area.id'),
+            ));
+            $this->Area->Education->delete($educationId);
+            $this->Area->VolunteerSource->deleteAll(array(
+                'the_date' => $education['Education']['the_date'],
+                'area_id' => $cunlis,
+            ));
+            $this->Area->AreaSource->deleteAll(array(
+                'the_date' => $education['Education']['the_date'],
+                'area_id' => $cunlis,
+            ));
+        }
+        $this->redirect(array('action' => 'bureau_list'));
+    }
+
+    public function bureau_list() {
+        $this->paginate['Education'] = array(
+            'limit' => 20,
+            'contain' => array(
+                'MemberModified' => array('fields' => array('username')),
+                'Area' => array('fields' => array('name')),
+            ),
+            'order' => array(
+                'modified' => 'DESC'
+            ),
+        );
+        $items = $this->paginate($this->Area->Education, array('Education.unit' => '區公所'));
+        $this->set('items', $items);
     }
 
     public function center_add() {
@@ -514,6 +832,14 @@ class AreasController extends AppController {
     }
 
     public function center_edit() {
+        
+    }
+
+    public function center_delete() {
+        
+    }
+
+    public function center_list() {
         
     }
 

@@ -1,4 +1,3 @@
-var cunliPool = {};
 $(function () {
     $('#btn-add-cunli').click(function () {
         var clonedBlock = $('.cunli-block').first().clone();

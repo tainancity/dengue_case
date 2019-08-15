@@ -3,7 +3,7 @@
     echo $this->Form->create('Area', array('type' => 'file', 'url' => array('action' => 'health_edit', $expand['Expand']['id'])));
     ?>
     <div class="Areas form">
-        <h1>衛生所</h1>
+        <h1>衛生所填報</h1>
         <div class="row">
             <div class="col">日期： <?php echo $expand['Expand']['the_date']; ?></div>
             <div class="col">地區： <?php echo $expand['Area']['name']; ?></div>
@@ -115,7 +115,7 @@
         <div id="formContainer" class="form-inline">
             <?php foreach($centerSources AS $centerSource) { ?>
             <div class="alert alert-dark cunli-block" role="alert">
-                <input type="hidden" class="centerSourceId" name="CenterSource[id][]" value="<?php echo $centerSource['CenterSource']['id']; ?>">
+                <input type="hidden" name="CenterSource[id][]" value="<?php echo $centerSource['CenterSource']['id']; ?>">
                 <div class="input-group mb-2 mr-sm-2 float-left" style="width: 30%;">
                     <div class="input-group-prepend">
                         <div class="input-group-text">里別</div>
