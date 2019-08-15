@@ -29,18 +29,14 @@
                 <div class="btn-group">
                     <?php
                     switch(Configure::read('loginMember.Group.name')) {
-                        case '衛生局':
+                        case '衛生所':
                             echo $this->Html->link('報表', '/areas/report', array('class' => 'btn btn-info'));
-                            echo $this->Html->link('衛生所疫情監測', '/areas/health_bureau_list', array('class' => 'btn btn-info'));
-                            echo $this->Html->link('衛生所中心監測孳生源清除', '/areas/center_sources_list', array('class' => 'btn btn-info'));
-                            echo $this->Html->link('衛教宣導', '/areas/educations_list', array('class' => 'btn btn-info'));
+                            echo $this->Html->link('衛生所填報', '/areas/health_list', array('class' => 'btn btn-info'));
                             echo $this->Html->link('登出', '/members/logout', array('class' => 'btn btn-info'));
                             break;
                         case '區公所':
                             echo $this->Html->link('報表', '/areas/report', array('class' => 'btn btn-info'));
-                            echo $this->Html->link('區公所社區監測組孳生源清除', '/areas/area_sources_list', array('class' => 'btn btn-info'));
-                            echo $this->Html->link('防疫志工隊孳生源清除', '/areas/volunteer_sources_list', array('class' => 'btn btn-info'));
-                            echo $this->Html->link('衛教宣導', '/areas/educations_list', array('class' => 'btn btn-info'));
+                            echo $this->Html->link('區公所填報', '/areas/bureau_list', array('class' => 'btn btn-info'));
                             echo $this->Html->link('登出', '/members/logout', array('class' => 'btn btn-info'));
                             break;
                         case '局處':
@@ -51,10 +47,9 @@
                         case 'Admin':
                             echo $this->Html->link('案例', '/admin/issues', array('class' => 'btn btn-info'));
                             echo $this->Html->link('報表', '/areas/report', array('class' => 'btn btn-info'));
-                            echo $this->Html->link('衛生所', '/areas/health_list', array('class' => 'btn btn-info'));
-                            echo $this->Html->link('區公所', '/areas/bureau_list', array('class' => 'btn btn-info'));
+                            echo $this->Html->link('衛生所填報', '/areas/health_list', array('class' => 'btn btn-info'));
+                            echo $this->Html->link('區公所填報', '/areas/bureau_list', array('class' => 'btn btn-info'));
                             echo $this->Html->link('疫情現況', '/areas/daily_cases_list', array('class' => 'btn btn-info'));
-                            echo $this->Html->link('衛教宣導', '/areas/educations_list', array('class' => 'btn btn-info'));
                             echo $this->Html->link('各局處轄管防疫動員', '/areas/bureau_sources_list', array('class' => 'btn btn-info'));
                             echo $this->Html->link('化學防治', '/areas/chemicals_list', array('class' => 'btn btn-info'));
                             echo $this->Html->link('就醫健康監視人數', '/areas/fever_monitors_list', array('class' => 'btn btn-info'));
