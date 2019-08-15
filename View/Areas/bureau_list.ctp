@@ -31,7 +31,7 @@ if (!isset($url)) {
                 ?>
             <tr<?php echo $class; ?>>
                 <td><?php
-                        echo $item['Education']['the_date'];
+                echo $this->Html->link($item['Education']['the_date'], '/areas/report/' . $item['Education']['the_date']);
                         ?></td>
                 <td><?php
                         echo $item['Area']['name'];
