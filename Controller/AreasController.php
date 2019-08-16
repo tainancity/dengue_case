@@ -511,7 +511,7 @@ class AreasController extends AppController {
                 'MemberModified' => array('fields' => array('username')),
             ),
             'order' => array(
-                'modified' => 'DESC'
+                'the_date' => 'DESC'
             ),
         );
         $items = $this->paginate($this->Area->Expand);
@@ -820,7 +820,7 @@ class AreasController extends AppController {
                 'Area' => array('fields' => array('name')),
             ),
             'order' => array(
-                'modified' => 'DESC'
+                'the_date' => 'DESC'
             ),
         );
         $items = $this->paginate($this->Area->Education, array('Education.unit' => '區公所'));
