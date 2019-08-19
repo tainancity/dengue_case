@@ -38,7 +38,7 @@ class CenterSourceShell extends AppShell {
         $dbh = new PDO($pdoConfig['odbc'], $pdoConfig['id'], $pdoConfig['password']);
         //$today = date('Y-m-d');
         //$result = $dbh->query('SELECT * FROM Mosquito_Density1 WHERE DATE = CAST(\'' . $today . '\' AS DATE)');
-        $result = $dbh->query('SELECT * FROM Mosquito_Density1 WHERE DATE > CAST(\'2019-06-01\' AS DATE) ORDER BY DATE DESC');
+        $result = $dbh->query('SELECT * FROM Mosquito_Density1 WHERE DATE > CAST(\'2019-08-12\' AS DATE) ORDER BY DATE DESC');
         if ($result) {
             $dataPool = array();
             foreach ($result as $row) {
