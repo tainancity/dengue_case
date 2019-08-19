@@ -9,6 +9,8 @@ if (!isset($url)) {
     <div class="btn-group">
         <?php echo $this->Html->link('新增', array('action' => 'add'), array('class' => 'btn btn-secondary')); ?>
         <?php echo $this->Html->link('匯入', array('action' => 'import'), array('class' => 'btn btn-secondary')); ?>
+        <?php echo $this->Html->link('匯出稽督單', array('action' => 'export', 1), array('class' => 'btn btn-secondary')); ?>
+        <?php echo $this->Html->link('匯出發文清單', array('action' => 'export', 2), array('class' => 'btn btn-secondary')); ?>
     </div>
     <div class="paging"><?php echo $this->element('paginator'); ?></div>
     <table class="table table-bordered" id="CdcPointsAdminIndexTable">

@@ -27,7 +27,84 @@ class CdcPointsController extends AppController {
         $items = $this->paginate($this->CdcPoint);
         $this->set('items', $items);
     }
-
+    
+    public function admin_export($reportType = '1') {
+        $this->layout = 'ajax';
+        $this->response->disableCache();
+        $this->response->download('report_' . $reportType . '.csv');
+        $headers = $this->response->header('Content-Type', 'application/csv');
+        foreach ($headers AS $name => $value) {
+            header("{$name}: {$value}");
+        }
+        $f = fopen('php://memory', 'w');
+        $result = array();
+        switch($reportType) {
+            case '1':
+                $result[] = array('發文日期', '發文字號', '稽督單件數', '地方回復日期', '地方回復方式', '已改善件數', '裁處件數');
+                $items = $this->CdcPoint->find('all', array(
+                    'order' => array(
+                        'issue_date' => 'ASC'
+                    ),
+                ));
+                $pool = array();
+                foreach($items AS $item) {
+                    if(!isset($pool[$item['CdcPoint']['issue_no']])) {
+                        $pool[$item['CdcPoint']['issue_no']] = array(
+                            'date' => $item['CdcPoint']['issue_date'],
+                            'count' => 0,
+                        );
+                    }
+                    ++$pool[$item['CdcPoint']['issue_no']]['count'];
+                }
+                
+                foreach($pool AS $k => $v) {
+                    $result[] = array($v['date'], $k, $v['count'], '', '', '', '');
+                }
+                break;
+            case '2':
+                $result[] = array('發文日期', '發文字號', '稽督單件數');
+                $items = $this->CdcPoint->find('all', array(
+                    'fields' => array('issue_date', 'issue_no'),
+                    'order' => array(
+                        'issue_date' => 'ASC'
+                    ),
+                ));
+                $pool = array();
+                $count = array(
+                    'issue' => 0,
+                    'point' => 0,
+                );
+                foreach($items AS $item) {
+                    if(!isset($pool[$item['CdcPoint']['issue_no']])) {
+                        $pool[$item['CdcPoint']['issue_no']] = array(
+                            'date' => $item['CdcPoint']['issue_date'],
+                            'count' => 0,
+                        );
+                    }
+                    ++$pool[$item['CdcPoint']['issue_no']]['count'];
+                    ++$count['point'];
+                }
+                
+                foreach($pool AS $k => $v) {
+                    ++$count['issue'];
+                    $result[] = array($v['date'], $k, $v['count']);
+                }
+                $result[] = array('總計', $count['issue'], $count['point']);
+                break;
+        }
+        if (!empty($result)) {
+            foreach ($result AS $line) {
+                foreach ($line AS $k => $v) {
+                    $line[$k] = mb_convert_encoding($v, 'big5', 'utf-8');
+                }
+                fputcsv($f, $line);
+            }
+            fseek($f, 0);
+        }
+        fpassthru($f);
+        exit();
+    }
+    
     public function admin_import() {
         if (!empty($this->data['CdcPoint']['file']['tmp_name'])) {
             $count = 0;
