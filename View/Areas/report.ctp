@@ -16,7 +16,7 @@ echo $this->Form->input('the_date', array(
 <p><?php echo $theDate; ?> 防治成果如下：</p>
 <p>一、疫情監測</p>
 <p>（一）疫情現況：本土 <?php echo $dailyCase['DailyCase']['count_local']; ?> 例，境外 <?php echo $dailyCase['DailyCase']['count_imported']; ?> 例</p>
-<p>（二）擴採人數及結果（衛生所）</p>
+<p>（二）擴採人數及結果（衛生所）<span class="float-right"><?php echo $this->Html->link('匯出', '/areas/export/Expand/' . $theDate, array('target' => '_blank')); ?></span></p>
 <?php
 $sum = array(
     'count_p' => 0,
@@ -56,7 +56,7 @@ foreach($expands AS $expand) {
     <?php } ?>
 </tbody>
 </table>
-<p>（三）個案家戶發燒追蹤成果（衛生所）</p>
+<p>（三）個案家戶發燒追蹤成果（衛生所）<span class="float-right"><?php echo $this->Html->link('匯出', '/areas/export/Fever/' . $theDate, array('target' => '_blank')); ?></span></p>
 <?php
 $sum = array(
     'count_people' => 0,
@@ -108,7 +108,7 @@ foreach($fevers AS $fever) {
     <?php } ?>
 </tbody>
 </table>
-<p>（四）登革熱個案住家半徑 50 公尺民眾健康追蹤（衛生所）</p>
+<p>（四）登革熱個案住家半徑 50 公尺民眾健康追蹤（衛生所）<span class="float-right"><?php echo $this->Html->link('匯出', '/areas/export/Track/' . $theDate, array('target' => '_blank')); ?></span></p>
 <?php
 $sum = array(
     'track_count' => 0,
@@ -177,7 +177,7 @@ foreach($tracks AS $track) {
     <?php } ?>
 </tbody>
 </table>
-<p>二、衛生所中心監測孳生源清除</p>
+<p>二、衛生所中心監測孳生源清除<span class="float-right"><?php echo $this->Html->link('匯出', '/areas/export/CenterSource/' . $theDate, array('target' => '_blank')); ?></span></p>
 <?php
 $keys = array('investigate', 'i_water', 'i_positive', 'o_water', 'o_positive', 'positive_done', 'fine', 'people');
 $sum = array();
@@ -298,7 +298,7 @@ foreach($centerSources AS $centerSource) {
     <?php } ?>
 </tbody>
 </table>
-<p>三、區公所社區監測組孳生源清除（含里幹事）</p>
+<p>三、區公所社區監測組孳生源清除（含里幹事）<span class="float-right"><?php echo $this->Html->link('匯出', '/areas/export/AreaSource/' . $theDate, array('target' => '_blank')); ?></span></p>
 <?php
 $keys = array('investigate', 'i_water', 'i_positive', 'o_water', 'o_positive', 'positive_done', 'people');
 $sum = array();
@@ -416,7 +416,7 @@ foreach($areaSources AS $areaSource) {
 </tbody>
 </table>
 
-<p>四、防疫志工隊孳生源清除（區公所）</p>
+<p>四、防疫志工隊孳生源清除（區公所）<span class="float-right"><?php echo $this->Html->link('匯出', '/areas/export/VolunteerSource/' . $theDate, array('target' => '_blank')); ?></span></p>
 <?php
 $keys = array('investigate', 'i_water', 'i_positive', 'o_water', 'o_positive', 'positive_done', 'people');
 $sum = array();
@@ -534,7 +534,7 @@ foreach($volunteerSources AS $volunteerSource) {
 </tbody>
 </table>
 
-<p>五、衛教宣導（衛生所、區公所）</p>
+<p>五、衛教宣導（衛生所、區公所）<span class="float-right"><?php echo $this->Html->link('匯出', '/areas/export/Education/' . $theDate, array('target' => '_blank')); ?></span></p>
 <?php
 $keys = array('education');
 $sum = array();
@@ -570,7 +570,7 @@ foreach($educations AS $education) {
 </tbody>
 </table>
 
-<p>六、各局處轄管防疫動員（各局處）</p>
+<p>六、各局處轄管防疫動員（各局處）<span class="float-right"><?php echo $this->Html->link('匯出', '/areas/export/BureauSource/' . $theDate, array('target' => '_blank')); ?></span></p>
 <?php
 $keys = array('investigate', 'i_water', 'i_positive', 'o_water', 'o_positive', 'positive_done', 'education', 'people');
 $sum = array();
@@ -651,7 +651,7 @@ foreach($bureauSources AS $bureauSource) {
 </tbody>
 </table>
 
-<p>七、化學防治（化學組）</p>
+<p>七、化學防治（化學組）<span class="float-right"><?php echo $this->Html->link('匯出', '/areas/export/Chemical/' . $theDate, array('target' => '_blank')); ?></span></p>
 <?php
 $keys = array('trips', 'door_count', 'door_done', 'fine', 'people', 'i_water', 'i_positive', 'o_water', 'o_positive');
 $sum = array();
@@ -793,7 +793,7 @@ foreach($chemicals AS $chemical) {
 </tbody>
 </table>
 
-<p>八、診所發燒病人就醫健康監視人數（疫情組）</p>
+<p>八、診所發燒病人就醫健康監視人數（疫情組）<span class="float-right"><?php echo $this->Html->link('匯出', '/areas/export/FeverMonitor/' . $theDate, array('target' => '_blank')); ?></span></p>
 <?php
 $keys = array('people_count', 'people_track');
 $sum = array();
@@ -848,7 +848,7 @@ foreach($feverMonitors AS $feverMonitor) {
 </tbody>
 </table>
 
-<p>九、醫療院所通報數（疫情組）</p>
+<p>九、醫療院所通報數（疫情組）<span class="float-right"><?php echo $this->Html->link('匯出', '/areas/export/ClinicReport/' . $theDate, array('target' => '_blank')); ?></span></p>
 <?php
 $keys = array('count_p', 'count_n');
 $sum = array();
