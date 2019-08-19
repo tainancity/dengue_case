@@ -5,6 +5,12 @@
     <div class="CdcPoints form">
         <h2>新增稽查點</h2>
         <?php
+        echo $this->Form->input('CdcPoint.code', array(
+            'type' => 'text',
+            'label' => '代號',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
         echo $this->Form->input('CdcPoint.date_found', array(
             'type' => 'text',
             'label' => '查核日期',

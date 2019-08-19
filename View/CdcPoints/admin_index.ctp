@@ -8,6 +8,7 @@ if (!isset($url)) {
     <h1>疾管署稽督單</h1>
     <div class="btn-group">
         <?php echo $this->Html->link('新增', array('action' => 'add'), array('class' => 'btn btn-secondary')); ?>
+        <?php echo $this->Html->link('匯入', array('action' => 'import'), array('class' => 'btn btn-secondary')); ?>
     </div>
     <div class="paging"><?php echo $this->element('paginator'); ?></div>
     <table class="table table-bordered" id="CdcPointsAdminIndexTable">
@@ -15,6 +16,7 @@ if (!isset($url)) {
             <tr>
                 <th><?php echo $this->Paginator->sort('CdcPoint.date_found', '日期', array('url' => $url)); ?></th>
                 <th>區域</th>
+                <th>住址</th>
                 <th>異動者</th>
                 <th><?php echo $this->Paginator->sort('CdcPoint.modified', '更新時間', array('url' => $url)); ?></th>
                 <th class="actions">操作</th>
@@ -35,6 +37,9 @@ if (!isset($url)) {
                         ?></td>
                 <td><?php
                         echo $item['Area']['Parent']['name'] . $item['Area']['name'];
+                        ?></td>
+                <td><?php
+                echo $item['CdcPoint']['address'];
                         ?></td>
                 <td><?php
                         echo $item['MemberModified']['username'];
