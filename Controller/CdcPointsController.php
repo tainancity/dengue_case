@@ -52,13 +52,21 @@ class CdcPointsController extends AppController {
                         $pool[$item['CdcPoint']['issue_no']] = array(
                             'date' => $item['CdcPoint']['issue_date'],
                             'count' => 0,
+                            'done' => 0,
+                            'rows' => array(),
                         );
                     }
                     ++$pool[$item['CdcPoint']['issue_no']]['count'];
+                    if(!empty($item['CdcPoint']['recheck_date'])) {
+                        ++$pool[$item['CdcPoint']['issue_no']]['done'];
+                    }
+                    $pool[$item['CdcPoint']['issue_no']]['rows'][] = $item;
                 }
 
                 foreach ($pool AS $k => $v) {
-                    $result[] = array($v['date'], $k, $v['count'], '', '', '', '');
+                    foreach($v['rows'] AS $row) {
+                        $result[] = array($v['date'], $k, $v['count'], $row['CdcPoint']['issue_reply_date'], $row['CdcPoint']['issue_reply_no'], $v['done'], $v['fine']);
+                    }
                 }
                 break;
             case '2':
