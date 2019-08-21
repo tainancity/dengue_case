@@ -29,7 +29,6 @@ class CdcPointsController extends AppController {
     }
 
     public function admin_export($reportType = '1') {
-        $f = fopen('php://memory', 'w');
         $result = array();
         switch ($reportType) {
             case '1':
@@ -135,6 +134,7 @@ class CdcPointsController extends AppController {
         foreach ($headers AS $name => $value) {
             header("{$name}: {$value}");
         }
+        $f = fopen('php://memory', 'w');
         if (!empty($result)) {
             foreach ($result AS $line) {
                 foreach ($line AS $k => $v) {
