@@ -27,7 +27,7 @@ class CdcPointsController extends AppController {
         $items = $this->paginate($this->CdcPoint);
         $this->set('items', $items);
     }
-    
+
     public function admin_export($reportType = '1') {
         $this->layout = 'ajax';
         $this->response->disableCache();
@@ -38,7 +38,7 @@ class CdcPointsController extends AppController {
         }
         $f = fopen('php://memory', 'w');
         $result = array();
-        switch($reportType) {
+        switch ($reportType) {
             case '1':
                 $result[] = array('發文日期', '發文字號', '稽督單件數', '地方回復日期', '地方回復方式', '已改善件數', '裁處件數');
                 $items = $this->CdcPoint->find('all', array(
@@ -47,8 +47,8 @@ class CdcPointsController extends AppController {
                     ),
                 ));
                 $pool = array();
-                foreach($items AS $item) {
-                    if(!isset($pool[$item['CdcPoint']['issue_no']])) {
+                foreach ($items AS $item) {
+                    if (!isset($pool[$item['CdcPoint']['issue_no']])) {
                         $pool[$item['CdcPoint']['issue_no']] = array(
                             'date' => $item['CdcPoint']['issue_date'],
                             'count' => 0,
@@ -56,8 +56,8 @@ class CdcPointsController extends AppController {
                     }
                     ++$pool[$item['CdcPoint']['issue_no']]['count'];
                 }
-                
-                foreach($pool AS $k => $v) {
+
+                foreach ($pool AS $k => $v) {
                     $result[] = array($v['date'], $k, $v['count'], '', '', '', '');
                 }
                 break;
@@ -74,8 +74,8 @@ class CdcPointsController extends AppController {
                     'issue' => 0,
                     'point' => 0,
                 );
-                foreach($items AS $item) {
-                    if(!isset($pool[$item['CdcPoint']['issue_no']])) {
+                foreach ($items AS $item) {
+                    if (!isset($pool[$item['CdcPoint']['issue_no']])) {
                         $pool[$item['CdcPoint']['issue_no']] = array(
                             'date' => $item['CdcPoint']['issue_date'],
                             'count' => 0,
@@ -84,12 +84,47 @@ class CdcPointsController extends AppController {
                     ++$pool[$item['CdcPoint']['issue_no']]['count'];
                     ++$count['point'];
                 }
-                
-                foreach($pool AS $k => $v) {
+
+                foreach ($pool AS $k => $v) {
                     ++$count['issue'];
                     $result[] = array($v['date'], $k, $v['count']);
                 }
                 $result[] = array('總計', $count['issue'], $count['point']);
+                break;
+            case '3':
+                $result[] = array('代碼', '查核日期', '縣市', '區別', '里別', '查核地址', '本署發文日期', '文號', '臺南市函復日期', '文號', '複查日期', '複查結果', '舉發單', '說明');
+                $items = $this->CdcPoint->find('all', array(
+                    'contain' => array(
+                        'Area' => array(
+                            'fields' => array('name'),
+                            'Parent' => array(
+                                'fields' => array('name'),
+                            ),
+                        ),
+                    ),
+                    'order' => array(
+                        'issue_date' => 'ASC'
+                    ),
+                ));
+                foreach ($items AS $item) {
+                    $result[] = array(
+                        $item['CdcPoint']['code'],
+                        $item['CdcPoint']['date_found'],
+                        '臺南市',
+                        $item['Area']['Parent']['name'],
+                        $item['Area']['name'],
+                        $item['CdcPoint']['address'],
+                        $item['CdcPoint']['issue_date'],
+                        $item['CdcPoint']['issue_no'],
+                        $item['CdcPoint']['issue_reply_date'],
+                        $item['CdcPoint']['issue_reply_no'],
+                        $item['CdcPoint']['recheck_date'],
+                        $item['CdcPoint']['recheck_result'],
+                        $item['CdcPoint']['fine'],
+                        $item['CdcPoint']['note'],
+                    );
+                }
+
                 break;
         }
         if (!empty($result)) {
@@ -104,7 +139,7 @@ class CdcPointsController extends AppController {
         fpassthru($f);
         exit();
     }
-    
+
     public function admin_import() {
         if (!empty($this->data['CdcPoint']['file']['tmp_name'])) {
             $count = 0;
