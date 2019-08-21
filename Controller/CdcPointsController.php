@@ -29,13 +29,6 @@ class CdcPointsController extends AppController {
     }
 
     public function admin_export($reportType = '1') {
-        $this->layout = 'ajax';
-        $this->response->disableCache();
-        $this->response->download('report_' . $reportType . '.csv');
-        $headers = $this->response->header('Content-Type', 'application/csv');
-        foreach ($headers AS $name => $value) {
-            header("{$name}: {$value}");
-        }
         $f = fopen('php://memory', 'w');
         $result = array();
         switch ($reportType) {
@@ -65,7 +58,7 @@ class CdcPointsController extends AppController {
 
                 foreach ($pool AS $k => $v) {
                     foreach($v['rows'] AS $row) {
-                        $result[] = array($v['date'], $k, $v['count'], $row['CdcPoint']['issue_reply_date'], $row['CdcPoint']['issue_reply_no'], $v['done'], $v['fine']);
+                        $result[] = array($v['date'], $k, $v['count'], $row['CdcPoint']['issue_reply_date'], $row['CdcPoint']['issue_reply_no'], $v['done'], $row['CdcPoint']['fine']);
                     }
                 }
                 break;
@@ -134,6 +127,13 @@ class CdcPointsController extends AppController {
                 }
 
                 break;
+        }
+        $this->layout = 'ajax';
+        $this->response->disableCache();
+        $this->response->download('report_' . $reportType . '.csv');
+        $headers = $this->response->header('Content-Type', 'application/csv');
+        foreach ($headers AS $name => $value) {
+            header("{$name}: {$value}");
         }
         if (!empty($result)) {
             foreach ($result AS $line) {
