@@ -21,7 +21,7 @@ class CdcPointsController extends AppController {
                 ),
             ),
             'order' => array(
-                'the_date' => 'DESC'
+                'modified' => 'DESC'
             ),
         );
         $items = $this->paginate($this->CdcPoint);
@@ -49,14 +49,14 @@ class CdcPointsController extends AppController {
                         );
                     }
                     ++$pool[$item['CdcPoint']['issue_no']]['count'];
-                    if(!empty($item['CdcPoint']['recheck_date'])) {
+                    if (!empty($item['CdcPoint']['recheck_date'])) {
                         ++$pool[$item['CdcPoint']['issue_no']]['done'];
                     }
                     $pool[$item['CdcPoint']['issue_no']]['rows'][] = $item;
                 }
 
                 foreach ($pool AS $k => $v) {
-                    foreach($v['rows'] AS $row) {
+                    foreach ($v['rows'] AS $row) {
                         $result[] = array($v['date'], $k, $v['count'], $row['CdcPoint']['issue_reply_date'], $row['CdcPoint']['issue_reply_no'], $v['done'], $row['CdcPoint']['fine']);
                     }
                 }
@@ -261,6 +261,27 @@ class CdcPointsController extends AppController {
             $dataToSave = $this->data;
             $dataToSave['CdcPoint']['created_by'] = $dataToSave['CdcPoint']['modified_by'] = Configure::read('loginMember.id');
             if ($this->CdcPoint->save($dataToSave)) {
+                if (!empty($dataToSave['CdcImage']['file'][0]['size'])) {
+                    $pointId = $this->CdcPoint->getInsertID();
+                    foreach ($dataToSave['CdcImage']['file'] AS $f) {
+                        if (!empty($f['size'])) {
+                            $img = array(
+                                'cdc_point_id' => $pointId,
+                                'file' => CakeText::uuid() . '.jpg',
+                                'created_by' => $dataToSave['CdcPoint']['created_by'],
+                            );
+                            $targetFile = WWW_ROOT . 'uploads/' . $img['file'];
+                            $imagick = new Imagick($f['tmp_name']);
+                            $imagick->setImageFormat('jpeg');
+                            $imagick->setImageCompression(Imagick::COMPRESSION_JPEG);
+                            $imagick->setImageCompressionQuality(80);
+                            $imagick->thumbnailImage(1280, 1280, false, false);
+                            file_put_contents($targetFile, $imagick);
+                            $this->CdcPoint->CdcImage->create();
+                            $this->CdcPoint->CdcImage->save(array('CdcImage' => $img));
+                        }
+                    }
+                }
                 $this->Session->setFlash('資料已經儲存');
                 $this->redirect(array('action' => 'index'));
             } else {
@@ -284,6 +305,9 @@ class CdcPointsController extends AppController {
                 'conditions' => array(
                     'CdcPoint.id' => $id,
                 ),
+                'contain' => array(
+                    'CdcImage'
+                ),
             ));
         }
         if (empty($dbCdcPoint)) {
@@ -295,6 +319,35 @@ class CdcPointsController extends AppController {
             $this->CdcPoint->id = $id;
             $dataToSave['CdcPoint']['modified_by'] = Configure::read('loginMember.id');
             if ($this->CdcPoint->save($dataToSave)) {
+                if (!empty($dataToSave['CdcImage']['file'][0]['size'])) {
+                    foreach ($dataToSave['CdcImage']['file'] AS $f) {
+                        if (!empty($f['size'])) {
+                            $img = array(
+                                'cdc_point_id' => $id,
+                                'file' => CakeText::uuid() . '.jpg',
+                                'created_by' => $dataToSave['CdcPoint']['modified_by'],
+                            );
+                            $targetFile = WWW_ROOT . 'uploads/' . $img['file'];
+                            $imagick = new Imagick($f['tmp_name']);
+                            $imagick->setImageFormat('jpeg');
+                            $imagick->setImageCompression(Imagick::COMPRESSION_JPEG);
+                            $imagick->setImageCompressionQuality(80);
+                            $imagick->thumbnailImage(1280, 1280, false, false);
+                            file_put_contents($targetFile, $imagick);
+                            $this->CdcPoint->CdcImage->create();
+                            $this->CdcPoint->CdcImage->save(array('CdcImage' => $img));
+                        }
+                    }
+                }
+                if (!empty($dataToSave['CdcImage']['delete'])) {
+                    foreach ($dataToSave['CdcImage']['delete'] AS $imgId) {
+                        $imgDb = $this->CdcPoint->CdcImage->read(null, $imgId);
+                        if (!empty($imgDb)) {
+                            @unlink(WWW_ROOT . 'uploads/' . $imgDb['CdcImage']['file']);
+                            $this->CdcPoint->CdcImage->delete($imgId);
+                        }
+                    }
+                }
                 $this->Session->setFlash('資料已經儲存');
                 $this->redirect('/admin/cdc_points/index');
             } else {
@@ -319,12 +372,19 @@ class CdcPointsController extends AppController {
                 'conditions' => array(
                     'CdcPoint.id' => $id,
                 ),
+                'contain' => array(
+                    'CdcImage',
+                ),
             ));
         }
         if (empty($dbCdcPoint)) {
             $this->Session->setFlash('請依照網頁指示操作');
             $this->redirect('/');
         } else if ($this->CdcPoint->delete($id)) {
+            foreach ($dbCdcPoint['CdcImage'] AS $img) {
+                @unlink(WWW_ROOT . 'uploads/' . $img['file']);
+                $this->CdcPoint->CdcImage->delete($img['id']);
+            }
             $this->Session->setFlash('資料已經刪除');
             $this->redirect('/admin/cdc_points/index');
         }

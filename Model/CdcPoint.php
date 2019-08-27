@@ -19,5 +19,26 @@ class CdcPoint extends AppModel {
             'className' => 'Member',
         ),
     );
+    var $hasMany = array(
+        'CdcImage' => array(
+            'foreignKey' => 'cdc_point_id',
+            'dependent' => false,
+            'className' => 'CdcImage',
+        ),
+    );
+    public $validate = array(
+        'date_found' => array(
+            'notBlank' => array(
+                'rule' => array('notBlank'),
+                'message' => '這個欄位必填',
+            ),
+        ),
+        'issue_date' => array(
+            'notBlank' => array(
+                'rule' => array('notBlank'),
+                'message' => '這個欄位必填',
+            ),
+        ),
+    );
 
 }

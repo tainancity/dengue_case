@@ -3,7 +3,7 @@
     echo $this->Form->create('CdcPoint', array('type' => 'file', 'url' => array('action' => 'edit', $this->data['CdcPoint']['id'])));
     ?>
     <div class="CdcPoints form">
-        <h2>新增稽查點</h2>
+        <h2>編輯稽查點</h2>
         <?php
         echo $this->Form->input('CdcPoint.code', array(
             'type' => 'text',
@@ -93,6 +93,27 @@
         echo $this->Form->input('CdcPoint.latitude', array(
             'type' => 'text',
             'label' => '緯度',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        if(!empty($this->data['CdcImage'])) {
+            echo '<div class="clearfix"></div>';
+            $urlRoot = $this->Html->url('/');
+            foreach($this->data['CdcImage'] AS $img) {
+                $imgUrl = $urlRoot . 'uploads/' . $img['file'];
+                echo '<figure class="figure" style="width: 200px;">';
+                echo '<a href="' . $imgUrl . '" target="_blank">';
+                echo '<img class="img-thumbnail" src="' . $imgUrl . '" />';
+                echo '</a>';
+                echo '<figcaption class="figure-caption"><input type="checkbox" name="data[CdcImage][delete][]" value="' . $img['id'] . '" />刪除</figcaption>';
+                echo '</figure>';
+            }
+            echo '<div class="clearfix"></div>';
+        }
+        echo $this->Form->input('CdcImage.file.', array(
+            'type' => 'file',
+            'multiple' => 'multiple',
+            'label' => '上傳圖片',
             'div' => 'form-group',
             'class' => 'form-control',
         ));

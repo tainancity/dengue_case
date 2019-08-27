@@ -96,6 +96,13 @@
             'div' => 'form-group',
             'class' => 'form-control',
         ));
+        echo $this->Form->input('CdcImage.file.', array(
+            'type' => 'file',
+            'multiple' => 'multiple',
+            'label' => '上傳圖片',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
         ?>
     </div>
     <?php
