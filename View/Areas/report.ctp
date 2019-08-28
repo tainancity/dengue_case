@@ -13,7 +13,7 @@ echo $this->Form->input('the_date', array(
             'class' => 'form-control',
         ));
 ?>
-<p><?php echo $theDate; ?> 防治成果如下：</p>
+<p><?php echo $theDate; ?> 防治成果如下：<span class="float-right"><?php echo $this->Html->link('匯出', '/areas/export/All/' . $theDate, array('target' => '_blank')); ?></span></p>
 <p>一、疫情監測</p>
 <p>（一）疫情現況：本土 <?php echo $dailyCase['DailyCase']['count_local']; ?> 例，境外 <?php echo $dailyCase['DailyCase']['count_imported']; ?> 例</p>
 <p>（二）擴採人數及結果（衛生所）<span class="float-right"><?php echo $this->Html->link('匯出', '/areas/export/Expand/' . $theDate, array('target' => '_blank')); ?></span></p>
