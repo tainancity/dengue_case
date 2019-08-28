@@ -121,6 +121,11 @@ class MembersController extends AppController {
             }
         }
         $this->set('groups', $this->Member->Group->find('list'));
+        $this->set('areas', array_merge(array('0' => '--'), $this->Member->Area->find('list', array(
+            'conditions' => array(
+                'Area.parent_id IS NULL'
+            ),
+        ))));
     }
 
     public function admin_edit($id = null) {
@@ -148,6 +153,11 @@ class MembersController extends AppController {
             $this->request->data = $this->Member->read(null, $id);
         }
         $this->set('groups', $this->Member->Group->find('list'));
+        $this->set('areas', array_merge(array('0' => '--'), $this->Member->Area->find('list', array(
+            'conditions' => array(
+                'Area.parent_id IS NULL'
+            ),
+        ))));
     }
 
     public function admin_delete($id = null) {

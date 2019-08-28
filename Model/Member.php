@@ -9,6 +9,10 @@ class Member extends AppModel {
             'foreignKey' => 'group_id',
             'className' => 'Group',
         ),
+        'Area' => array(
+            'foreignKey' => 'area_id',
+            'className' => 'Area',
+        ),
     );
 
     public function parentNode() {
