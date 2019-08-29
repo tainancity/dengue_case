@@ -157,7 +157,7 @@ class MembersController extends AppController {
         }
         $this->paginate['Member'] = array(
             'order' => array('Member.id DESC'),
-            'contain' => array('Group'),
+            'contain' => array('Group', 'Area'),
             'limit' => 40,
         );
         $this->set('members', $this->paginate($this->Member, $scope));
@@ -183,12 +183,13 @@ class MembersController extends AppController {
                 $this->Session->setFlash('執行時發生錯誤，請重試');
             }
         }
+        $areas = $this->Member->Area->find('list', array(
+            'conditions' => array(
+                'Area.parent_id IS NULL'
+            ),
+        ));
         $this->set('groups', $this->Member->Group->find('list'));
-        $this->set('areas', array_merge(array('0' => '--'), $this->Member->Area->find('list', array(
-                            'conditions' => array(
-                                'Area.parent_id IS NULL'
-                            ),
-        ))));
+        $this->set('areas', array_replace_recursive(array('0' => '--'), $areas));
     }
 
     public function admin_edit($id = null) {
@@ -215,12 +216,13 @@ class MembersController extends AppController {
         if (empty($this->request->data)) {
             $this->request->data = $this->Member->read(null, $id);
         }
+        $areas = $this->Member->Area->find('list', array(
+            'conditions' => array(
+                'Area.parent_id IS NULL'
+            ),
+        ));
         $this->set('groups', $this->Member->Group->find('list'));
-        $this->set('areas', array_merge(array('0' => '--'), $this->Member->Area->find('list', array(
-                            'conditions' => array(
-                                'Area.parent_id IS NULL'
-                            ),
-        ))));
+        $this->set('areas', array_replace_recursive(array('0' => '--'), $areas));
     }
 
     public function admin_delete($id = null) {
