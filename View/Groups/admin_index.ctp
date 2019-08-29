@@ -1,26 +1,18 @@
 <div id="GroupsAdminIndex">
-    <h2><?php echo __('Groups', true); ?></h2>
+    <h2>群組</h2>
     <div class="btn-group">
         <?php if ($parentId > 0): ?>
-            <?php echo $this->Html->link(__('Upper level', true), array('action' => 'index', $upperLevelId), array('class' => 'btn')); ?>
+            <?php echo $this->Html->link('上一層', array('action' => 'index', $upperLevelId), array('class' => 'btn btn-secondary')); ?>
         <?php endif; ?>
-        <?php echo $this->Html->link(__('New', true), array('action' => 'add', $parentId), array('class' => 'btn dialogControl')); ?>
-        <?php echo $this->Html->link(__('Members', true), array('controller' => 'members'), array('class' => 'btn')); ?>
-        <?php echo $this->Html->link(__('Group Permissions', true), array('controller' => 'group_permissions'), array('class' => 'btn')); ?>
+        <?php echo $this->Html->link('新增', array('action' => 'add', $parentId), array('class' => 'btn btn-secondary')); ?>
+        <?php echo $this->Html->link('使用者', array('controller' => 'members'), array('class' => 'btn btn-secondary')); ?>
+        <?php echo $this->Html->link('群組權限', array('controller' => 'group_permissions'), array('class' => 'btn btn-secondary')); ?>
     </div>
-    <p>
-        <?php
-        echo $this->Paginator->counter(array(
-            'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-        ));
-        ?>
-    </p>
     <div class="paging"><?php echo $this->element('paginator'); ?></div>
     <table class="table table-bordered" id="GroupsAdminIndexTable">
         <tr>
-            <th><?php echo $this->Paginator->sort(__('Id', true), 'id'); ?></th>
-            <th><?php echo $this->Paginator->sort(__('Name', true), 'name'); ?></th>
-            <th class="actions"><?php __('Actions'); ?></th>
+            <th><?php echo $this->Paginator->sort('name', '名稱'); ?></th>
+            <th class="actions">操作</th>
         </tr>
         <?php
         $i = 0;
@@ -32,19 +24,18 @@
             ?>
             <tr<?php echo $class; ?>>
                 <td>
-                    <?php echo $group['Group']['id']; ?>
-                </td>
-                <td>
                     <?php echo $group['Group']['name']; ?>
                 </td>
                 <td>
                     <div class="btn-group">
-                        <?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $group['Group']['id']), array('class' => 'btn btn-default dialogControl')); ?>
-                        <?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $group['Group']['id']), array('class' => 'btn btn-default'), __('Delete the item, sure?', true)); ?>
-                        <?php echo $this->Html->link(__('Sub group', true), array('action' => 'index', $group['Group']['id']), array('class' => 'btn btn-default')); ?>
+                        <?php echo $this->Html->link('編輯', array('action' => 'edit', $group['Group']['id']), array('class' => 'btn btn-secondary')); ?>
+                        <?php echo $this->Html->link('刪除', array('action' => 'delete', $group['Group']['id']), array('class' => 'btn btn-secondary'), __('Delete the item, sure?', true)); ?>
+                        <?php echo $this->Html->link('下一層', array('action' => 'index', $group['Group']['id']), array('class' => 'btn btn-secondary')); ?>
+                        <?php echo $this->Html->link('產生區公所帳號', array('controller' => 'members', 'action' => 'areas', $group['Group']['id'], '區公所'), array('class' => 'btn btn-secondary')); ?>
+                        <?php echo $this->Html->link('產生衛生所帳號', array('controller' => 'members', 'action' => 'areas', $group['Group']['id'], '衛生所'), array('class' => 'btn btn-secondary')); ?>
                         <?php
                         if ($group['Group']['id'] != 1) {
-                            echo $this->Html->link(__('Permission', true), array('controller' => 'group_permissions', 'action' => 'group', $group['Group']['id']), array('class' => 'btn btn-default'));
+                            echo $this->Html->link('權限', array('controller' => 'group_permissions', 'action' => 'group', $group['Group']['id']), array('class' => 'btn btn-secondary'));
                         }
                         ?>
                     </div>

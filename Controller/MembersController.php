@@ -71,6 +71,69 @@ class MembersController extends AppController {
         }
     }
 
+    public function admin_areas($groupId = 0, $unit = '') {
+        $groupId = intval($groupId);
+        $accounts = array();
+        if ($groupId > 0) {
+            $group = $this->Member->Group->read(null, $groupId);
+        }
+        if (!empty($group)) {
+            if ($unit !== '區公所') {
+                $accountPrefix = 'a';
+                $unit = '衛生所';
+            } else {
+                $accountPrefix = 'b';
+            }
+            $areas = $this->Member->Area->find('all', array(
+                'conditions' => array(
+                    'Area.parent_id IS NULL'
+                ),
+                'order' => array(
+                    'Area.code' => 'DESC',
+                ),
+            ));
+            foreach ($areas AS $area) {
+                $username = $accountPrefix . $area['Area']['code'];
+                $member = $this->Member->find('first', array(
+                    'conditions' => array(
+                        'Member.username' => $username,
+                    ),
+                ));
+                $password = random_int(1000, 9999);
+                if (empty($member)) {
+                    $this->Member->create();
+                    if ($this->Member->save(array('Member' => array(
+                                    'group_id' => $groupId,
+                                    'username' => $username,
+                                    'password' => $password,
+                                    'user_status' => 'Y',
+                                    'area_id' => $area['Area']['id'],
+                                    'unit' => $unit,
+                        )))) {
+                        $memberId = $this->Member->getInsertID();
+                        $this->Acl->Aro->saveField('alias', 'Member/' . $memberId);
+                        $accounts[] = array($area['Area']['name'] . $unit, $username, $password);
+                    }
+                } else {
+                    $this->Member->id = $member['Member']['id'];
+                    if ($this->Member->save(array('Member' => array(
+                                    'group_id' => $groupId,
+                                    'password' => $password,
+                                    'user_status' => 'Y',
+                        )))) {
+                        $aro = & $this->Acl->Aro;
+                        $member = $aro->findByForeignKeyAndModel($member['Member']['id'], 'Member');
+                        $group = $aro->findByForeignKeyAndModel($groupId, 'Group');
+                        $aro->id = $member['Aro']['id'];
+                        $aro->save(array('parent_id' => $group['Aro']['id']));
+                        $accounts[] = array($area['Area']['name'] . $unit, $username, $password);
+                    }
+                }
+            }
+        }
+        $this->set('accounts', $accounts);
+    }
+
     public function admin_index() {
         $scope = array();
         $keyword = '';
@@ -122,9 +185,9 @@ class MembersController extends AppController {
         }
         $this->set('groups', $this->Member->Group->find('list'));
         $this->set('areas', array_merge(array('0' => '--'), $this->Member->Area->find('list', array(
-            'conditions' => array(
-                'Area.parent_id IS NULL'
-            ),
+                            'conditions' => array(
+                                'Area.parent_id IS NULL'
+                            ),
         ))));
     }
 
@@ -154,9 +217,9 @@ class MembersController extends AppController {
         }
         $this->set('groups', $this->Member->Group->find('list'));
         $this->set('areas', array_merge(array('0' => '--'), $this->Member->Area->find('list', array(
-            'conditions' => array(
-                'Area.parent_id IS NULL'
-            ),
+                            'conditions' => array(
+                                'Area.parent_id IS NULL'
+                            ),
         ))));
     }
 
