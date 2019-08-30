@@ -11,13 +11,25 @@
             'div' => 'form-group',
             'class' => 'form-control',
         ));
-        echo $this->Form->input('Expand.area_id', array(
-            'label' => '地區',
-            'type' => 'select',
-            'options' => $areas,
-            'div' => 'form-group',
-            'class' => 'form-control',
-        ));
+        if(!empty($loginMember['Group']['is_area'])) {
+            echo $this->Form->input('Expand.area_id', array(
+                'label' => '地區',
+                'type' => 'select',
+                'value' => $loginMember['area_id'],
+                'disabled' => 'disabled',
+                'options' => $areas,
+                'div' => 'form-group',
+                'class' => 'form-control',
+            ));
+        } else {
+            echo $this->Form->input('Expand.area_id', array(
+                'label' => '地區',
+                'type' => 'select',
+                'options' => $areas,
+                'div' => 'form-group',
+                'class' => 'form-control',
+            ));
+        }
         echo $this->Form->input('Education.education', array(
             'label' => '宣導人次',
             'type' => 'number',

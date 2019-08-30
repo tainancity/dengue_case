@@ -290,6 +290,7 @@ class AreasController extends AppController {
     }
 
     public function health_add() {
+        $loginMember = Configure::read('loginMember');
         $this->set('areas', $this->Area->find('list', array(
                     'conditions' => array(
                         'Area.parent_id IS NULL'
@@ -325,6 +326,9 @@ class AreasController extends AppController {
         } else {
             $dataToSave = $this->data;
             $selectedDate = $dataToSave['Expand']['the_date'];
+            if(!empty($loginMember['Group']['is_area'])) {
+                $dataToSave['Expand']['area_id'] = $loginMember['area_id'];
+            }
             $dataToSave['Fever']['the_date'] = $selectedDate;
             $dataToSave['Fever']['area_id'] = $dataToSave['Expand']['area_id'];
             $dataToSave['Track']['the_date'] = $selectedDate;
@@ -339,10 +343,10 @@ class AreasController extends AppController {
             ));
             if (empty($expandId)) {
                 $this->Area->Expand->create();
-                $dataToSave['Expand']['created_by'] = $dataToSave['Fever']['created_by'] = $dataToSave['Track']['created_by'] = $dataToSave['Expand']['modified_by'] = $dataToSave['Fever']['modified_by'] = $dataToSave['Track']['modified_by'] = Configure::read('loginMember.id');
+                $dataToSave['Expand']['created_by'] = $dataToSave['Fever']['created_by'] = $dataToSave['Track']['created_by'] = $dataToSave['Expand']['modified_by'] = $dataToSave['Fever']['modified_by'] = $dataToSave['Track']['modified_by'] = $loginMember['id'];
             } else {
                 $this->Area->Expand->id = $expandId;
-                $dataToSave['Expand']['modified_by'] = $dataToSave['Fever']['modified_by'] = $dataToSave['Track']['modified_by'] = Configure::read('loginMember.id');
+                $dataToSave['Expand']['modified_by'] = $dataToSave['Fever']['modified_by'] = $dataToSave['Track']['modified_by'] = $loginMember['id'];
             }
             $this->Area->Expand->save($dataToSave);
 
@@ -353,10 +357,10 @@ class AreasController extends AppController {
             ));
             if (empty($educationId)) {
                 $this->Area->Education->create();
-                $dataToSave['Education']['created_by'] = $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+                $dataToSave['Education']['created_by'] = $dataToSave['Education']['modified_by'] = $loginMember['id'];
             } else {
                 $this->Area->Education->id = $educationId;
-                $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+                $dataToSave['Education']['modified_by'] = $loginMember['id'];
             }
             $this->Area->Education->save($dataToSave);
 
@@ -405,15 +409,16 @@ class AreasController extends AppController {
                 ));
                 if (empty($theId)) {
                     $this->Area->CenterSource->create();
-                    $dataToSave['CenterSource']['created_by'] = $dataToSave['CenterSource']['modified_by'] = Configure::read('loginMember.id');
+                    $dataToSave['CenterSource']['created_by'] = $dataToSave['CenterSource']['modified_by'] = $loginMember['id'];
                 } else {
                     $this->Area->CenterSource->id = $theId;
-                    $dataToSave['CenterSource']['modified_by'] = Configure::read('loginMember.id');
+                    $dataToSave['CenterSource']['modified_by'] = $loginMember['id'];
                 }
                 $this->Area->CenterSource->save($dataToSave);
             }
             $this->redirect(array('action' => 'health_list'));
         }
+        $this->set('loginMember', $loginMember);
     }
 
     public function health_edit($expandId = 0) {
@@ -577,24 +582,24 @@ class AreasController extends AppController {
             ));
             $this->Area->CenterSource->deleteAll(array(
                 'the_date' => $expand['Expand']['the_date'],
-                'area_id' => $cunlis,
+                'CenterSource.area_id' => $cunlis,
             ));
             $this->Area->Education->deleteAll(array(
                 'the_date' => $expand['Expand']['the_date'],
-                'area_id' => $expand['Expand']['area_id'],
-                'unit' => '衛生所',
+                'Education.area_id' => $expand['Expand']['area_id'],
+                'Education.unit' => '衛生所',
             ));
             $this->Area->Fever->deleteAll(array(
                 'the_date' => $expand['Expand']['the_date'],
-                'area_id' => $expand['Expand']['area_id'],
+                'Fever.area_id' => $expand['Expand']['area_id'],
             ));
             $this->Area->Track->deleteAll(array(
                 'the_date' => $expand['Expand']['the_date'],
-                'area_id' => $expand['Expand']['area_id'],
+                'Track.area_id' => $expand['Expand']['area_id'],
             ));
             $this->Area->Expand->deleteAll(array(
                 'the_date' => $expand['Expand']['the_date'],
-                'area_id' => $expand['Expand']['area_id'],
+                'Expand.area_id' => $expand['Expand']['area_id'],
             ));
         }
         $this->redirect(array('action' => 'health_list'));
@@ -630,6 +635,7 @@ class AreasController extends AppController {
     }
 
     public function bureau_add() {
+        $loginMember = Configure::read('loginMember');
         if (empty($this->data)) {
             $this->data = array(
                 'Education' => array(
@@ -640,6 +646,9 @@ class AreasController extends AppController {
         } else {
             $dataToSave = $this->data;
             $dataToSave['Education']['unit'] = '區公所';
+            if(!empty($loginMember['Group']['is_area'])) {
+                $dataToSave['Education']['area_id'] = $loginMember['area_id'];
+            }
             $educationId = $this->Area->Education->field('id', array(
                 'the_date' => $dataToSave['Education']['the_date'],
                 'area_id' => $dataToSave['Education']['area_id'],
@@ -647,10 +656,10 @@ class AreasController extends AppController {
             ));
             if (empty($educationId)) {
                 $this->Area->Education->create();
-                $dataToSave['Education']['created_by'] = $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+                $dataToSave['Education']['created_by'] = $dataToSave['Education']['modified_by'] = $loginMember['id'];
             } else {
                 $this->Area->Education->id = $educationId;
-                $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+                $dataToSave['Education']['modified_by'] = $loginMember['id'];
             }
             $this->Area->Education->save($dataToSave);
 
@@ -722,9 +731,11 @@ class AreasController extends AppController {
                         'Area.code' => 'DESC'
                     ),
         )));
+        $this->set('loginMember', $loginMember);
     }
 
     public function bureau_edit($educationId = 0) {
+        $loginMember = Configure::read('loginMember');
         $educationId = intval($educationId);
         if ($educationId > 0) {
             $education = $this->Area->Education->find('first', array(
@@ -802,10 +813,10 @@ class AreasController extends AppController {
                 ));
                 if (empty($educationId)) {
                     $this->Area->Education->create();
-                    $dataToSave['Education']['created_by'] = $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+                    $dataToSave['Education']['created_by'] = $dataToSave['Education']['modified_by'] = $loginMember['id'];
                 } else {
                     $this->Area->Education->id = $educationId;
-                    $dataToSave['Education']['modified_by'] = Configure::read('loginMember.id');
+                    $dataToSave['Education']['modified_by'] = $loginMember['id'];
                 }
                 $this->Area->Education->save($dataToSave);
 
@@ -833,10 +844,10 @@ class AreasController extends AppController {
                         ));
                         if (empty($theId)) {
                             $this->Area->AreaSource->create();
-                            $areaSource['AreaSource']['created_by'] = $areaSource['AreaSource']['modified_by'] = Configure::read('loginMember.id');
+                            $areaSource['AreaSource']['created_by'] = $areaSource['AreaSource']['modified_by'] = $loginMember['id'];
                         } else {
                             $this->Area->AreaSource->id = $theId;
-                            $areaSource['AreaSource']['modified_by'] = Configure::read('loginMember.id');
+                            $areaSource['AreaSource']['modified_by'] = $loginMember['id'];
                         }
                         $this->Area->AreaSource->save($areaSource);
                     }
@@ -866,10 +877,10 @@ class AreasController extends AppController {
                         ));
                         if (empty($theId)) {
                             $this->Area->VolunteerSource->create();
-                            $volunteerSource['VolunteerSource']['created_by'] = $volunteerSource['VolunteerSource']['modified_by'] = Configure::read('loginMember.id');
+                            $volunteerSource['VolunteerSource']['created_by'] = $volunteerSource['VolunteerSource']['modified_by'] = $loginMember['id'];
                         } else {
                             $this->Area->VolunteerSource->id = $theId;
-                            $volunteerSource['VolunteerSource']['modified_by'] = Configure::read('loginMember.id');
+                            $volunteerSource['VolunteerSource']['modified_by'] = $loginMember['id'];
                         }
                         $this->Area->VolunteerSource->save($volunteerSource);
                     }
@@ -899,11 +910,11 @@ class AreasController extends AppController {
             $this->Area->Education->delete($educationId);
             $this->Area->VolunteerSource->deleteAll(array(
                 'the_date' => $education['Education']['the_date'],
-                'area_id' => $cunlis,
+                'VolunteerSource.area_id' => $cunlis,
             ));
             $this->Area->AreaSource->deleteAll(array(
                 'the_date' => $education['Education']['the_date'],
-                'area_id' => $cunlis,
+                'AreaSource.area_id' => $cunlis,
             ));
         }
         $this->redirect(array('action' => 'bureau_list'));
