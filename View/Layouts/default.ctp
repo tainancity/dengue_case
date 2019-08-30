@@ -37,6 +37,7 @@
                         case '區公所':
                             echo $this->Html->link('報表', '/areas/report', array('class' => 'btn btn-info'));
                             echo $this->Html->link('區公所填報', '/areas/bureau_list', array('class' => 'btn btn-info'));
+                            echo $this->Html->link('稽督單', '/admin/cdc_points/bureau_index/', array('class' => 'btn btn-info'));
                             echo $this->Html->link('登出', '/members/logout', array('class' => 'btn btn-info'));
                             break;
                         case '局處':

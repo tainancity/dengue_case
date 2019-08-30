@@ -80,7 +80,7 @@
         ));
         echo $this->Form->input('CdcPoint.note', array(
             'type' => 'textarea',
-            'label' => '複查結果',
+            'label' => '備註',
             'div' => 'form-group',
             'class' => 'form-control',
         ));

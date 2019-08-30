@@ -1,65 +1,44 @@
 <div id="CdcPointsAdminAdd">
     <?php
-    echo $this->Form->create('CdcPoint', array('type' => 'file', 'url' => array('action' => 'edit', $this->data['CdcPoint']['id'])));
+    echo $this->Form->create('CdcPoint', array('type' => 'file', 'url' => array('action' => 'bureau_edit', $this->data['CdcPoint']['id'])));
     ?>
     <div class="CdcPoints form">
         <h2>編輯稽查點</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td>代號</td>
+                <td><?php echo $this->request->data['CdcPoint']['code']; ?></td>
+            </tr>
+            <tr>
+                <td>查核日期</td>
+                <td><?php echo $this->request->data['CdcPoint']['date_found']; ?></td>
+            </tr>
+            <tr>
+                <td>區域</td>
+                <td><?php echo $this->request->data['Area']['Parent']['name'] . $this->request->data['Area']['name']; ?></td>
+            </tr>
+            <tr>
+                <td>查核地址</td>
+                <td><?php echo $this->request->data['CdcPoint']['address']; ?></td>
+            </tr>
+            <tr>
+                <td>本署發文日期</td>
+                <td><?php echo $this->request->data['CdcPoint']['issue_date']; ?></td>
+            </tr>
+            <tr>
+                <td>文號</td>
+                <td><?php echo $this->request->data['CdcPoint']['issue_no']; ?></td>
+            </tr>
+            <tr>
+                <td>臺南市函復日期</td>
+                <td><?php echo $this->request->data['CdcPoint']['issue_reply_date']; ?></td>
+            </tr>
+            <tr>
+                <td>文號</td>
+                <td><?php echo $this->request->data['CdcPoint']['issue_reply_no']; ?></td>
+            </tr>
+        </table>
         <?php
-        echo $this->Form->input('CdcPoint.code', array(
-            'type' => 'text',
-            'label' => '代號',
-            'div' => 'form-group',
-            'class' => 'form-control',
-        ));
-        echo $this->Form->input('CdcPoint.date_found', array(
-            'type' => 'text',
-            'label' => '查核日期',
-            'div' => 'form-group',
-            'class' => 'form-control',
-        ));
-        echo $this->Form->input('CdcPoint.parent_id', array(
-            'type' => 'select',
-            'options' => $areas,
-            'label' => '行政區',
-            'div' => 'form-group',
-            'class' => 'form-control',
-        ));
-        echo $this->Form->input('CdcPoint.area_id', array(
-            'type' => 'select',
-            'options' => array(),
-            'label' => '里別',
-            'div' => 'form-group',
-            'class' => 'form-control',
-        ));
-        echo $this->Form->input('CdcPoint.address', array(
-            'label' => '查核地址',
-            'div' => 'form-group',
-            'class' => 'form-control',
-        ));
-        echo $this->Form->input('CdcPoint.issue_date', array(
-            'type' => 'text',
-            'label' => '本署發文日期',
-            'div' => 'form-group',
-            'class' => 'form-control',
-        ));
-        echo $this->Form->input('CdcPoint.issue_no', array(
-            'type' => 'text',
-            'label' => '文號',
-            'div' => 'form-group',
-            'class' => 'form-control',
-        ));
-        echo $this->Form->input('CdcPoint.issue_reply_date', array(
-            'type' => 'text',
-            'label' => '臺南市函復日期',
-            'div' => 'form-group',
-            'class' => 'form-control',
-        ));
-        echo $this->Form->input('CdcPoint.issue_reply_no', array(
-            'type' => 'text',
-            'label' => '文號',
-            'div' => 'form-group',
-            'class' => 'form-control',
-        ));
         echo $this->Form->input('CdcPoint.recheck_date', array(
             'type' => 'text',
             'label' => '複查日期',
