@@ -15,6 +15,7 @@
     <table class="table table-bordered" id="MembersAdminIndexTable">
         <tr>
             <th>區域單位</th>
+            <th>權限</th>
             <th><?php echo $this->Paginator->sort('username', '帳號'); ?></th>
             <th><?php echo $this->Paginator->sort('user_status', '狀態'); ?></th>
             <th><?php echo $this->Paginator->sort('created', '建立時間'); ?></th>
@@ -30,7 +31,8 @@
             }
             ?>
         <tr<?php echo $class; ?>>
-            <td><?php echo $member['Area']['name'] . $member['Member']['unit']; ?></td>
+        <td><?php echo $member['Area']['name'] . $member['Member']['unit']; ?></td>
+        <td><?php echo $member['Group']['name']; ?></td>
             <td>
                     <?php echo $member['Member']['username']; ?>
             </td>
