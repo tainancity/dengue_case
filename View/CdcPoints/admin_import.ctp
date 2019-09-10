@@ -1,5 +1,5 @@
 <div id="IssuesAdminAdd">
-    <h2>匯入資料</h2>
+    <h2>匯入稽督單</h2>
     <div class="Issues form">
         <?php
         echo $this->Form->create('CdcPoint', array('url' => array('action' => 'import'), 'type' => 'file'));

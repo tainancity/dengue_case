@@ -196,10 +196,16 @@ class CdcPointsController extends AppController {
                 foreach ($line AS $k => $v) {
                     $line[$k] = trim(mb_convert_encoding($v, 'utf-8', 'big5'));
                 }
-                if ($line[1] === '查核日期') {
+                if ($line[2] === '查核日期' || empty($line[6])) {
                     continue;
                 }
-                $areaKey = $line[3] . $line[4];
+                if(mb_substr($line[4], -1, 1, 'utf-8') !== '區') {
+                    $line[4] .= '區';
+                }
+                if(mb_substr($line[5], -1, 1, 'utf-8') !== '里') {
+                    $line[5] .= '里';
+                }
+                $areaKey = $line[4] . $line[5];
                 if (isset($areaNames[$areaKey])) {
                     $areaKey = $areaNames[$areaKey];
                 }
@@ -207,22 +213,23 @@ class CdcPointsController extends AppController {
                     $dbItem = $this->CdcPoint->find('first', array(
                         'fields' => array('id'),
                         'conditions' => array(
-                            'CdcPoint.code' => $line[0],
+                            'CdcPoint.area_id' => $areas[$areaKey],
+                            'CdcPoint.address' => $line[6],
                         ),
                     ));
                     $dataToSave = array('CdcPoint' => array(
-                            'code' => $line[0],
-                            'date_found' => $this->twDate($line[1]),
+                            'code' => $line[1],
+                            'date_found' => $this->twDate($line[2]),
                             'area_id' => $areas[$areaKey],
-                            'address' => $line[5],
-                            'issue_date' => $this->twDate($line[6]),
-                            'issue_no' => $line[7],
-                            'issue_reply_date' => $this->twDate($line[8]),
-                            'issue_reply_no' => $line[9],
-                            'recheck_date' => $this->twDate($line[10]),
-                            'recheck_result' => $line[11],
-                            'fine' => $line[12],
-                            'note' => $line[13],
+                            'address' => $line[6],
+                            'issue_date' => $this->twDate($line[7]),
+                            'issue_no' => $line[8],
+                            'issue_reply_date' => $this->twDate($line[9]),
+                            'issue_reply_no' => $line[10],
+                            'recheck_date' => $this->twDate($line[11]),
+                            'recheck_result' => $line[12],
+                            'fine' => $line[13],
+                            'note' => $line[14],
                     ));
                     if (!empty($dbItem)) {
                         $this->CdcPoint->id = $dbItem['CdcPoint']['id'];
@@ -235,7 +242,7 @@ class CdcPointsController extends AppController {
                         ++$count;
                     }
                 } else {
-                    $errors[] = "[{$line[0]}]{$areaKey}";
+                    $errors[] = "[{$line[1]}]{$areaKey}";
                 }
             }
             $message = "匯入了 {$count} 筆資料";
