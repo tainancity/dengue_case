@@ -2,6 +2,9 @@
 
 App::uses('AppController', 'Controller');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class AreasController extends AppController {
 
     public $name = 'Areas';
@@ -15,14 +18,6 @@ class AreasController extends AppController {
     }
 
     public function export($model = '', $theDate = '') {
-        $this->layout = 'ajax';
-        $this->response->disableCache();
-        $this->response->download($model . '_' . $theDate . '.csv');
-        $headers = $this->response->header('Content-Type', 'application/csv');
-        foreach ($headers AS $name => $value) {
-            header("{$name}: {$value}");
-        }
-        $f = fopen('php://memory', 'w');
         Configure::write('skipMemberControl', true);
         $result = array();
         switch ($model) {
@@ -98,16 +93,32 @@ class AreasController extends AppController {
                 break;
         }
         Configure::write('skipMemberControl', false);
-        if (!empty($result)) {
-            foreach ($result AS $line) {
-                foreach ($line AS $k => $v) {
-                    $line[$k] = mb_convert_encoding($v, 'big5', 'utf-8');
-                }
-                fputcsv($f, $line);
-            }
-            fseek($f, 0);
+        $this->layout = 'ajax';
+        $this->response->disableCache();
+        $this->response->download($model . '_' . $theDate . '.xlsx');
+        $headers = $this->response->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        foreach ($headers AS $name => $value) {
+            header("{$name}: {$value}");
         }
-        fpassthru($f);
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        if (!empty($result)) {
+            $rowIndex = 0;
+            foreach ($result AS $line) {
+                ++$rowIndex;
+                $columnIndex = 0;
+                foreach ($line AS $k => $v) {
+                    ++$columnIndex;
+                    $sheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $v);
+                }
+            }
+        }
+        for ($i = 1; $i <= $columnIndex; $i++) {
+            $sheet->getColumnDimensionByColumn($i)->setAutoSize(true);
+        }
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
         exit();
     }
 
@@ -326,7 +337,7 @@ class AreasController extends AppController {
         } else {
             $dataToSave = $this->data;
             $selectedDate = $dataToSave['Expand']['the_date'];
-            if(!empty($loginMember['Group']['is_area'])) {
+            if (!empty($loginMember['Group']['is_area'])) {
                 $dataToSave['Expand']['area_id'] = $loginMember['area_id'];
             }
             $dataToSave['Fever']['the_date'] = $selectedDate;
@@ -646,7 +657,7 @@ class AreasController extends AppController {
         } else {
             $dataToSave = $this->data;
             $dataToSave['Education']['unit'] = '區公所';
-            if(!empty($loginMember['Group']['is_area'])) {
+            if (!empty($loginMember['Group']['is_area'])) {
                 $dataToSave['Education']['area_id'] = $loginMember['area_id'];
             }
             $educationId = $this->Area->Education->field('id', array(

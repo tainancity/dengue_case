@@ -2,6 +2,9 @@
 
 App::uses('AppController', 'Controller');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class CdcPointsController extends AppController {
 
     public $name = 'CdcPoints';
@@ -127,24 +130,32 @@ class CdcPointsController extends AppController {
 
                 break;
         }
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
         $this->layout = 'ajax';
         $this->response->disableCache();
-        $this->response->download('report_' . $reportType . '.csv');
-        $headers = $this->response->header('Content-Type', 'application/csv');
+        $this->response->download('report_' . $reportType . '.xlsx');
+        $headers = $this->response->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         foreach ($headers AS $name => $value) {
             header("{$name}: {$value}");
         }
-        $f = fopen('php://memory', 'w');
         if (!empty($result)) {
+            $rowIndex = 0;
             foreach ($result AS $line) {
+                ++$rowIndex;
+                $columnIndex = 0;
                 foreach ($line AS $k => $v) {
-                    $line[$k] = mb_convert_encoding($v, 'big5', 'utf-8');
+                    ++$columnIndex;
+                    $sheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $v);
                 }
-                fputcsv($f, $line);
             }
-            fseek($f, 0);
         }
-        fpassthru($f);
+        for($i = 1; $i <= $columnIndex; $i++) {
+            $sheet->getColumnDimensionByColumn($i)->setAutoSize(true);
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
         exit();
     }
 
@@ -199,10 +210,10 @@ class CdcPointsController extends AppController {
                 if ($line[2] === '查核日期' || empty($line[6])) {
                     continue;
                 }
-                if(mb_substr($line[4], -1, 1, 'utf-8') !== '區') {
+                if (mb_substr($line[4], -1, 1, 'utf-8') !== '區') {
                     $line[4] .= '區';
                 }
-                if(mb_substr($line[5], -1, 1, 'utf-8') !== '里') {
+                if (mb_substr($line[5], -1, 1, 'utf-8') !== '里') {
                     $line[5] .= '里';
                 }
                 $areaKey = $line[4] . $line[5];
