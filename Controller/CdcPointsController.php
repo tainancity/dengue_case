@@ -129,6 +129,49 @@ class CdcPointsController extends AppController {
                 }
 
                 break;
+            case '4':
+                $result[] = array('', '縣市', '鄉鎮區', '村里', '列管地址', '查核人',
+                    '首次缺失說明', '調查地區分類', '抽查日期', '1st複查說明', '1st結果',
+                    '1st複查日期', '1st複查查核人', '2nd複查說明', '2nd複查日期', '2nd結果',
+                    '2nd複查查核人', '總結果', '衛生局查核',);
+                $items = $this->CdcPoint->find('all', array(
+                    'contain' => array(
+                        'Area' => array(
+                            'fields' => array('name'),
+                            'Parent' => array(
+                                'fields' => array('name'),
+                            ),
+                        ),
+                    ),
+                    'order' => array(
+                        'issue_date' => 'ASC'
+                    ),
+                ));
+                foreach ($items AS $item) {
+                    $result[] = array(
+                        '',
+                        '縣市' => '臺南市',
+                        '鄉鎮區' => $item['Area']['Parent']['name'],
+                        '村里' => $item['Area']['name'],
+                        '列管地址' => $item['CdcPoint']['address'],
+                        '查核人' => $item['CdcPoint']['issue_people'],
+                        '首次缺失說明' => $item['CdcPoint']['issue_note'],
+                        '調查地區分類' => $item['CdcPoint']['issue_type'],
+                        '抽查日期' => $item['CdcPoint']['issue_date'],
+                        '1st複查說明' => $item['CdcPoint']['recheck_detail'],
+                        '1st結果' => $item['CdcPoint']['recheck_result'],
+                        '1st複查日期' => $item['CdcPoint']['recheck_date'],
+                        '1st複查查核人' => $item['CdcPoint']['recheck_people'],
+                        '2nd複查說明' => $item['CdcPoint']['recheck2_detail'],
+                        '2nd複查日期' => $item['CdcPoint']['recheck2_date'],
+                        '2nd結果' => $item['CdcPoint']['recheck2_result'],
+                        '2nd複查查核人' => $item['CdcPoint']['recheck2_people'],
+                        '總結果' => $item['CdcPoint']['final_result'],
+                        '衛生局查核' => $item['CdcPoint']['recheck_ph_detail'],
+                    );
+                }
+
+                break;
         }
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -353,7 +396,7 @@ class CdcPointsController extends AppController {
                             'issue_reply_date' => $this->twDate($line[9]),
                             'issue_reply_no' => $line[10],
                             'recheck_date' => $this->twDate($line[11]),
-                            'recheck_result' => $line[12],
+                            'recheck_detail' => $line[12],
                             'fine' => $line[13],
                             'note' => $line[14],
                     ));
