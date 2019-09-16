@@ -174,6 +174,7 @@ CREATE TABLE `cdc_points` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `code` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `date_found` date NOT NULL,
+  `parent_area_id` int(11) unsigned NOT NULL DEFAULT '0',
   `area_id` int(11) unsigned NOT NULL,
   `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `issue_date` date DEFAULT NULL,
@@ -202,7 +203,7 @@ CREATE TABLE `cdc_points` (
   `created` datetime NOT NULL,
   `modified` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=164 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=289 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -562,4 +563,4 @@ CREATE TABLE `volunteer_sources` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-09-16 12:24:48
+-- Dump completed on 2019-09-16 15:33:01

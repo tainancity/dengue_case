@@ -15,9 +15,9 @@ $(function () {
     $('#CdcPointRecheck2Date').datepicker({
         dateFormat: 'yy-mm-dd'
     });
-    $('#CdcPointParentId').change(cunliSelectArea).trigger('change');
+    $('#CdcPointParentAreaId').change(cunliSelectArea).trigger('change');
     $('#CdcPointAreaId').change(function() {
-        $('#CdcPointAddress').val($('#CdcPointParentId option:selected').text() + $('#CdcPointAreaId option:selected').text());
+        $('#CdcPointAddress').val($('#CdcPointParentAreaId option:selected').text() + $('#CdcPointAreaId option:selected').text());
     });
 });
 

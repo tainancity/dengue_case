@@ -17,7 +17,7 @@
             'div' => 'form-group',
             'class' => 'form-control',
         ));
-        echo $this->Form->input('CdcPoint.parent_id', array(
+        echo $this->Form->input('CdcPoint.parent_area_id', array(
             'type' => 'select',
             'options' => $areas,
             'label' => '行政區',
