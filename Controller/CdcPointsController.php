@@ -244,6 +244,9 @@ class CdcPointsController extends AppController {
             $areas = array();
             foreach ($dbAreas AS $dbArea) {
                 $areas[$dbArea['Parent']['name'] . $dbArea['Area']['name']] = $dbArea['Area']['id'];
+                if(!isset($areas[$dbArea['Parent']['name']])) {
+                    $areas[$dbArea['Parent']['name']] = $dbArea['Parent']['id'];
+                }
             }
             $areaNames = array(
                 '中西區赤崁里' => '中西區赤嵌里',
@@ -268,17 +271,22 @@ class CdcPointsController extends AppController {
                 if (isset($areaNames[$areaKey])) {
                     $areaKey = $areaNames[$areaKey];
                 }
-                if (isset($areas[$areaKey])) {
+                $areaConditions = array();
+                if(isset($areas[$areaKey])) {
+                    $areaConditions['CdcPoint.area_id'] = $areas[$areaKey];
+                } elseif(isset($areas[$line[2]])) {
+                    $areaConditions['CdcPoint.parent_area_id'] = $areas[$line[2]];
+                }
+                if (!empty($areaConditions)) {
+                    $areaConditions['CdcPoint.address'] = $line[4];
                     $dbItem = $this->CdcPoint->find('first', array(
                         'fields' => array('id'),
-                        'conditions' => array(
-                            'CdcPoint.area_id' => $areas[$areaKey],
-                            'CdcPoint.address' => $line[4],
-                        ),
+                        'conditions' => $areaConditions,
                     ));
                     $dataToSave = array('CdcPoint' => array(
                             'date_found' => date('Y-m-d', strtotime($line[8])),
-                            'area_id' => $areas[$areaKey],
+                            'parent_area_id' => isset($areas[$line[2]]) ? $areas[$line[2]] : 0,
+                            'area_id' => isset($areas[$areaKey]) ? $areas[$areaKey] : 0,
                             'address' => $line[4],
                             'issue_people' => $line[5],
                             'issue_note' => $line[6],
@@ -347,13 +355,16 @@ class CdcPointsController extends AppController {
                 'fields' => array('id', 'name'),
                 'contain' => array(
                     'Parent' => array(
-                        'fields' => array('name'),
+                        'fields' => array('id', 'name'),
                     ),
                 ),
             ));
             $areas = array();
             foreach ($dbAreas AS $dbArea) {
                 $areas[$dbArea['Parent']['name'] . $dbArea['Area']['name']] = $dbArea['Area']['id'];
+                if(!isset($areas[$dbArea['Parent']['name']])) {
+                    $areas[$dbArea['Parent']['name']] = $dbArea['Parent']['id'];
+                }
             }
             $areaNames = array(
                 '中西區赤崁里' => '中西區赤嵌里',
@@ -378,18 +389,23 @@ class CdcPointsController extends AppController {
                 if (isset($areaNames[$areaKey])) {
                     $areaKey = $areaNames[$areaKey];
                 }
-                if (isset($areas[$areaKey])) {
+                $areaConditions = array();
+                if(isset($areas[$areaKey])) {
+                    $areaConditions['CdcPoint.area_id'] = $areas[$areaKey];
+                } elseif(isset($areas[$line[4]])) {
+                    $areaConditions['CdcPoint.parent_area_id'] = $areas[$line[4]];
+                }
+                if (!empty($areaConditions)) {
+                    $areaConditions['CdcPoint.address'] = $line[6];
                     $dbItem = $this->CdcPoint->find('first', array(
                         'fields' => array('id'),
-                        'conditions' => array(
-                            'CdcPoint.area_id' => $areas[$areaKey],
-                            'CdcPoint.address' => $line[6],
-                        ),
+                        'conditions' => $areaConditions,
                     ));
                     $dataToSave = array('CdcPoint' => array(
                             'code' => $line[1],
                             'date_found' => $this->twDate($line[2]),
-                            'area_id' => $areas[$areaKey],
+                            'parent_area_id' => isset($areas[$line[4]]) ? $areas[$line[4]] : 0,
+                            'area_id' => isset($areas[$areaKey]) ? $areas[$areaKey] : 0,
                             'address' => $line[6],
                             'issue_date' => $this->twDate($line[7]),
                             'issue_no' => $line[8],

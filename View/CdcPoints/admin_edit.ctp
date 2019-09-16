@@ -189,5 +189,8 @@
     echo $this->Form->end('儲存');
     ?>
 </div>
+<script>
+    var dbAreaId = '<?php echo $this->data['CdcPoint']['area_id']; ?>';
+</script>
 <?php
-echo $this->Html->script('c/cdc_points/add.js');
+echo $this->Html->script('c/cdc_points/edit.js');

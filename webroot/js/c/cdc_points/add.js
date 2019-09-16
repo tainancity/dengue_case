@@ -16,9 +16,6 @@ $(function () {
         dateFormat: 'yy-mm-dd'
     });
     $('#CdcPointParentAreaId').change(cunliSelectArea).trigger('change');
-    $('#CdcPointAreaId').change(function() {
-        $('#CdcPointAddress').val($('#CdcPointParentAreaId option:selected').text() + $('#CdcPointAreaId option:selected').text());
-    });
 });
 
 var cunliSelectArea = function () {
@@ -32,7 +29,7 @@ var cunliSelectArea = function () {
     } else {
         $.getJSON(baseUrl + 'areas/cunli/' + areaId, {}, function (c) {
             cunliPool[areaId] = c;
-            var optionText = '';
+            var optionText = '<option value="0">--</option>';
             for (k in c) {
                 optionText += '<option value="' + k + '">' + c[k] + '</option>';
             }
