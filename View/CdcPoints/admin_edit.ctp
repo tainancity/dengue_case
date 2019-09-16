@@ -48,6 +48,24 @@
             'div' => 'form-group',
             'class' => 'form-control',
         ));
+        echo $this->Form->input('CdcPoint.issue_people', array(
+            'type' => 'text',
+            'label' => '查核人',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('CdcPoint.issue_note', array(
+            'type' => 'textarea',
+            'label' => '首次缺失說明',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('CdcPoint.issue_type', array(
+            'type' => 'text',
+            'label' => '調查地區分類',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
         echo $this->Form->input('CdcPoint.issue_reply_date', array(
             'type' => 'text',
             'label' => '臺南市函復日期',
@@ -66,9 +84,57 @@
             'div' => 'form-group',
             'class' => 'form-control',
         ));
-        echo $this->Form->input('CdcPoint.recheck_result', array(
+        echo $this->Form->input('CdcPoint.recheck_detail', array(
             'type' => 'textarea',
             'label' => '複查結果',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('CdcPoint.recheck_people', array(
+            'type' => 'text',
+            'label' => '查核人',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('CdcPoint.recheck_result', array(
+            'type' => 'text',
+            'label' => '複查結果',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('CdcPoint.recheck2_date', array(
+            'type' => 'text',
+            'label' => '2nd複查日期',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('CdcPoint.recheck2_detail', array(
+            'type' => 'textarea',
+            'label' => '2nd複查說明',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('CdcPoint.recheck2_people', array(
+            'type' => 'text',
+            'label' => '2nd查核人',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('CdcPoint.recheck2_result', array(
+            'type' => 'text',
+            'label' => '2nd複查結果',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('CdcPoint.final_result', array(
+            'type' => 'text',
+            'label' => '總結果',
+            'div' => 'form-group',
+            'class' => 'form-control',
+        ));
+        echo $this->Form->input('CdcPoint.recheck_ph_detail', array(
+            'type' => 'textarea',
+            'label' => '衛生局查核',
             'div' => 'form-group',
             'class' => 'form-control',
         ));

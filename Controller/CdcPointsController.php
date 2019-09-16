@@ -150,13 +150,128 @@ class CdcPointsController extends AppController {
                 }
             }
         }
-        for($i = 1; $i <= $columnIndex; $i++) {
+        for ($i = 1; $i <= $columnIndex; $i++) {
             $sheet->getColumnDimensionByColumn($i)->setAutoSize(true);
         }
-        
+
         $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
         exit();
+    }
+
+    public function admin_import_case() {
+        if (!empty($this->data['CdcPoint']['file']['tmp_name'])) {
+            $count = 0;
+            $fh = fopen($this->data['CdcPoint']['file']['tmp_name'], 'r');
+            /*
+             * Array
+              (
+              [0] =>
+              [1] =>
+              [2] =>
+              [3] => area_id
+              [4] => address
+              [5] => issue_people
+              [6] => issue_note
+              [7] => issue_type
+              [8] => issue_date
+              [9] => recheck_detail
+              [10] => recheck_result
+              [11] => recheck_date
+              [12] => recheck_people
+              [13] => recheck2_detail
+              [14] => recheck2_date
+              [15] => recheck2_result
+              [16] => recheck2_people
+              [17] => final_result
+              [18] => recheck_ph_detail
+              )
+             */
+            $dbAreas = $this->CdcPoint->Area->find('all', array(
+                'conditions' => array(
+                    'Area.parent_id IS NOT NULL',
+                ),
+                'fields' => array('id', 'name'),
+                'contain' => array(
+                    'Parent' => array(
+                        'fields' => array('name'),
+                    ),
+                ),
+            ));
+            $areas = array();
+            foreach ($dbAreas AS $dbArea) {
+                $areas[$dbArea['Parent']['name'] . $dbArea['Area']['name']] = $dbArea['Area']['id'];
+            }
+            $areaNames = array(
+                '中西區赤崁里' => '中西區赤嵌里',
+                '安南區公塭里' => '安南區公[塭]里',
+                '安南原佃里' => '安南區原佃里',
+            );
+            $errors = array();
+            while ($line = fgetcsv($fh, 2048)) {
+                foreach ($line AS $k => $v) {
+                    $line[$k] = trim(mb_convert_encoding($v, 'utf-8', 'big5'));
+                }
+                if ($line[3] === 'area_id' || empty($line[4]) || $line[4] === '列管地址' || !isset($line[8])) {
+                    continue;
+                }
+                if (mb_substr($line[2], -1, 1, 'utf-8') !== '區') {
+                    $line[2] .= '區';
+                }
+                if (mb_substr($line[3], -1, 1, 'utf-8') !== '里') {
+                    $line[3] .= '里';
+                }
+                $areaKey = $line[2] . $line[3];
+                if (isset($areaNames[$areaKey])) {
+                    $areaKey = $areaNames[$areaKey];
+                }
+                if (isset($areas[$areaKey])) {
+                    $dbItem = $this->CdcPoint->find('first', array(
+                        'fields' => array('id'),
+                        'conditions' => array(
+                            'CdcPoint.area_id' => $areas[$areaKey],
+                            'CdcPoint.address' => $line[4],
+                        ),
+                    ));
+                    $dataToSave = array('CdcPoint' => array(
+                            'date_found' => date('Y-m-d', strtotime($line[8])),
+                            'area_id' => $areas[$areaKey],
+                            'address' => $line[4],
+                            'issue_people' => $line[5],
+                            'issue_note' => $line[6],
+                            'issue_type' => $line[6],
+                            'recheck_detail' => $line[9],
+                            'recheck_date' => date('Y-m-d', strtotime($line[11])),
+                            'recheck_result' => $line[10],
+                            'recheck_people' => $line[12],
+                            'recheck2_detail' => $line[13],
+                            'recheck2_date' => $line[14],
+                            'recheck2_result' => $line[15],
+                            'recheck2_people' => $line[16],
+                            'final_result' => $line[17],
+                            'recheck_ph_detail' => $line[18],
+                    ));
+                    if (!empty($dbItem)) {
+                        $this->CdcPoint->id = $dbItem['CdcPoint']['id'];
+                        $dataToSave['CdcPoint']['modified_by'] = Configure::read('loginMember.id');
+                    } else {
+                        $this->CdcPoint->create();
+                        $dataToSave['CdcPoint']['created_by'] = $dataToSave['CdcPoint']['modified_by'] = Configure::read('loginMember.id');
+                    }
+                    if ($this->CdcPoint->save($dataToSave)) {
+                        ++$count;
+                    }
+                } else {
+                    $errors[] = "[{$line[2]}]{$areaKey}";
+                }
+            }
+            $message = "匯入了 {$count} 筆資料";
+            if (!empty($errors)) {
+                $message .= '<br />' . implode(',', $errors) . ' 行政區找不到資料';
+            }
+            $this->Session->setFlash($message);
+        }
+        $this->redirect(array('action' => 'import'));
     }
 
     public function admin_import() {
