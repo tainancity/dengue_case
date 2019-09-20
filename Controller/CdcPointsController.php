@@ -114,7 +114,7 @@ class CdcPointsController extends AppController {
                         $item['CdcPoint']['code'],
                         $item['CdcPoint']['date_found'],
                         '臺南市',
-                        $item['Area']['Parent']['name'],
+                        isset($item['Area']['Parent']['name']) ? $item['Area']['Parent']['name'] : '',
                         $item['Area']['name'],
                         $item['CdcPoint']['address'],
                         $item['CdcPoint']['issue_date'],
@@ -151,7 +151,7 @@ class CdcPointsController extends AppController {
                     $result[] = array(
                         '',
                         '縣市' => '臺南市',
-                        '鄉鎮區' => $item['Area']['Parent']['name'],
+                        '鄉鎮區' => isset($item['Area']['Parent']['name']) ? $item['Area']['Parent']['name'] : '',
                         '村里' => $item['Area']['name'],
                         '列管地址' => $item['CdcPoint']['address'],
                         '查核人' => $item['CdcPoint']['issue_people'],

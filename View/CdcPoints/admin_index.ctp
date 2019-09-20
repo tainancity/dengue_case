@@ -39,7 +39,10 @@ if (!isset($url)) {
                 echo $item['CdcPoint']['date_found'];
                         ?></td>
                 <td><?php
-                        echo $item['Area']['Parent']['name'] . $item['Area']['name'];
+                if(isset($item['Area']['Parent']['name'])) {
+                    echo $item['Area']['Parent']['name'];
+                }
+                        echo $item['Area']['name'];
                         ?></td>
                 <td><?php
                 echo $item['CdcPoint']['address'];
