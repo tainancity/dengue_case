@@ -290,7 +290,7 @@ class CdcPointsController extends AppController {
                             'address' => $line[4],
                             'issue_people' => $line[5],
                             'issue_note' => $line[6],
-                            'issue_type' => $line[6],
+                            'issue_type' => $line[7],
                             'recheck_detail' => $line[9],
                             'recheck_date' => date('Y-m-d', strtotime($line[11])),
                             'recheck_result' => $line[10],
@@ -412,7 +412,7 @@ class CdcPointsController extends AppController {
                             'issue_reply_date' => $this->twDate($line[9]),
                             'issue_reply_no' => $line[10],
                             'recheck_date' => $this->twDate($line[11]),
-                            'recheck_detail' => $line[12],
+                            'recheck_ph_detail' => $line[12],
                             'fine' => $line[13],
                             'note' => $line[14],
                     ));
