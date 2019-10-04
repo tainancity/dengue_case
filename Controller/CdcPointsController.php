@@ -4,6 +4,7 @@ App::uses('AppController', 'Controller');
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class CdcPointsController extends AppController {
 
@@ -130,7 +131,7 @@ class CdcPointsController extends AppController {
 
                 break;
             case '4':
-                $result[] = array('', '縣市', '鄉鎮區', '村里', '列管地址', '查核人',
+                $result[] = array('', '縣市', '2-鄉鎮區', '3-村里', '列管地址', '查核人',
                     '首次缺失說明', '調查地區分類', '抽查日期', '1st複查說明', '1st結果',
                     '1st複查日期', '1st複查查核人', '2nd複查說明', '2nd複查日期', '2nd結果',
                     '2nd複查查核人', '總結果', '衛生局查核',);
@@ -151,8 +152,8 @@ class CdcPointsController extends AppController {
                     $result[] = array(
                         '',
                         '縣市' => '臺南市',
-                        '鄉鎮區' => isset($item['Area']['Parent']['name']) ? $item['Area']['Parent']['name'] : '',
-                        '村里' => $item['Area']['name'],
+                        '2-鄉鎮區' => isset($item['Area']['Parent']['name']) ? $item['Area']['Parent']['name'] : '',
+                        '3-村里' => $item['Area']['name'],
                         '列管地址' => $item['CdcPoint']['address'],
                         '查核人' => $item['CdcPoint']['issue_people'],
                         '首次缺失說明' => $item['CdcPoint']['issue_note'],
@@ -204,6 +205,121 @@ class CdcPointsController extends AppController {
 
     public function admin_import_case() {
         if (!empty($this->data['CdcPoint']['file']['tmp_name'])) {
+            $dbAreas = $this->CdcPoint->Area->find('all', array(
+                'conditions' => array(
+                    'Area.parent_id IS NOT NULL',
+                ),
+                'fields' => array('id', 'name'),
+                'contain' => array(
+                    'Parent' => array(
+                        'fields' => array('name'),
+                    ),
+                ),
+            ));
+            $areas = array();
+            foreach ($dbAreas AS $dbArea) {
+                $areas[$dbArea['Parent']['name'] . $dbArea['Area']['name']] = $dbArea['Area']['id'];
+                if (!isset($areas[$dbArea['Parent']['name']])) {
+                    $areas[$dbArea['Parent']['name']] = $dbArea['Parent']['id'];
+                }
+            }
+            $areaNames = array(
+                '中西區赤崁里' => '中西區赤嵌里',
+                '安南區公塭里' => '安南區公[塭]里',
+                '安南原佃里' => '安南區原佃里',
+            );
+            $spreadsheet = IOFactory::load($this->data['CdcPoint']['file']['tmp_name']);
+            foreach ($spreadsheet->getAllSheets() AS $worksheet) {
+                if ($worksheet->getTitle() === '全部') {
+                    $count = 0;
+                    $highestRow = $worksheet->getHighestRow(); // e.g. 10
+                    $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
+                    $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); // e.g. 5
+
+                    $header = false;
+                    for ($row = 1; $row <= $highestRow; ++$row) {
+                        $line = array();
+                        for ($col = 1; $col <= $highestColumnIndex; ++$col) {
+                            $line[] = $worksheet->getCellByColumnAndRow($col, $row)->getFormattedValue();
+                        }
+                        if (false === $header) {
+                            $header = $line;
+                            foreach ($header AS $k => $v) {
+                                $header[$k] = $k . '-' . $v;
+                            }
+                        } else {
+                            $data = array_combine($header, $line);
+                            if (!empty($data['4-列管地址'])) {
+                                if (mb_substr($data['2-鄉鎮區'], -1, 1, 'utf-8') !== '區') {
+                                    $data['2-鄉鎮區'] .= '區';
+                                }
+                                if (mb_substr($data['3-村里'], -1, 1, 'utf-8') !== '里') {
+                                    $data['3-村里'] .= '里';
+                                }
+                                $areaKey = $data['2-鄉鎮區'] . $data['3-村里'];
+                                if (isset($areaNames[$areaKey])) {
+                                    $areaKey = $areaNames[$areaKey];
+                                }
+                                $areaConditions = array();
+                                if (isset($areas[$areaKey])) {
+                                    $areaConditions['CdcPoint.area_id'] = $areas[$areaKey];
+                                } elseif (isset($areas[$data['2-鄉鎮區']])) {
+                                    $areaConditions['CdcPoint.parent_area_id'] = $areas[$data['2-鄉鎮區']];
+                                }
+                                if (!empty($areaConditions)) {
+                                    $areaConditions['CdcPoint.address'] = $data['4-列管地址'];
+                                    $dbItem = $this->CdcPoint->find('first', array(
+                                        'fields' => array('id'),
+                                        'conditions' => $areaConditions,
+                                    ));
+                                    $dataToSave = array('CdcPoint' => array(
+                                            'date_found' => date('Y-m-d', strtotime($data['8-抽查日期'])),
+                                            'parent_area_id' => isset($areas[$data['2-鄉鎮區']]) ? $areas[$data['2-鄉鎮區']] : 0,
+                                            'area_id' => isset($areas[$areaKey]) ? $areas[$areaKey] : 0,
+                                            'address' => $data['4-列管地址'],
+                                            'issue_people' => $data['5-查核人'],
+                                            'issue_note' => $data['6-首次缺失說明'],
+                                            'issue_type' => $data['7-調查地區分類'],
+                                            'recheck_detail' => $data['9-1st複查說明'],
+                                            'recheck_date' => date('Y-m-d', strtotime($data['11-複查日期'])),
+                                            'recheck_result' => $data['10-結果'],
+                                            'recheck_people' => $data['12-查核人'],
+                                            'recheck2_detail' => $data['13-2nd複查說明'],
+                                            'recheck2_date' => date('Y-m-d', strtotime($data['14-複查日期'])),
+                                            'recheck2_result' => $data['15-結果'],
+                                            'recheck2_people' => $data['16-查核人'],
+                                            'final_result' => $data['17-總結果'],
+                                            'recheck_ph_detail' => $data['18-衛生局查核'],
+                                    ));
+                                    if (!empty($dbItem)) {
+                                        $this->CdcPoint->id = $dbItem['CdcPoint']['id'];
+                                        $dataToSave['CdcPoint']['modified_by'] = Configure::read('loginMember.id');
+                                    } else {
+                                        $this->CdcPoint->create();
+                                        $dataToSave['CdcPoint']['created_by'] = $dataToSave['CdcPoint']['modified_by'] = Configure::read('loginMember.id');
+                                    }
+                                    if ($this->CdcPoint->save($dataToSave)) {
+                                        ++$count;
+                                    }
+                                } else {
+                                    $errors[] = "[{$data['2-鄉鎮區']}]{$areaKey}";
+                                }
+                            }
+                        }
+                    }
+                    $message = "匯入了 {$count} 筆資料";
+                    if (!empty($errors)) {
+                        $message .= '<br />' . implode(',', $errors) . ' 行政區找不到資料';
+                    }
+                    $this->Session->setFlash($message);
+                }
+            }
+        }
+        $this->redirect(array('action' => 'import'));
+    }
+
+    public function admin_import_case_csv() {
+        if (!empty($this->data['CdcPoint']['file']['tmp_name'])) {
             $count = 0;
             $fh = fopen($this->data['CdcPoint']['file']['tmp_name'], 'r');
             /*
@@ -244,7 +360,7 @@ class CdcPointsController extends AppController {
             $areas = array();
             foreach ($dbAreas AS $dbArea) {
                 $areas[$dbArea['Parent']['name'] . $dbArea['Area']['name']] = $dbArea['Area']['id'];
-                if(!isset($areas[$dbArea['Parent']['name']])) {
+                if (!isset($areas[$dbArea['Parent']['name']])) {
                     $areas[$dbArea['Parent']['name']] = $dbArea['Parent']['id'];
                 }
             }
@@ -272,9 +388,9 @@ class CdcPointsController extends AppController {
                     $areaKey = $areaNames[$areaKey];
                 }
                 $areaConditions = array();
-                if(isset($areas[$areaKey])) {
+                if (isset($areas[$areaKey])) {
                     $areaConditions['CdcPoint.area_id'] = $areas[$areaKey];
-                } elseif(isset($areas[$line[2]])) {
+                } elseif (isset($areas[$line[2]])) {
                     $areaConditions['CdcPoint.parent_area_id'] = $areas[$line[2]];
                 }
                 if (!empty($areaConditions)) {
@@ -328,6 +444,117 @@ class CdcPointsController extends AppController {
     public function admin_import() {
         if (!empty($this->data['CdcPoint']['file']['tmp_name'])) {
             $count = 0;
+            $dbAreas = $this->CdcPoint->Area->find('all', array(
+                'conditions' => array(
+                    'Area.parent_id IS NOT NULL',
+                ),
+                'fields' => array('id', 'name'),
+                'contain' => array(
+                    'Parent' => array(
+                        'fields' => array('id', 'name'),
+                    ),
+                ),
+            ));
+            $areas = array();
+            foreach ($dbAreas AS $dbArea) {
+                $areas[$dbArea['Parent']['name'] . $dbArea['Area']['name']] = $dbArea['Area']['id'];
+                if (!isset($areas[$dbArea['Parent']['name']])) {
+                    $areas[$dbArea['Parent']['name']] = $dbArea['Parent']['id'];
+                }
+            }
+            $areaNames = array(
+                '中西區赤崁里' => '中西區赤嵌里',
+                '安南區公塭里' => '安南區公[塭]里',
+                '安南原佃里' => '安南區原佃里',
+            );
+            $errors = array();
+            $spreadsheet = IOFactory::load($this->data['CdcPoint']['file']['tmp_name']);
+            foreach ($spreadsheet->getAllSheets() AS $worksheet) {
+                if ($worksheet->getTitle() === '稽督單細項') {
+                    $highestRow = $worksheet->getHighestRow(); // e.g. 10
+                    $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
+                    $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); // e.g. 5
+
+                    $header = false;
+                    for ($row = 1; $row <= $highestRow; ++$row) {
+                        $line = array();
+                        for ($col = 1; $col <= $highestColumnIndex; ++$col) {
+                            $line[] = $worksheet->getCellByColumnAndRow($col, $row)->getFormattedValue();
+                        }
+                        if (false === $header) {
+                            $header = $line;
+                            foreach ($header AS $k => $v) {
+                                $header[$k] = $k . '-' . $v;
+                            }
+                        } else {
+                            $data = array_combine($header, $line);
+                            if (!empty($data['6-查核地址'])) {
+                                if (mb_substr($data['4-區別'], -1, 1, 'utf-8') !== '區') {
+                                    $data['4-區別'] .= '區';
+                                }
+                                if (mb_substr($data['5-里別'], -1, 1, 'utf-8') !== '里') {
+                                    $data['5-里別'] .= '里';
+                                }
+                                $areaKey = $data['4-區別'] . $data['5-里別'];
+                                if (isset($areaNames[$areaKey])) {
+                                    $areaKey = $areaNames[$areaKey];
+                                }
+                                $areaConditions = array();
+                                if (isset($areas[$areaKey])) {
+                                    $areaConditions['CdcPoint.area_id'] = $areas[$areaKey];
+                                } elseif (isset($areas[$line[4]])) {
+                                    $areaConditions['CdcPoint.parent_area_id'] = $areas[$data['4-區別']];
+                                }
+                                if (!empty($areaConditions)) {
+                                    $areaConditions['CdcPoint.address'] = $data['6-查核地址'];
+                                    $dbItem = $this->CdcPoint->find('first', array(
+                                        'fields' => array('id'),
+                                        'conditions' => $areaConditions,
+                                    ));
+                                    $dataToSave = array('CdcPoint' => array(
+                                            'code' => $data['1-'],
+                                            'date_found' => $this->twDate($data['2-查核日期']),
+                                            'parent_area_id' => isset($areas[$data['4-區別']]) ? $areas[$data['4-區別']] : 0,
+                                            'area_id' => isset($areas[$areaKey]) ? $areas[$areaKey] : 0,
+                                            'address' => $data['6-查核地址'],
+                                            'issue_date' => $this->twDate($data['7-本署發文日期']),
+                                            'issue_no' => $data['8-疾管南區管文號'],
+                                            'issue_reply_date' => $this->twDate($data['9-臺南市函復日期']),
+                                            'issue_reply_no' => $data['10-府登防文號'],
+                                            'recheck_date' => $this->twDate($data['11-複查日期']),
+                                            'recheck_ph_detail' => $data['12-複查結果'],
+                                            'fine' => $data['13-舉發單'],
+                                            'note' => $data['14-說明'],
+                                    ));
+                                    if (!empty($dbItem)) {
+                                        $this->CdcPoint->id = $dbItem['CdcPoint']['id'];
+                                        $dataToSave['CdcPoint']['modified_by'] = Configure::read('loginMember.id');
+                                    } else {
+                                        $this->CdcPoint->create();
+                                        $dataToSave['CdcPoint']['created_by'] = $dataToSave['CdcPoint']['modified_by'] = Configure::read('loginMember.id');
+                                    }
+                                    if ($this->CdcPoint->save($dataToSave)) {
+                                        ++$count;
+                                    }
+                                } else {
+                                    $errors[] = "[{$data['1-']}]{$areaKey}";
+                                }
+                            }
+                        }
+                    }
+                    $message = "匯入了 {$count} 筆資料";
+                    if (!empty($errors)) {
+                        $message .= '<br />' . implode(',', $errors) . ' 行政區找不到資料';
+                    }
+                    $this->Session->setFlash($message);
+                }
+            }
+        }
+    }
+
+    public function admin_import_csv() {
+        if (!empty($this->data['CdcPoint']['file']['tmp_name'])) {
+            $count = 0;
             $fh = fopen($this->data['CdcPoint']['file']['tmp_name'], 'r');
             /*
              * Array
@@ -362,7 +589,7 @@ class CdcPointsController extends AppController {
             $areas = array();
             foreach ($dbAreas AS $dbArea) {
                 $areas[$dbArea['Parent']['name'] . $dbArea['Area']['name']] = $dbArea['Area']['id'];
-                if(!isset($areas[$dbArea['Parent']['name']])) {
+                if (!isset($areas[$dbArea['Parent']['name']])) {
                     $areas[$dbArea['Parent']['name']] = $dbArea['Parent']['id'];
                 }
             }
@@ -390,9 +617,9 @@ class CdcPointsController extends AppController {
                     $areaKey = $areaNames[$areaKey];
                 }
                 $areaConditions = array();
-                if(isset($areas[$areaKey])) {
+                if (isset($areas[$areaKey])) {
                     $areaConditions['CdcPoint.area_id'] = $areas[$areaKey];
-                } elseif(isset($areas[$line[4]])) {
+                } elseif (isset($areas[$line[4]])) {
                     $areaConditions['CdcPoint.parent_area_id'] = $areas[$line[4]];
                 }
                 if (!empty($areaConditions)) {
