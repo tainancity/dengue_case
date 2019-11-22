@@ -27,12 +27,6 @@ class CdcPoint extends AppModel {
         ),
     );
     public $validate = array(
-        'date_found' => array(
-            'notBlank' => array(
-                'rule' => array('notBlank'),
-                'message' => '這個欄位必填',
-            ),
-        ),
         'issue_date' => array(
             'notBlank' => array(
                 'rule' => array('notBlank'),

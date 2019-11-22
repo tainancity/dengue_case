@@ -5,21 +5,19 @@ if (!isset($url)) {
 }
 ?>
 <div id="CdcPointsAdminIndex">
-    <h1>疾管署稽督單</h1>
+    <h1>列管點</h1>
     <div class="btn-group">
         <?php echo $this->Html->link('新增', array('action' => 'add'), array('class' => 'btn btn-secondary')); ?>
         <?php echo $this->Html->link('匯入', array('action' => 'import'), array('class' => 'btn btn-secondary')); ?>
-        <?php echo $this->Html->link('匯出稽督單', array('action' => 'export', 3), array('class' => 'btn btn-secondary')); ?>
-        <?php echo $this->Html->link('匯出列管點', array('action' => 'export', 4), array('class' => 'btn btn-secondary')); ?>
+        <?php echo $this->Html->link('匯出', array('action' => 'export'), array('class' => 'btn btn-secondary')); ?>
     </div>
     <div class="paging"><?php echo $this->element('paginator'); ?></div>
     <table class="table table-bordered" id="CdcPointsAdminIndexTable">
         <thead>
             <tr>
-                <th><?php echo $this->Paginator->sort('CdcPoint.date_found', '日期', array('url' => $url)); ?></th>
+                <th><?php echo $this->Paginator->sort('CdcPoint.issue_date', '抽查日期', array('url' => $url)); ?></th>
                 <th>區域</th>
                 <th>住址</th>
-                <th>狀態</th>
                 <th>異動者</th>
                 <th><?php echo $this->Paginator->sort('CdcPoint.modified', '更新時間', array('url' => $url)); ?></th>
                 <th class="actions">操作</th>
@@ -36,7 +34,7 @@ if (!isset($url)) {
                 ?>
             <tr<?php echo $class; ?>>
                 <td><?php
-                echo $item['CdcPoint']['date_found'];
+                echo $item['CdcPoint']['issue_date'];
                         ?></td>
                 <td><?php
                 if(isset($item['Area']['Parent']['name'])) {
@@ -46,13 +44,6 @@ if (!isset($url)) {
                         ?></td>
                 <td><?php
                 echo $item['CdcPoint']['address'];
-                        ?></td>
-                <td><?php
-                        if(!empty($item['CdcPoint']['recheck_date'])) {
-                            echo '<span style="color: green;">已回應</span>';
-                        } else {
-                            echo '<span style="color: red;">未回應</span>';
-                        }
                         ?></td>
                 <td><?php
                         echo $item['MemberModified']['username'];
