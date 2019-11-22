@@ -155,7 +155,7 @@ DROP TABLE IF EXISTS `cdc_images`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cdc_images` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `cdc_point_id` int(11) unsigned NOT NULL,
+  `cdc_issue_id` int(11) unsigned NOT NULL,
   `file` char(40) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_by` int(11) unsigned NOT NULL,
   `created` datetime NOT NULL,
@@ -204,6 +204,38 @@ CREATE TABLE `cdc_points` (
   `modified` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=289 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `cdc_issues`
+--
+
+DROP TABLE IF EXISTS `cdc_issues`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cdc_issues` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `date_found` date NOT NULL,
+  `parent_area_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `area_id` int(11) unsigned NOT NULL,
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `issue_date` date DEFAULT NULL,
+  `issue_no` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `issue_reply_date` date DEFAULT NULL,
+  `issue_reply_no` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `recheck_date` date DEFAULT NULL,
+  `recheck_ph_detail` text COLLATE utf8mb4_unicode_ci,
+  `longitude` decimal(9,6) DEFAULT NULL,
+  `latitude` decimal(8,6) DEFAULT NULL,
+  `fine` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `note` text COLLATE utf8mb4_unicode_ci,
+  `created_by` int(11) unsigned NOT NULL,
+  `modified_by` int(11) unsigned NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

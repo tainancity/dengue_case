@@ -6,9 +6,9 @@ class CdcImage extends AppModel {
 
     var $name = 'CdcImage';
     var $belongsTo = array(
-        'CdcPoint' => array(
-            'foreignKey' => 'cdc_point_id',
-            'className' => 'CdcPoint',
+        'CdcIssue' => array(
+            'foreignKey' => 'cdc_issue_id',
+            'className' => 'CdcIssue',
         ),
         'MemberCreated' => array(
             'foreignKey' => 'created_by',
